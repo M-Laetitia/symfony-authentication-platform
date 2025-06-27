@@ -8,12 +8,6 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
-    env_file: 
-      - .env
-      - .env.dev
-      - .env.test
-    environment:
-      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}?serverVersion=8.0"
     depends_on:
       - db
       - mailhog

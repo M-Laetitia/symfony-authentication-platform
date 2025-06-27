@@ -1,14 +1,22 @@
-FROM php:8.3-apache
+FROM php:8.2-apache
 
+# Install PHP extensions
 RUN apt-get update && apt-get install -y \
     git unzip zip libicu-dev libonig-dev libxml2-dev \
     libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
     && docker-php-ext-install intl pdo pdo_mysql zip opcache
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
+# Enable Apache rewrite
 RUN a2enmod rewrite
 
+# Configure Apache vhost
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working dir
 WORKDIR /var/www/html
+
+# Fix permissions
+# RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
