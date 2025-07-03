@@ -18,3 +18,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+    app.security.oauth_user_provider:
+        class: App\Security\OAuthUserProvider
+        autowire: true
+        autoconfigure: true
+    App\Security\OAuthConnector:
+        arguments:
+            $properties:
+                'google': 'googleId'
