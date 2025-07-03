@@ -11,6 +11,8 @@ services:
     depends_on:
       - db
       - mailhog
+    env_file:
+      - .env
 
   db:
     image: mysql:8.0

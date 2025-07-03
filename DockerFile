@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -18,5 +18,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working dir
 WORKDIR /var/www/html
 
-# Fix permissions
-# RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
+
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
+# Fix permissions (important pour Symfony)
+RUN mkdir -p var/cache var/log
+RUN chown -R www-data:www-data var/
+RUN chmod -R 775 var/
