@@ -2,30 +2,67 @@
 
 namespace App\Security;
 
-use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-final class OAuthUserProvider implements OAuthAwareUserProviderInterface
+class OAuthUserProvider implements OAuthAwareUserProviderInterface, UserProviderInterface
 {
-    private UserRepository $userRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->userRepository = $userRepository;
+        $this->entityManager = $entityManager;
     }
 
-    public function loadUserByOAuthUserResponse(UserResponseInterface $response): \Symfony\Component\Security\Core\User\UserInterface
+    public function loadUserByOAuthUserResponse(UserResponseInterface $response): UserInterface
     {
+        $googleId = $response->getUsername();
         $email = $response->getEmail();
-        $user = $this->userRepository->findOneBy(['email' => $email]);
+        $pseudo = $response->getNickname();
+
+        // Check if the user already exists with this Google ID
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['googleId' => $googleId]);
 
         if (!$user) {
-            throw new AccountNotLinkedException(sprintf('No user with email "%s" was found.', $email));
+            $user = new User();
+            $user->setEmail($email);
+            $user->setGoogleId($googleId);
+            $user->setUsername($pseudo);
+            $user->setPassword(uniqid('authGoogle_', true));
+            $user->setRoles(['ROLE_USER']);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
         }
 
         return $user;
+    }
+
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['email' => $identifier]);
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
+    }
+
+    public function refreshUser(UserInterface $user): UserInterface
+    {
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
+    }
+
+    public function supportsClass(string $class): bool
+    {
+        return User::class === $class;
     }
 }
