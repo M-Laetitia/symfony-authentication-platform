@@ -1,14 +1,18 @@
 security:
+    # enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
+    
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -20,14 +24,18 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+
                 provider: app_user_provider
+                default_target_path: home
             oauth:
                 resource_owners:
                     google: "/login/check-google"
-                login_path: /login
+                login_path: app_login
                 use_forward: false
+                failure_path: /connect/registration/google
                 oauth_user_provider:
                     service: app.security.oauth_user_provider
+                # provider: hwi_oauth.user.provider
                 default_target_path: /home 
             entry_point: form_login
             logout:
