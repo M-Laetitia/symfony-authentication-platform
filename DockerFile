@@ -19,8 +19,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 
-RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
-# Fix permissions (important pour Symfony)
-RUN mkdir -p var/cache var/log
-RUN chown -R www-data:www-data var/
-RUN chmod -R 775 var/
+RUN mkdir -p var/cache var/log public && \
+    chown -R www-data:www-data var/ public && \
+    chmod -R 775 var/
