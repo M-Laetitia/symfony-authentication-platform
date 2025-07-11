@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 // use Symfony\Component\Form\AbstractType;
+use App\Form\FormExtension\HoneyPotType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
