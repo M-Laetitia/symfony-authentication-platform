@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -29,14 +30,15 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function checkHoneyJar(FormEvent $event): void {
+    public function checkHoneyJar(FormEvent $event): response{
 
         // on récupère la request courrante (pour l'adresse ip)
         $request = $this->requestStack->getCurrentRequest();
 
-        if(!$request) {
-            return;
-        }
+        // if(!$request) {
+        //     return;
+        // }
+
         // dd($event);
 
         // $form = $event->getForm();
@@ -59,6 +61,7 @@ class HoneyPotSubscriber implements EventSubscriberInterface
             $this->honeyPotLogger->info("The data in the phone field contained '{$phone}', and the fax field contained '{$faxNumber}'");
             
             throw new HttpException(403, 'Go away to my form, bot !');
+            // return $this->redirectToRoute('app_access_denied');
         }
     }
 }
