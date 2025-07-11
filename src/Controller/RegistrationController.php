@@ -18,6 +18,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
+use App\Event\UserRegisteredEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+
 class RegistrationController extends AbstractController
 {
     public function __construct(private EmailVerifier $emailVerifier)
@@ -25,7 +28,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager, EventDispatcherInterface $dispatcher): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
@@ -50,7 +53,9 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
+                // Dispatcher l'événement
+                $event = new UserRegisteredEvent($user);
+                $dispatcher->dispatch($event, UserRegisteredEvent::NAME);
 
             // return $security->login($user, 'form_login', 'main');
             return $this->redirectToRoute('app_login');
