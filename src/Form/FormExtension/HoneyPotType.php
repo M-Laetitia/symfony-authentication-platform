@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\FormExtension;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class HoneyPotType extends AbstractType
 {
-    private LoggerInterface $logger;
+    private LoggerInterface $honeyPotLogger;
     
     private RequestStack $requestStack;
 
@@ -19,9 +19,9 @@ class HoneyPotType extends AbstractType
 
     protected const FABULOUS_HONEY_CANDY_FOR_BOT = "faxNumber";
 
-    public function __construct(LoggerInterface $logger, RequestStack $requestStack)
+    public function __construct(LoggerInterface $honeyPotLogger, RequestStack $requestStack)
     {
-        $this->logger = $logger;
+        $this->honeyPotLogger = $honeyPotLogger;
         $this->requestStack = $requestStack;
     }
 
@@ -30,7 +30,7 @@ class HoneyPotType extends AbstractType
         $builder
             ->add(self::DELICIOUS_HONEY_CANDY_FOR_BOT, TextType::class, $this->setHoneyPotConfiguration())
             ->add(self::FABULOUS_HONEY_CANDY_FOR_BOT, TextType::class, $this->setHoneyPotConfiguration())
-            ->addEventSubscriber(new HoneyPotSubscriber($this->logger, $this->requestStack))
+            ->addEventSubscriber(new HoneyPotSubscriber($this->honeyPotLogger, $this->requestStack))
         ;
     }
 
