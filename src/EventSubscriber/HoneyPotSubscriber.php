@@ -11,13 +11,13 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class HoneyPotSubscriber implements EventSubscriberInterface
 {
-    private LoggerInterface $logger;
+    private LoggerInterface $honeyPotLogger;
     
     private RequestStack $requestStack;
 
-    public function __construct(LoggerInterface $logger, RequestStack $requestStack)
+    public function __construct(LoggerInterface $honeyPotLogger, RequestStack $requestStack)
     {
-        $this->logger = $logger;
+        $this->honeyPotLogger = $honeyPotLogger;
         $this->requestStack = $requestStack;
     }
 
@@ -55,8 +55,8 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         
         // if($date['phone'])
         if($phone !== '' || $faxNumber !== '') {
-            $this->logger->error("Potential spam attempt from a robot at the following ip address: '{$request->getClientIp()}'");
-            $this->logger->info("The data in the phone field contained '{$phone}', and the fax field contained '{$faxNumber}'");
+            $this->honeyPotLogger->error("Potential spam attempt from a robot at the following ip address: '{$request->getClientIp()}'");
+            $this->honeyPotLogger->info("The data in the phone field contained '{$phone}', and the fax field contained '{$faxNumber}'");
             
             throw new HttpException(403, 'Go away to my form, bot !');
         }
