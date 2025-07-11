@@ -1,6 +1,7 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - honey_pot
 
 when@dev:
     monolog:
@@ -11,7 +12,7 @@ when@dev:
                 max_files: 10
                 path: "%kernel.logs_dir%/security/honeypot/honeypot.%kernel.environment%.log"
                 channels: 
-                    - app
+                    - honey_pot
             security: 
                 level: debug
                 type: rotating_file
@@ -23,7 +24,10 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: ["!event"]
+                channels: 
+                    - "!event"
+                    - "!security"
+                    - "!honey_pot"
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:
