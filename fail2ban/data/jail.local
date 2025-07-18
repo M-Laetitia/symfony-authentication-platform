@@ -6,7 +6,7 @@ maxretry = 3
 [honey-pot]
 enabled = true
 filter = honey-pot
-logpath = /var/log/security/honeypot/honeypot.dev-2025-07-11.log
+logpath = /var/log/security/honeypot/honeypot.dev-*.log
 maxretry = 1
 bantime = 86400
 findtime = 600
