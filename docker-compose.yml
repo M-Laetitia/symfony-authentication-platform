@@ -32,6 +32,26 @@ services:
     ports:
       - "8025:8025"  # interface web mailhog
       - "1025:1025"  # port SMTP
+
+  # Service fail2ban
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: symfony_fail2ban
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - "./fail2ban/data/jail.d:/etc/fail2ban/jail.d"
+      - "./fail2ban/data/filter.d:/etc/fail2ban/filter.d"
+      - "./var/log/security/honeypot:/var/log/security/honeypot:ro"
+    environment:
+      - TZ=Europe/Paris
+      - F2B_LOG_LEVEL=INFO
+      - F2B_DB_PURGE_AGE=1d
+    restart: unless-stopped
+    depends_on:
+      - php-apache
      
 volumes:
   db_data:
