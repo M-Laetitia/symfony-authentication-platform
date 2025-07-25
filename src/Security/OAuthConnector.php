@@ -23,7 +23,8 @@ final class OAuthConnector implements AccountConnectorInterface
         }
 
         $property = new PropertyAccessor();
-        $property->setValue($user, $this->properties[$response->getResourceOwner()->getName()], $response->getUserIdentifier());
+        // $property->setValue($user, $this->properties[$response->getResourceOwner()->getName()], $response->getUserIdentifier());
+        $property->setValue($user, $this->properties[$response->getResourceOwner()->getName()], $response->getUsername());
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
