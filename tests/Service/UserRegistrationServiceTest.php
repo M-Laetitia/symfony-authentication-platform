@@ -105,11 +105,14 @@ class UserRegistrationServiceTest extends TestCase
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
 
+        $user = new User();
+        $user->setEmail('test@example.com');
+
         $emailVerifier->expects($this->once())
             ->method('sendEmailConfirmation')
             ->willThrowException(new \Exception('SMTP failure'));
 
-        // ✅ NE PAS ATTENDRE de dispatch dans ce test
+        // Ne pas attendre de dispatch dans ce test
         $dispatcher->expects($this->never())->method('dispatch');
 
         $registrationService = new UserRegistrationService(
