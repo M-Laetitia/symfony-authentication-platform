@@ -18,7 +18,7 @@ class MailerService
     public function sendWelcomeEmail(User $user): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@ton-domaine.com', 'Website name'))
+            ->from(new Address('no-reply@domain.com', 'Website name'))
             ->to($user->getEmail())
             ->subject('Welcome !')
             ->htmlTemplate('emails/user/welcome.html.twig')
@@ -32,8 +32,8 @@ class MailerService
     public function sendAdminNotification(User $user): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@domaine-name.com', 'Website name'))
-            ->to('admin@domaine-name.com')
+            ->from(new Address('no-reply@domain-name.com', 'Website name'))
+            ->to('admin@domain-name.com')
             ->subject('New subscriber !')
             ->htmlTemplate('emails/admin/admin_notification.html.twig')
             ->context([
