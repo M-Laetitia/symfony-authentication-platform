@@ -42,5 +42,49 @@ class OAuthConnectorTest extends TestCase
 
     // A FAIRE : le cas où le provider (google) n'est pas dans le tableau de $properties cela doit faire un return sans rien faire , test à faire : on vérifie que persist() et flush() ne sont pas appelés
 
+    public function testConnectDoesNothingIfProviderIsNotConfigured(): void
+    {
+        // Mock du resource owner qui simule Facebook (provider non configuré)
+        $resourceOwner = $this->createMock(ResourceOwnerInterface::class);
+        $resourceOwner->method('getName')->willReturn('facebook');
 
+        // Mock de la réponse OAuth avec ce resource owner
+        $response = $this->createMock(UserResponseInterface::class);
+        $response->method('getResourceOwner')->willReturn($resourceOwner);
+
+        // Utilisateur concret (pour tester les propriétés)
+        $user = new User();
+
+        // Mock EntityManager, on attend AUCUNE interaction (persist & flush ne doivent pas être appelés)
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never())->method('persist');
+        $entityManager->expects($this->never())->method('flush');
+
+        // Instanciation du service avec uniquement Google configuré
+        $connector = new OAuthConnector($entityManager, ['google' => 'googleId']);
+
+        // Appel de la méthode testée : doit ne rien faire car Facebook non reconnu
+        $connector->connect($user, $response);
+
+        // Optionnel : vérifier que la propriété googleId n'a pas été modifiée (elle est null par défaut)
+        $this->assertNull($user->getGoogleId());
+    }
+    
+
+    // public function testConnectDoesNothingIfNoMapping(): void
+    // {
+    //     $user = $this->createMock(UserInterface::class);
+    //     $response = $this->createMock(UserResponseInterface::class);
+    //     $resourceOwner = $this->createMock(\HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface::class);
+
+    //     $response->method('getResourceOwner')->willReturn($resourceOwner);
+    //     $resourceOwner->method('getName')->willReturn('github'); // Pas dans le mapping
+
+    //     $entityManager = $this->createMock(EntityManagerInterface::class);
+    //     $entityManager->expects($this->never())->method('persist');
+    //     $entityManager->expects($this->never())->method('flush');
+
+    //     $connector = new OAuthConnector($entityManager, ['google' => 'googleId']);
+    //     $connector->connect($user, $response);
+    // }
 }
