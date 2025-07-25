@@ -5,14 +5,15 @@ monolog:
 
 when@dev:
     monolog:
+        channels: ['honey_pot']
         handlers:
             honeypot: 
                 level: info
                 type: rotating_file
                 max_files: 10
                 path: "%kernel.logs_dir%/security/honeypot/honeypot.%kernel.environment%.log"
-                channels: 
-                    - honey_pot
+                channels: ['honey_pot']
+                formatter: 'app.custom_log_formatter'
             security: 
                 level: debug
                 type: rotating_file
