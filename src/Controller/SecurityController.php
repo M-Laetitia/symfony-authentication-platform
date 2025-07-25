@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use App\Security\OAuthFormHandler;
+use App\Security\OAuthRegistrationFormHandler;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use App\Security\AppAuthenticator;
 
@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/connect/registration/', name: 'hwi_oauth_connect_registration')]
     public function registerWithGoogle(
         Request $request,
-        OAuthFormHandler $formHandler,
+        OAuthRegistrationFormHandler $formHandler,
         UserAuthenticatorInterface $authenticator,
         AppAuthenticator $appAuthenticator
     ): Response {

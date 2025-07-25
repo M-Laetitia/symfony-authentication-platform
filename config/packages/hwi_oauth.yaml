@@ -14,4 +14,4 @@ hwi_oauth:
     connect:
         account_connector: App\Security\OAuthConnector
         registration_form: App\Form\OAuthRegistrationFormType
-        registration_form_handler: App\Security\OAuthFormHandler
+        registration_form_handler: App\Security\OAuthRegistrationFormHandler

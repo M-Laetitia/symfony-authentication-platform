@@ -9,7 +9,7 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Form\RegistrationFormHandlerInterface;
 use App\Entity\User;
 
-final class OAuthFormHandler implements RegistrationFormHandlerInterface
+final class OAuthRegistrationFormHandler implements RegistrationFormHandlerInterface
 {
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher

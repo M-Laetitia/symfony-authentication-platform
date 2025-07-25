@@ -30,4 +30,4 @@ services:
         arguments:
             $properties:
                 'google': 'googleId'
-    App\Security\OAuthFormHandler: ~
+    App\Security\OAuthRegistrationFormHandler: ~
