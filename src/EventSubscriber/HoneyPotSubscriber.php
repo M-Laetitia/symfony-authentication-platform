@@ -57,8 +57,21 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         
         // if($date['phone'])
         if($phone !== '' || $faxNumber !== '') {
-            $this->honeyPotLogger->error("Potential spam attempt from a robot at the following ip address: '{$request->getClientIp()}'");
-            $this->honeyPotLogger->info("The data in the phone field contained '{$phone}', and the fax field contained '{$faxNumber}'");
+            $this->honeyPotLogger->error("Suspicion of bot detected", [
+                'ip' => $request->getClientIp(),
+                'http_info' => sprintf('%s %s %s %d', 
+                    $request->getMethod(),
+                    $request->getRequestUri(),
+                    $request->getProtocolVersion(),
+                    403
+                )
+
+                
+            ]);
+            
+            $this->honeyPotLogger->info("The data in the phone field contained '{$phone}', and the fax field contained '{$faxNumber}'", [
+                'ip' => $request->getClientIp()
+            ]);
 
             // $ip = $request->getClientIp();
             // $date = gmdate('D, d M Y H:i:s') . ' GMT';  // Format type HTTP date en GMT
