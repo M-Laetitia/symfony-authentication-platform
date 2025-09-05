@@ -26,6 +26,5 @@
 
 
 note
-note2
-
+note2.txt
 fail2ban/data/filter.d/testfile.txt
