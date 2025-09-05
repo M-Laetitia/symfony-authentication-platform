@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+<div >
+    <h1>Mon profil</h1>
+
+    <div>
+        <p><strong>Pseudo :</strong> {{ user.username }}</p>
+        <p><strong>Email :</strong> {{ user.email }}</p>
+        <pre>{{ dump(user.roles) }}</pre>
+        <p><strong>Roles :</strong>
+            {% for role in user.roles %}
+                <span >{{ role }}</span>
+            {% else %}
+                <span >Aucun rôle</span>
+            {% endfor %}
+        </p>
+    </div>
+
+    <p>Test is granted</p>
+    {% if is_granted('ROLE_USER') %}
+        <p>Role user </p>
+    {% endif %}
+
+    {% if is_granted('ROLE_EMPLOYEE') %}
+        <p>Role employé</p>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>Role admin</p>
+    {% endif %}
+
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <p>Role super-admin</p>
+    {% endif %}
+
+
+</div>
+{% endblock %}
