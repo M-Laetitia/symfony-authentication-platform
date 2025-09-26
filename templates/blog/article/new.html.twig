@@ -4,17 +4,13 @@
 {% block title %}New article{% endblock %}
 
 {% block body %}
-    <h1>DEBUG</h1>
-        
-    {# Voir toutes les variables disponibles #}
+            {# Voir toutes les variables disponibles #}
     {# <pre>{{ dump(_context|keys) }}</pre> #}
 
     {# Voir le contenu de form si disponible #}
     {# {% if form is defined %}
         <pre>{{ dump(form.vars) }}</pre>
     {% endif %} #}
-
-    <hr>
     <h1>créer un article</h1>
 
     {{ form_start(form) }}
@@ -23,6 +19,7 @@
     {{ form_row(form.metaDescription) }}
     {{ form_row(form.category) }}
     {{ form_row(form.excerpt) }}
+    {{ form_row(form.content) }}
     {{ form_row(form._token) }}
 
     <div class="form-group">
