@@ -17,7 +17,8 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 150, unique: true, nullable: false)]
-    private string $title;
+    // private string $title;
+    private string $title = '';
 
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private \DateTimeImmutable $createdAt;
@@ -28,7 +29,7 @@ class Article
     #[ORM\Column(length: 20, nullable: false)]
     private string $status;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
