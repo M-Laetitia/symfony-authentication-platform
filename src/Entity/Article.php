@@ -30,7 +30,7 @@ class Article
     private string $status;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?string $content = null;
+    private ?array $content = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $excerpt = null;
@@ -71,6 +71,8 @@ class Article
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
+        $this->status = 'brouillon';
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -127,12 +129,12 @@ class Article
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): ?array
     {
         return $this->content;
     }
 
-    public function setContent(?string $content): static
+    public function setContent(?array $content): static
     {
         $this->content = $content;
 
