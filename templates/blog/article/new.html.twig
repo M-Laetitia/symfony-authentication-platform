@@ -1,0 +1,13 @@
+<h1>créer un article</h1>
+
+{{ form_start(form) }}
+{{ form_row(form.title) }}
+{{ form_row(form.metaTitle) }}
+{{ form_row(form.metaDescription) }}
+{{ form_row(form.excerpt) }}
+
+<div id="editorjs"></div>
+<input type="hidden" name="article[content]" id="article_content" value="">
+
+<button type="submit">Enregistrer</button>
+{{ form_end(form) }}

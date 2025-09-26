@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+<h1>Articles du blog</h1>
+    {% if app.user %}
+        <p>Créer un article</p>
+        <button><a href="{{ path('article_new') }}">CREER</a></button>
+    {% endif %}
+
+{% endblock %}
