@@ -9,9 +9,11 @@ const editor = new EditorJS({
     tools: {
         header: Header,
         list: List,
+        paragraph: Paragraph,
         quote: Quote,
         image: SimpleImage,
     },
+    placeholder: 'Commencez à écrire votre article...',
     data: window.articleContent || {}, // charge le contenu existant depuis Twig
 });
 
