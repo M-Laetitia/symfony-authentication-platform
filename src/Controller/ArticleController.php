@@ -45,18 +45,12 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            // Récupérer le JSON envoyé
-            $editorContent = $request->request->get('article')['content'] ?? null;
-
+            $editorContent = $form->get('content')->getData();
             if ($editorContent) {
-                // Décoder pour vérifier que c’est bien du JSON
                 $contentData = json_decode($editorContent, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $article->setContent($contentData); 
-                } else {
-                    $article->setContent([]);
-                }
+                $article->setContent(json_last_error() === JSON_ERROR_NONE ? $contentData : []);
             }
+            var_dump($editorContent);die;
 
             $article->setAuthor($user);
             $article->setSlug($slugger->slug($article->getTitle())->lower());
