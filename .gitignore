@@ -28,3 +28,9 @@
 note
 note2.txt
 fail2ban/data/filter.d/testfile.txt
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###
