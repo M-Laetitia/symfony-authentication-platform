@@ -17,17 +17,14 @@ class ArticleFormType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
             ->add('excerpt')
             ->add('metaTitle')
             ->add('metaDescription')
 
-            // ->add('category', EntityType::class, [
-            //     'class' => Category::class,
-            //     'choice_label' => 'id',
-            // ])
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'name',
+            ])
             // ->add('tags', EntityType::class, [
             //     'class' => Tag::class,
             //     'choice_label' => 'id',
@@ -40,6 +37,9 @@ class ArticleFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Article::class,
+            'csrf_protection' => true, 
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'article_form',
         ]);
     }
 }
