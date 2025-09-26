@@ -1,5 +1,6 @@
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
+import Paragraph from '@editorjs/paragraph';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import SimpleImage from '@editorjs/simple-image';
