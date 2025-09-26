@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -48,6 +50,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $username = null;
+
+    /**
+     * @var Collection<int, Article>
+     */
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'author')]
+    private Collection $articles;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author')]
+    private Collection $comments;
+
+    /**
+     * @var Collection<int, ArticleEditHistory>
+     */
+    #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'editor')]
+    private Collection $articleEditHistories;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->articleEditHistories = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -179,6 +206,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(?string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): static
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles->add($article);
+            $article->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): static
+    {
+        if ($this->articles->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getAuthor() === $this) {
+                $article->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArticleEditHistory>
+     */
+    public function getArticleEditHistories(): Collection
+    {
+        return $this->articleEditHistories;
+    }
+
+    public function addArticleEditHistory(ArticleEditHistory $articleEditHistory): static
+    {
+        if (!$this->articleEditHistories->contains($articleEditHistory)) {
+            $this->articleEditHistories->add($articleEditHistory);
+            $articleEditHistory->setEditor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleEditHistory(ArticleEditHistory $articleEditHistory): static
+    {
+        if ($this->articleEditHistories->removeElement($articleEditHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($articleEditHistory->getEditor() === $this) {
+                $articleEditHistory->setEditor(null);
+            }
+        }
 
         return $this;
     }
