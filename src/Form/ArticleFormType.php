@@ -8,6 +8,7 @@ use App\Entity\Tag;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,6 +21,9 @@ class ArticleFormType extends AbstractType
             ->add('excerpt')
             ->add('metaTitle')
             ->add('metaDescription')
+            ->add('content', HiddenType::class, [
+                'mapped' => false,
+            ])
 
             ->add('category', EntityType::class, [
                 'class' => Category::class,
