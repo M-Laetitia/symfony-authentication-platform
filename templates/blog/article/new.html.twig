@@ -1,13 +1,41 @@
-<h1>créer un article</h1>
 
-{{ form_start(form) }}
-{{ form_row(form.title) }}
-{{ form_row(form.metaTitle) }}
-{{ form_row(form.metaDescription) }}
-{{ form_row(form.excerpt) }}
+{% extends 'base.html.twig' %}
 
-<div id="editorjs"></div>
-<input type="hidden" name="article[content]" id="article_content" value="">
+{% block title %}New article{% endblock %}
 
-<button type="submit">Enregistrer</button>
-{{ form_end(form) }}
+{% block body %}
+    <h1>DEBUG</h1>
+        
+    {# Voir toutes les variables disponibles #}
+    {# <pre>{{ dump(_context|keys) }}</pre> #}
+
+    {# Voir le contenu de form si disponible #}
+    {# {% if form is defined %}
+        <pre>{{ dump(form.vars) }}</pre>
+    {% endif %} #}
+
+    <hr>
+    <h1>créer un article</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.metaTitle) }}
+    {{ form_row(form.metaDescription) }}
+    {{ form_row(form.category) }}
+    {{ form_row(form.excerpt) }}
+    {{ form_row(form._token) }}
+
+    <div class="form-group">
+        <label>Contenu de l'article</label>
+        <div id="editorjs"></div>
+        <input type="hidden" name="article[content]" id="article_content" value="">
+    </div>
+
+
+    <button type="submit">Enregistrer</button>
+    {{ form_end(form) }}
+
+    {{ encore_entry_script_tags('editor') }}
+
+{% endblock %}
+
