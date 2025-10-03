@@ -22,7 +22,9 @@ class ArticleFormType extends AbstractType
             ->add('metaTitle')
             ->add('metaDescription')
             ->add('content', HiddenType::class, [
-                'mapped' => false,
+                'mapped' => false, 
+                'required' => false,
+                'attr' => ['id' => 'article_form_content']
             ])
 
             ->add('category', EntityType::class, [
