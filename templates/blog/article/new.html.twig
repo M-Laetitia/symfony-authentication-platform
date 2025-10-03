@@ -19,20 +19,31 @@
     {{ form_row(form.metaDescription) }}
     {{ form_row(form.category) }}
     {{ form_row(form.excerpt) }}
-    {{ form_row(form.content) }}
+    {# {{ form_row(form.content) }} #}
     {{ form_row(form._token) }}
 
     <div class="form-group">
         <label>Contenu de l'article</label>
         <div id="editorjs"></div>
-        <input type="hidden" name="article[content]" id="article_content" value="">
+        {{ form_row(form.content, { 'attr': { 'id': 'article_content' } }) }}
     </div>
-
 
     <button type="submit">Enregistrer</button>
     {{ form_end(form) }}
 
     {{ encore_entry_script_tags('editor') }}
+
+    <script>
+        console.log('🔍 Recherche du champ content...');
+        const field = document.querySelector('input[name="article_form[content]"]');
+        console.log('Champ trouvé:', field);
+        if (field) {
+            console.log('ID du champ:', field.id);
+            console.log('Name du champ:', field.name);
+        }
+
+        
+    </script>
 
 {% endblock %}
 
