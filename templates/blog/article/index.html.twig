@@ -4,6 +4,28 @@
 
 {% block body %}
 <h1>Articles du blog</h1>
+
+<h1>Liste des articles</h1>
+
+    {% for article in articles %}
+        <article>
+            <h2>
+                <a href="{{ path('article_show', {'slug': article.slug}) }}">
+                    {{ article.title }}
+                </a>
+            </h2>
+            <p>
+                <p>
+                    Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }}
+                </p>
+            </p>
+        </article>
+        <hr>
+    {% else %}
+        <p>Aucun article trouvé.</p>
+    {% endfor %}
+
+
     {% if app.user %}
         <p>Créer un article</p>
         <button><a href="{{ path('article_new') }}">CREER</a></button>
