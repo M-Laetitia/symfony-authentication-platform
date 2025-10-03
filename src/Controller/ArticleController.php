@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleFormType;
+use App\Form\CommentFormType;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,10 +19,15 @@ class ArticleController extends AbstractController
     #[Route('/blog', name: 'blog_index')]
     public function index(EntityManagerInterface $em): Response
     {
-        $articles = $em->getRepository(Article::class)->findAll();
+        // $articles = $em->getRepository(Article::class)->findAll();
+        $publishedArticles = $em->getRepository(Article::class)->findBy([
+            'status' => 'published'
+        ], [
+            'createdAt' => 'DESC' // Tri par date de création (optionnel)
+        ]);
 
         return $this->render('blog/article/index.html.twig', [
-            'articles' => $articles,
+            'articles' => $publishedArticles,
         ]);
     }
 
@@ -86,6 +94,22 @@ class ArticleController extends AbstractController
             // var_dump(get_object_vars($article));die;
 
             return $this->redirectToRoute('blog_index');
+
+            
+            // if ($article->getStatus() === 'draft') {
+            //     // Si c'est un brouillon, on le publie et on redirige vers la liste
+            //     $article->setStatus('published');
+            //     $em->persist($article);
+            //     $em->flush();
+            //     $this->addFlash('success', 'Article publié avec succès !');
+            //     return $this->redirectToRoute('blog_index'); // Redirection vers la liste
+            // } else {
+            //     // Sinon, on le repasse en brouillon et on reste sur la page
+            //     $article->setStatus('draft');
+            //     $em->persist($article);
+            //     $em->flush();
+            //     $this->addFlash('success', 'Article sauvegardé en brouillon.');
+            // }
         }
 
         return $this->render('blog/article/new.html.twig', [
@@ -96,19 +120,41 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(Article $article, ArticleRepository $articleRepository, string $slug): Response
+    public function show(Article $article, ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em): Response
     {   
 
-        // dump($slug);die;
         $article = $articleRepository->findOneBy(['slug' => $slug]);
-        // dump($article);die;
-        // if (!$article) {
-        //     // if not, redirect to the error page
-        //     return $this->render('error/error404.html.twig', [], new Response('', Response::HTTP_NOT_FOUND));
-        // }
+        $validatedComments = $commentRepository->findBy([
+            'article' => $article,
+            'isApproved' => true, 
+        ], [
+            'createdAt' => 'ASC', 
+        ]);
+
+        if (!$article) {
+            throw $this->createNotFoundException('Article non trouvé');
+        }
+
+        $comment = new Comment();
+        $comment->setArticle($article);
+        $comment->setAuthor($this->getUser());
+
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // var_dump($comment);die;
+            $em->persist($comment);
+            $em->flush();
+
+            $this->addFlash('success', 'Votre commentaire a été ajouté !');
+            return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
+        }
 
         return $this->render('blog/article/show.html.twig', [
+            'form' => $form->createView(),
             'article' => $article,
+            'comments' => $validatedComments,
         ]);
     }
 }
