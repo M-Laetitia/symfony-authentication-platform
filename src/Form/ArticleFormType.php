@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ArticleFormType extends AbstractType
 {
@@ -31,12 +32,16 @@ class ArticleFormType extends AbstractType
                 'class' => Category::class,
                 'choice_label' => 'name',
             ])
-            // ->add('tags', EntityType::class, [
-            //     'class' => Tag::class,
-            //     'choice_label' => 'id',
-            //     'multiple' => true,
-            // ])
-        ;
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'multiple' => true,      
+                'expanded' => true,    
+                'by_reference' => false,  // Important pour que Doctrine gère correctement les relations
+            ]);
+            // ->add('save', SubmitType::class, [
+            //     'label' => 'Sauvegarder le brouillon', // Libellé par défaut
+            // ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
