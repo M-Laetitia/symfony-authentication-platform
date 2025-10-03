@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+{# {{ dump(article) }} #}
+<h1>{{ article.title }}</h1>
+<p>Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }}</p>
+<pre>{{ dump(article.content) }}</pre>
+<div class="article-content">
+    {{ article.content|editorjs}}
+</div>
+
+{% endblock %}
