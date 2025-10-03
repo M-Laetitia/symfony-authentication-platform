@@ -4,11 +4,44 @@
 
 {% block body %}
 {# {{ dump(article) }} #}
+
 <h1>{{ article.title }}</h1>
-<p>Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }}</p>
+<p>Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }} - {{ article.status }}</p>
 <pre>{{ dump(article.content) }}</pre>
 <div class="article-content">
     {{ article.content|editorjs}}
 </div>
+{# 
+{% cache 'article_content' article.id %}
+    {{ article.content|editorjs|raw }}
+{% endcache %} #}
+
+<h2>Ajouter un commentaire</h2>
+
+
+
+    {{ form_start(form) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.authorName) }}
+        <button type="submit">Poster</button>
+    {{ form_end(form)}}
+
+
+
+<h3>Liste des commentaires</h3>
+
+{% for comment in comments %}
+    <p>{{ comment.content }}</p>
+
+    {% if comment.author is not null %}
+        <p>par {{ comment.author.username }}-
+    {% else %}
+        <p>par {{ comment.authorName }}-
+    {% endif %}
+
+    le {{ comment.createdAt|date('d/m/Y') }}</p>
+{% else %}
+    <p>Aucun commentaire pour le moment :( </p>
+{% endfor %}
 
 {% endblock %}
