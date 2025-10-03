@@ -71,7 +71,7 @@ class Article
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
-        $this->status = 'brouillon';
+        $this->status = 'unsaved';
         $this->createdAt = new \DateTimeImmutable();
     }
 
