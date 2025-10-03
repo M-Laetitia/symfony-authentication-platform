@@ -6,12 +6,12 @@ class EditorJsRenderer
  
     public function render(string|array $content): string
     {
-        // Si c'est une string JSON, on la décode
+        // si c'est une string JSON, on la décode
         if (is_string($content)) {
             $content = json_decode($content, true);
         }
         
-        // Vérifier que c'est bien un array avec des blocks
+        // check que c'est bien un array avec des blocks
         if (!is_array($content) || !isset($content['blocks'])) {
             return '<p>Contenu invalide</p>';
         }
@@ -111,18 +111,16 @@ class EditorJsRenderer
         if (is_string($text)) {
             return htmlspecialchars($text);
         }
-        
-        // Si c'est un array (peut arriver avec Editor.js)
+
+        // Si c'est un array 
         if (is_array($text)) {
-            // Parfois le texte est dans un format spécial
             if (isset($text['text'])) {
                 return htmlspecialchars($text['text']);
             }
-            // Sinon on convertit en JSON pour debug
+            // convertit en JSON pour debug
             return htmlspecialchars(json_encode($text));
         }
         
-        // Fallback
         return '';
     }
 }
