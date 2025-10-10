@@ -127,6 +127,7 @@ class ArticleController extends AbstractController
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
             'isApproved' => true, 
+            'parentComment' => NULL,
         ], [
             'createdAt' => 'ASC', 
         ]);
