@@ -27,6 +27,7 @@
 
 note
 note2.txt
+image_article.txt
 fail2ban/data/filter.d/testfile.txt
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
