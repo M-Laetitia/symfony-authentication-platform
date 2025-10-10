@@ -18,8 +18,6 @@
 
 <h2>Ajouter un commentaire</h2>
 
-
-
     {{ form_start(form) }}
         {{ form_row(form.content) }}
         {% if form.authorName is defined %}
@@ -28,13 +26,20 @@
         <button type="submit">Poster</button>
     {{ form_end(form)}}
 
-
-
 <h3>Liste des commentaires</h3>
 
 {% for comment in comments %}
     <p>{{ comment.content }}</p>
+            {# Lien "Éditer" #}
+        {% if (app.user and comment.author == app.user) or (app.user and 'ROLE_ADMIN' in app.user.roles) %}
+            <a href="#" onclick="showEditForm({{ comment.id }})">Éditer</a>
+        {% endif %}
     {# <a href="{{ path('article_show', {'slug': article.slug, 'reply_to': comment.id}) }}">Répondre</a> #}
+    {% for reply in comment.replies %}
+    <div class="reply" style="margin-left: 20px;">
+        <p>{{ reply.content }}</p>
+    </div>
+{% endfor %}
     {% if comment.author is not null %}
         <p>par {{ comment.author.username }}-
     {% else %}
@@ -45,5 +50,9 @@
 {% else %}
     <p>Aucun commentaire pour le moment :( </p>
 {% endfor %}
+
+<hr>
+<hr>
+
 
 {% endblock %}
