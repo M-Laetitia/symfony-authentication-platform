@@ -3,9 +3,8 @@ import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import SimpleImage from '@editorjs/simple-image';
+import ImageTool from '@editorjs/image';
 
-console.log('EDITOR.JS EST CHARGÉ');
-// alert('EDITOR.JS EST CHARGÉ');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log(' DOMContentLoaded déclenché');
@@ -33,7 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
             header: Header,
             list: List,
             quote: Quote,
-            image: SimpleImage,
+            // image: SimpleImage,
+            image: {
+                class: ImageTool,
+                config: {
+                    endpoints: {
+                        byFile: 'http://localhost:8080/uploadFile',
+                        // byUrl: 'http://localhost:8008/fetchUrl', 
+                    }
+                }
+            }
         },
         placeholder: 'Commencez à écrire votre article...',
         data: window.articleContent || {},
