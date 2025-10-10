@@ -141,9 +141,38 @@ class ArticleController extends AbstractController
 
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // $data = $form->getData();
+            // var_dump($data);die;
+
+            // var_dump([
+            //     'content' => $comment->getContent(),
+            //     'authorName' => $comment->getAuthorName(),
+          
+            // ]);
+            // die;
             // var_dump($comment);die;
+
+            // entité hydraté - récursion d'objet liés getOne - limité à la première entit" qu'il va trouver 
+            // $request > $request fetch all > array
+  
+            if ($this->getUser()) {
+                $comment->setAuthor($this->getUser());
+                if (in_array('ROLE_ADMIN', $this->getUser()->getRoles()) || $this->getUser() === $article->getAuthor()) {
+                $comment->setIsApproved(true);
+                }
+            } else {
+                $pseudo = $form->get('authorName')->getData();
+                $comment->setAuthorName($pseudo);
+
+                // Récupère et hache l'IP pour les utilisateurs non connectés
+                $ip = $request->getClientIp();
+                $ipHash = hash('sha256', $ip);
+                $comment->setIpHash($ipHash);
+            }
+
             $em->persist($comment);
             $em->flush();
 
