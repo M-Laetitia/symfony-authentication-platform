@@ -22,7 +22,9 @@
 
     {{ form_start(form) }}
         {{ form_row(form.content) }}
-        {{ form_row(form.authorName) }}
+        {% if form.authorName is defined %}
+            {{ form_row(form.authorName) }}
+        {% endif %}
         <button type="submit">Poster</button>
     {{ form_end(form)}}
 
@@ -32,7 +34,7 @@
 
 {% for comment in comments %}
     <p>{{ comment.content }}</p>
-
+    {# <a href="{{ path('article_show', {'slug': article.slug, 'reply_to': comment.id}) }}">Répondre</a> #}
     {% if comment.author is not null %}
         <p>par {{ comment.author.username }}-
     {% else %}
