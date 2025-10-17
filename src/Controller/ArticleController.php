@@ -54,7 +54,7 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $editorContent = $form->get('content')->getData();
-            // dump('Contenu reçu:', $editorContent);
+            // dump('Contenu reçu:', $editorContent);die;
             // dump('Type:', gettype($editorContent));
             if ($editorContent) {
                 $contentData = json_decode($editorContent, true);
@@ -81,6 +81,7 @@ class ArticleController extends AbstractController
                             $media = $em->getRepository(Media::class)->find($fileData['id']);
                             if ($media) {
                                 $media->setArticle($article);
+                                $media->setAltText($block['data']['alt'] ?? '');
                                 $media->setCaption($block['data']['caption'] ?? ''); // Stocke le caption
                                 $em->persist($media);
                         }
