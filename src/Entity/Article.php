@@ -66,6 +66,12 @@ class Article
     #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'article')]
     private Collection $articleEditHistories;
 
+    /**
+     * @var Collection<int, Media>
+     */
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'article', orphanRemoval: true)]
+    private Collection $medias;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -73,6 +79,7 @@ class Article
         $this->articleEditHistories = new ArrayCollection();
         $this->status = 'unsaved';
         $this->createdAt = new \DateTimeImmutable();
+        $this->medias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -282,6 +289,36 @@ class Article
             // set the owning side to null (unless already changed)
             if ($articleEditHistory->getArticle() === $this) {
                 $articleEditHistory->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+    public function addMedia(Media $media): static
+    {
+        if (!$this->medias->contains($media)) {
+            $this->medias->add($media);
+            $media->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedia(Media $media): static
+    {
+        if ($this->medias->removeElement($media)) {
+            // set the owning side to null (unless already changed)
+            if ($media->getArticle() === $this) {
+                $media->setArticle(null);
             }
         }
 
