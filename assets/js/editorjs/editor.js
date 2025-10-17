@@ -4,7 +4,7 @@ import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import SimpleImage from '@editorjs/simple-image';
 import ImageTool from '@editorjs/image';
-import CustomImageTool from './editorjs/CustomImageTool';
+import CustomImageTool from './customImageTool';
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 width: response.file.width,
                                 height: response.file.height,
                                 caption: response.file.caption,
+                                altText: response.file.altText,
                             }
                         };
                     }
