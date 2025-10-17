@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Comment;
+use App\Entity\Media;
 use App\Form\ArticleFormType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
@@ -55,36 +56,44 @@ class ArticleController extends AbstractController
             $editorContent = $form->get('content')->getData();
             // dump('Contenu reçu:', $editorContent);
             // dump('Type:', gettype($editorContent));
-           
             if ($editorContent) {
                 $contentData = json_decode($editorContent, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
-                   
-                // Supprime les URLs des blocs "image"
-                foreach ($contentData['blocks'] as &$block) {
-                    if ($block['type'] === 'image' && isset($block['data']['file']['url'])) {
-                        $fileData = $block['data']['file'];
-                        $block['data']['file'] = [
-                            'id' => $fileData['id'],
-                            'width' => $fileData['width'],
-                            'height' => $fileData['height'],
-                        ];
-                    }
-                }
-                $article->setContent($contentData); // Enregistre le JSON nettoyé
+                    // Enregistre l'article d'abord pour obtenir son ID
+                    $article->setAuthor($this->getUser());
+                    $article->setSlug($slugger->slug($article->getTitle())->lower());
+                    $em->persist($article);
+                    $em->flush(); // Génère l'ID de l'article
+        
 
-                } else {
-                    $this->addFlash('error', 'Erreur dans le contenu de l\'article');
-                    return $this->render('blog/article/new.html.twig', [
-                        'form' => $form->createView(),
-                        'article' => $article,
-                    ]);
+                   // Supprime les URLs des blocs "image" et lie les médias à l'article
+                    foreach ($contentData['blocks'] as &$block) {
+                        if ($block['type'] === 'image' && isset($block['data']['file']['id'])) {
+                            // Supprime l'URL du JSON
+                            $fileData = $block['data']['file'];
+                            $block['data']['file'] = [
+                                'id' => $fileData['id'],
+                                'width' => $fileData['width'],
+                                'height' => $fileData['height'],
+                            ];
+
+                            // Lie le média à l'article
+                            $media = $em->getRepository(Media::class)->find($fileData['id']);
+                            if ($media) {
+                                $media->setArticle($article);
+                                $media->setCaption($block['data']['caption'] ?? ''); // Stocke le caption
+                                $em->persist($media);
+                        }
+                    }
+                    }
+                    // var_dump($editorContent);die;
+                    $em->flush(); // Met à jour les médias
+        
+                    $article->setContent($contentData); // Enregistre le contenu
+                    $em->flush(); // Sauvegarde finale
                 }
             }
-            // var_dump($editorContent);die;
 
-            $article->setAuthor($user);
-            $article->setSlug($slugger->slug($article->getTitle())->lower());
             // var_dump([
             //     'id' => $article->getId(),
             //     'title' => $article->getTitle(),
@@ -104,15 +113,13 @@ class ArticleController extends AbstractController
             // dump($form->getErrors(true));die;
             // dump($article->getContent());
             // die('Contenu sauvegardé (voir dump ci-dessus)');
-            $em->persist($article);
-            $em->flush();
-           
+     
             // var_dump($article);die;
             // var_dump(get_object_vars($article));die;
 
+
             return $this->redirectToRoute('blog_index');
 
-            
             // if ($article->getStatus() === 'draft') {
             //     // Si c'est un brouillon, on le publie et on redirige vers la liste
             //     $article->setStatus('published');
@@ -128,7 +135,6 @@ class ArticleController extends AbstractController
             //     $this->addFlash('success', 'Article sauvegardé en brouillon.');
             // }
         }
-
         return $this->render('blog/article/new.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
