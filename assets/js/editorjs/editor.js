@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 id: response.file.id, // ID du média
                                 width: response.file.width,
                                 height: response.file.height,
+                                caption: response.file.caption,
                             }
                         };
                     }
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 hiddenField.value = JSON.stringify(outputData);
                 console.log('Champ caché rempli avec:', hiddenField.value);
                 
-                // Vérifier une dernière fois
+
                 setTimeout(() => {
                     console.log('Valeur finale du champ:', hiddenField.value);
                     console.log('Soumission du formulaire...');
