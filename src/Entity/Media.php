@@ -5,12 +5,12 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Enum\MediaType;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 class Media
 {
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,8 +25,11 @@ class Media
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(columnDefinition: "ENUM('cover', 'gallery_image', 'article_image')")]
-    private string $type;
+    // #[ORM\Column(columnDefinition: "ENUM('cover', 'gallery_image', 'article_image')")]
+    // private string $type;
+
+    #[ORM\Column(type: 'string', enumType: MediaType::class)]
+    private MediaType $typeImage;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $caption = null;
@@ -80,14 +83,14 @@ class Media
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): MediaType
     {
-        return $this->type;
+        return $this->typeImage;
     }
 
-    public function setType(string $type): static
+    public function setType(MediaType $typeImage): self
     {
-        $this->type = $type;
+        $this->typeImage = $typeImage;
         return $this;
     }
 
