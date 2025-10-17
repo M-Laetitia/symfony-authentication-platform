@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Media;
-use App\Entity\MediaType;
+use App\Enum\MediaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +20,7 @@ class UploadController extends AbstractController
                 return new JsonResponse(['success' => 0, 'message' => 'Aucun fichier uploadé.']);
             }
 
+            $caption = $request->request->get('caption', '');
             // 1. Upload du fichier
             $filename = uniqid() . '.' . $file->guessExtension();
             $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
@@ -35,8 +36,9 @@ class UploadController extends AbstractController
             $media = new Media();
             $media->setPath($relativePath);
             $media->setAltText('');
+            $media->setCaption($caption);
             // $media->setType('article_image');
-            // $media->setType(MediaType::ARTICLE_IMAGE);
+            $media->setType(MediaType::ARTICLE_IMAGE);
 
             $em->persist($media);
             $em->flush();
