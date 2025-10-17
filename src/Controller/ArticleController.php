@@ -53,12 +53,26 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $editorContent = $form->get('content')->getData();
-            dump('Contenu reçu:', $editorContent);
-            dump('Type:', gettype($editorContent));
+            // dump('Contenu reçu:', $editorContent);
+            // dump('Type:', gettype($editorContent));
+           
             if ($editorContent) {
                 $contentData = json_decode($editorContent, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
-                    $article->setContent($contentData);
+                   
+                // Supprime les URLs des blocs "image"
+                foreach ($contentData['blocks'] as &$block) {
+                    if ($block['type'] === 'image' && isset($block['data']['file']['url'])) {
+                        $fileData = $block['data']['file'];
+                        $block['data']['file'] = [
+                            'id' => $fileData['id'],
+                            'width' => $fileData['width'],
+                            'height' => $fileData['height'],
+                        ];
+                    }
+                }
+                $article->setContent($contentData); // Enregistre le JSON nettoyé
+
                 } else {
                     $this->addFlash('error', 'Erreur dans le contenu de l\'article');
                     return $this->render('blog/article/new.html.twig', [
@@ -88,8 +102,11 @@ class ArticleController extends AbstractController
             // dd($article); // Décommentez cette ligne pour voir l'objet final
             // var_dump(get_object_vars($article));die;
             // dump($form->getErrors(true));die;
+            // dump($article->getContent());
+            // die('Contenu sauvegardé (voir dump ci-dessus)');
             $em->persist($article);
             $em->flush();
+           
             // var_dump($article);die;
             // var_dump(get_object_vars($article));die;
 
