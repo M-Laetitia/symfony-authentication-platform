@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Media;
+use App\Entity\MediaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,8 @@ class UploadController extends AbstractController
             $media = new Media();
             $media->setPath($relativePath);
             $media->setAltText('');
-            $media->setType('article_image');
+            // $media->setType('article_image');
+            // $media->setType(MediaType::ARTICLE_IMAGE);
 
             $em->persist($media);
             $em->flush();
