@@ -20,7 +20,9 @@ class UploadController extends AbstractController
                 return new JsonResponse(['success' => 0, 'message' => 'Aucun fichier uploadé.']);
             }
 
+            // Récupère le caption et le altText
             $caption = $request->request->get('caption', '');
+            $altText = $request->request->get('alt', '');
             // 1. Upload du fichier
             $filename = uniqid() . '.' . $file->guessExtension();
             $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
@@ -35,8 +37,8 @@ class UploadController extends AbstractController
             // 3. Crée et enregistre le média
             $media = new Media();
             $media->setPath($relativePath);
-            $media->setAltText('');
             $media->setCaption($caption);
+            $media->setAltText($altText);
             // $media->setType('article_image');
             $media->setType(MediaType::ARTICLE_IMAGE);
 
