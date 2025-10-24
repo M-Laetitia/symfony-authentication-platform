@@ -1,8 +1,14 @@
 <?php
 namespace App\Service;
 
+use App\Repository\MediaRepository;
+
 class EditorJsRenderer
 {
+    public function __construct(
+        private MediaRepository $mediaRepository
+    ) {}
+
  
     public function render(string|array $content): string
     {
@@ -90,15 +96,36 @@ class EditorJsRenderer
 
     private function renderImage(array $data): string
     {
-        if (empty($data['file']['url'])) {
+         // Récupère l'ID de l'image depuis le JSON
+        $imageId = $data['file']['id'] ?? null;
+
+        if (!$imageId) {
             return '';
         }
-        
+
+        // Récupère l'image depuis la base de données
+        $image = $this->mediaRepository->find($imageId);
+
+        if (!$image) {
+            return '';
+        }
+
+
+        $imagePath = htmlspecialchars($image->getPath(), ENT_QUOTES);
+        $alt = htmlspecialchars($data['alt'] ?? '', ENT_QUOTES);
+        $caption = htmlspecialchars($data['caption'] ?? '', ENT_QUOTES);
+    
+        $width = min($data['file']['width'] ?? 800, 800);
+        $height = min($data['file']['height'] ?? 400, 800);
+
+
         return sprintf(
-            '<figure><img src="%s" alt="%s"><figcaption>%s</figcaption></figure>',
-            htmlspecialchars($data['file']['url']),
-            htmlspecialchars($data['caption'] ?? ''),
-            htmlspecialchars($data['caption'] ?? '')
+            '<figure><img src="%s" alt="%s" width="%d" height="%d" style="max-width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+            $imagePath,
+            $alt,
+            $width,
+            $height,
+            $caption
         );
     }
 
