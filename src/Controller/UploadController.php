@@ -31,8 +31,8 @@ class UploadController extends AbstractController
 
             // 2. Récupère les dimensions
             $imageInfo = @getimagesize($uploadsDir . '/' . $filename);
-            $width = $imageInfo[0] ?? 1200;
-            $height = $imageInfo[1] ?? 800;
+            $width = $imageInfo[0] ?? 800;
+            $height = $imageInfo[1] ?? 400;
 
             // 3. Crée et enregistre le média
             $media = new Media();
