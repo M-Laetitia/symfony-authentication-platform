@@ -37,6 +37,12 @@ class Media
     #[ORM\ManyToOne(inversedBy: 'media')]
     private ?Article $Article = null;
 
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $width = null;
+
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $height = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -114,6 +120,30 @@ class Media
     public function setArticle(?Article $Article): static
     {
         $this->Article = $Article;
+
+        return $this;
+    }
+
+    public function getWidth(): ?string
+    {
+        return $this->width;
+    }
+
+    public function setWidth(?string $width): static
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    public function getHeight(): ?string
+    {
+        return $this->height;
+    }
+
+    public function setHeight(?string $height): static
+    {
+        $this->height = $height;
 
         return $this;
     }
