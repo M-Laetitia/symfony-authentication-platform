@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\Tag;
+use App\Entity\Media;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -12,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ArticleFormType extends AbstractType
 {
@@ -37,7 +40,18 @@ class ArticleFormType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,      
                 'expanded' => true,    
-                'by_reference' => false,  // Important pour que Doctrine gère correctement les relations
+                'by_reference' => false, 
+            ])
+            ->add('coverFile', FileType::class, [
+                'mapped' => false, 
+                'required' => false,
+                'label' => 'Image de couverture',
+                'attr' => ['accept' => 'image/*'], 
+            ])
+            ->add('coverAlt', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Texte alternatif pour la couverture',
             ]);
             // ->add('save', SubmitType::class, [
             //     'label' => 'Sauvegarder le brouillon', // Libellé par défaut
