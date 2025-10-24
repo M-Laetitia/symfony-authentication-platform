@@ -4,9 +4,11 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Media;
+use App\Service\MediaUploader;
 use App\Form\ArticleFormType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
+use App\Enum\MediaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,26 +35,21 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/blog/new', name: 'article_new')]
-    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MediaUploader $mediaUploader): Response
     {
         $article = new Article();
         $user = $this->getUser();
-        // var_dump($user);die;
-                // dump($form->getName());die;
-        // dump($request->getMethod());
-        // dump($request->request->all());
-        // dump($form->getName());die;
-        
-        // dump($request->request->all())
-        // if ($form->isSubmitted()) {
-        //     dump('Form is submitted');
-        //     dump($form->getErrors(true));die;
-        // }
+ 
 
         $form = $this->createForm(ArticleFormType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $file = $form->get('coverFile')->getData();
+            $altText = $form->get('coverAlt')->getData();
+
+            // EDITOR JS
             $editorContent = $form->get('content')->getData();
             // dump('Contenu reçu:', $editorContent);die;
             // dump('Type:', gettype($editorContent));
@@ -64,7 +61,24 @@ class ArticleController extends AbstractController
                     $article->setSlug($slugger->slug($article->getTitle())->lower());
                     $em->persist($article);
                     $em->flush(); // Génère l'ID de l'article
-        
+
+                    
+                    $file = $form->get('coverFile')->getData();
+                    $altText = $form->get('coverAlt')->getData();
+
+                    if ($file) {
+                        $media = $mediaUploader->upload(
+                            $file,
+                            '',
+                            $altText,
+                            MediaType::ARTICLE_COVER,
+                            '/articles/' . $article->getId()
+                        );
+                        $media->setArticle($article);
+                        $em->persist($media);
+                        $em->flush();
+                    }
+                            
 
                    // Supprime les URLs des blocs "image" et lie les médias à l'article
                     foreach ($contentData['blocks'] as &$block) {
@@ -95,6 +109,9 @@ class ArticleController extends AbstractController
                 }
             }
 
+
+
+
             // var_dump([
             //     'id' => $article->getId(),
             //     'title' => $article->getTitle(),
@@ -118,7 +135,7 @@ class ArticleController extends AbstractController
             // var_dump($article);die;
             // var_dump(get_object_vars($article));die;
 
-
+            $this->addFlash('success', 'Article créé avec succès !');
             return $this->redirectToRoute('blog_index');
 
             // if ($article->getStatus() === 'draft') {
