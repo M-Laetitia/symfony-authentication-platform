@@ -31,3 +31,6 @@ services:
             $properties:
                 'google': 'googleId'
     App\Security\OAuthRegistrationFormHandler: ~
+    App\Service\MediaUploader:
+        arguments:
+            $uploadsDir: '%kernel.project_dir%/public/uploads'
