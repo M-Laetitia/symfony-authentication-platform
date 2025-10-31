@@ -69,54 +69,25 @@ class MediaUploader implements MediaUploaderInterface
 
         $this->logger->info("Fichier temporaire déplacé : $absoluteTempPath");
 
-        // 4️ Génération du WebP via LiipImagine
-        $filterName = 'webp_upload';
-        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteTempPath);
-        $relativePath = ltrim($relativePath, '/');
+        $absoluteWebpPath = $this->generateWebp($absoluteTempPath, $uploadDir);
 
-        try {
-            $binary = $this->dataManager->find($filterName, $relativePath);
-        } catch (\Throwable $e) {
-            @unlink($absoluteTempPath);
-            throw new HttpException(500, "Erreur LiipImagine - impossible de trouver l’image source : " . $e->getMessage());
-        }
+        //  Récupération des dimensions
+        // [$width, $height] = @getimagesize($absoluteWebpPath) ?: [0, 0];
+        // if ($width === 0 || $height === 0) {
+        //     @unlink($absoluteWebpPath);
+        //     throw new HttpException(500, "Impossible de lire les dimensions de l’image WebP.");
+        // }
 
-        try {
-            $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
-        } catch (\Throwable $e) {
-            @unlink($absoluteTempPath);
-            throw new HttpException(500, "Erreur LiipImagine - filtre $filterName : " . $e->getMessage());
-        }
+        $imageInfo = getimagesize($absoluteWebpPath);
+        $width = $imageInfo[0] ?? 800;
+        $height = $imageInfo[1] ?? 400;
 
-        
-        $webpFilename = uniqid('media_', true) . '.webp';
-        $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
         $relativeWebpPath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
 
-        try {
-            file_put_contents($absoluteWebpPath, $filteredBinary->getContent());
-        } catch (\Throwable $e) {
-            @unlink($absoluteTempPath);
-            throw new HttpException(500, "Échec de l’écriture du fichier WebP : " . $e->getMessage());
-        }
 
-        if (!file_exists($absoluteWebpPath)) {
-            @unlink($absoluteTempPath);
-            throw new HttpException(500, "Le fichier WebP n’a pas été généré correctement.");
-        }
 
-        // 6️ Suppression du fichier original
-        @unlink($absoluteTempPath);
-
-        // 7️ Récupération des dimensions
-        [$width, $height] = @getimagesize($absoluteWebpPath) ?: [0, 0];
-
-        if ($width === 0 || $height === 0) {
-            @unlink($absoluteWebpPath);
-            throw new HttpException(500, "Impossible de lire les dimensions de l’image WebP.");
-        }
-
-        $this->em->beginTransaction();
+        $this->em->beginTransaction(); // démarre la transaction 
+        // démarre une transaction de base de données, ce qui signifie que toutes les opérations suivantes (insert, update, delete) ne seront pas réellement validées tant que que commit n'est pas appelé.
         try {
             $media = new Media();
             $media->setPath($relativeWebpPath);
@@ -128,13 +99,13 @@ class MediaUploader implements MediaUploaderInterface
 
             $this->em->persist($media);
             $this->em->flush();
-            $this->em->commit();
+            $this->em->commit(); // valide définitivement 
 
             $this->logger->info("Image WebP enregistrée avec succès : $relativeWebpPath");
 
             return $media;
         } catch (\Throwable $e) {
-            $this->em->rollback();
+            $this->em->rollback(); // annule tout depuis le début de la transaction
             @unlink($absoluteWebpPath);
             throw new HttpException(500, "Erreur lors de la sauvegarde en base : " . $e->getMessage());
         }
@@ -182,6 +153,41 @@ class MediaUploader implements MediaUploaderInterface
         if (!in_array($fileMimeType, $allowedMimeTypes)) {
         throw new \Exception('Type de fichier non autorisé.');
         }
+    }
+
+    private function generateWebp(string $absoluteTempPath, string $uploadDir): string
+    {
+        $filterName = 'webp_upload';
+        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteTempPath);
+        $relativePath = ltrim($relativePath, '/');
+
+        try {
+            $binary = $this->dataManager->find($filterName, $relativePath);
+            $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
+        } catch (\Throwable $e) {
+            @unlink($absoluteTempPath);
+            throw new HttpException(500, "Erreur LiipImagine lors de la génération WebP : " . $e->getMessage());
+        }
+
+        $webpFilename = uniqid('media_', true) . '.webp';
+        $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
+
+        try {
+            file_put_contents($absoluteWebpPath, $filteredBinary->getContent());
+        } catch (\Throwable $e) {
+            @unlink($absoluteTempPath);
+            throw new HttpException(500, "Échec de l’écriture du fichier WebP : " . $e->getMessage());
+        }
+
+        if (!file_exists($absoluteWebpPath)) {
+            @unlink($absoluteTempPath);
+            throw new HttpException(500, "Le fichier WebP n’a pas été généré correctement.");
+        }
+
+        // Suppression du fichier temporaire
+        @unlink($absoluteTempPath);
+
+        return $absoluteWebpPath;
     }
 
 
