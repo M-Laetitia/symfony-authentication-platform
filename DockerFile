@@ -2,9 +2,11 @@ FROM php:8.3-apache
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip zip libicu-dev libonig-dev libxml2-dev \
-    libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
-    && docker-php-ext-install intl pdo pdo_mysql zip opcache
+    git unzip zip libicu-dev libonig-dev libxml2-dev libzip-dev \
+    libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) intl pdo pdo_mysql zip opcache gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache rewrite
 RUN a2enmod rewrite
