@@ -1,7 +1,7 @@
 # Documentation on how to configure the bundle can be found at: https://symfony.com/doc/current/bundles/LiipImagineBundle/basic-usage.html
 liip_imagine:
     # valid drivers options include "gd" or "gmagick" or "imagick"
-    driver: "gd"
+    driver: 'gd'
 
     # configure resolvers
     resolvers :
@@ -18,7 +18,6 @@ liip_imagine:
 
     # your filter sets are defined here
     filter_sets :
-
         # use the default cache configuration
         # cache : ~
 
@@ -28,5 +27,12 @@ liip_imagine:
             format: webp
             filters: {}
             post_processors: {}
+        article_cover_thumb:
+            quality: 20
+            filters:
+                thumbnail:
+                    size: [400, 400]
+                    mode: outbound 
+                    focus: center
     webp:
         generate: true
