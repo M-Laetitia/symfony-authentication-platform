@@ -66,7 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, ArticleEditHistory>
      */
-    #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'editor')]
+    #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'lastEditBy')]
     private Collection $articleEditHistories;
 
     public function __construct()
@@ -282,7 +282,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->articleEditHistories->contains($articleEditHistory)) {
             $this->articleEditHistories->add($articleEditHistory);
-            $articleEditHistory->setEditor($this);
+            $articleEditHistory->setLastEditBy($this);
         }
 
         return $this;
@@ -292,8 +292,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->articleEditHistories->removeElement($articleEditHistory)) {
             // set the owning side to null (unless already changed)
-            if ($articleEditHistory->getEditor() === $this) {
-                $articleEditHistory->setEditor(null);
+            if ($articleEditHistory->getLastEditBy() === $this) {
+                $articleEditHistory->setLastEditBy(null);
             }
         }
 

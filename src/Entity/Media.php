@@ -34,7 +34,7 @@ class Media
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $caption = null;
 
-    #[ORM\ManyToOne(inversedBy: 'media')]
+    #[ORM\ManyToOne(inversedBy: 'medias')]
     private ?Article $article = null;
 
     #[ORM\Column(length: 5, nullable: true)]

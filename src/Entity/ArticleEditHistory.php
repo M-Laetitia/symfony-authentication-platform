@@ -91,7 +91,7 @@ class ArticleEditHistory
 
     public function setLastEditBy(?User $lastEditBy): static
     {
-        $this->lastEditBy = $edilastEditBytor;
+        $this->lastEditBy = $lastEditBy;
 
         return $this;
     }
