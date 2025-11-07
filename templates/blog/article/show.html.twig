@@ -29,24 +29,41 @@
 <h3>Liste des commentaires</h3>
 
 {% for comment in comments %}
-    <p>{{ comment.content }}</p>
-            {# Lien "Éditer" #}
+    <div class="comment" style="margin-bottom: 15px;">
+        <p>{{ comment.content }}</p>
+
+        {% if comment.isApproved %}
+        {% else %}
+            <p style="color: #888; font-size: 0.9em;">
+                Ce commentaire n'a pas encore été approuvé par le modérateur.
+            </p>
+
+            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                <form method="post" action="{{ path('comment_approve', {'id': comment.id}) }}">
+                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+        {# Lien "Éditer" si auteur ou admin #}
         {% if (app.user and comment.author == app.user) or (app.user and 'ROLE_ADMIN' in app.user.roles) %}
             <a href="#" onclick="showEditForm({{ comment.id }})">Éditer</a>
         {% endif %}
-    {# <a href="{{ path('article_show', {'slug': article.slug, 'reply_to': comment.id}) }}">Répondre</a> #}
-    {% for reply in comment.replies %}
-    <div class="reply" style="margin-left: 20px;">
-        <p>{{ reply.content }}</p>
-    </div>
-{% endfor %}
-    {% if comment.author is not null %}
-        <p>par {{ comment.author.username }}-
-    {% else %}
-        <p>par {{ comment.authorName }}-
-    {% endif %}
 
-    le {{ comment.createdAt|date('d/m/Y') }}</p>
+        {# Réponses au commentaire #}
+        {% for reply in comment.replies %}
+            <div class="reply" style="margin-left: 20px;">
+                <p>{{ reply.content }}</p>
+            </div>
+        {% endfor %}
+
+        {% if comment.author is not null %}
+            <p>par {{ comment.author.username }} -
+        {% else %}
+            <p>par {{ comment.authorName }} -
+        {% endif %}
+        le {{ comment.createdAt|date('d/m/Y') }}</p>
+    </div>
 {% else %}
     <p>Aucun commentaire pour le moment :( </p>
 {% endfor %}
