@@ -169,10 +169,13 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(Article $article, ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em): Response
+    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em): Response
     {   
 
         $article = $articleRepository->findOneBy(['slug' => $slug]);
+        if (!$article) {
+            throw $this->createNotFoundException('Article non trouvé');
+        }
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
             'isApproved' => true, 
