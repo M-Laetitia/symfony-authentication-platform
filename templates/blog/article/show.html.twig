@@ -35,7 +35,7 @@
         {% if comment.isApproved %}
         {% else %}
             <p style="color: #888; font-size: 0.9em;">
-                Ce commentaire n'a pas encore été approuvé par le modérateur.
+                Ce commentaire n'a pas encore été approuvé par la modération.
             </p>
 
             {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
