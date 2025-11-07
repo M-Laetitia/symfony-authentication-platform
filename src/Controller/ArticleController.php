@@ -16,21 +16,29 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
+use Symfony\Component\VarDumper\VarDumper;
 
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo): Response
     {
         // $articles = $em->getRepository(Article::class)->findAll();
-        $publishedArticles = $em->getRepository(Article::class)->findBy([
-            'status' => 'published'
-        ], [
-            'createdAt' => 'DESC' // Tri par date de création (optionnel)
-        ]);
+        // $publishedArticles = $em->getRepository(Article::class)->findBy([
+        //     'status' => 'published'
+        // ], [
+        //     'createdAt' => 'DESC' 
+        // ]);
+
+        // return $this->render('blog/article/index.html.twig', [
+        //     'articles' => $publishedArticles,
+        // ]);
+
+        $articles = $articleRepo->findPublishedArticlesWithCover();
+        // dd($articles);
 
         return $this->render('blog/article/index.html.twig', [
-            'articles' => $publishedArticles,
+            'articles' => $articles,
         ]);
     }
 
