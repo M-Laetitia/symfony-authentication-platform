@@ -34,3 +34,8 @@ services:
     App\Service\MediaUploader:
         arguments:
             $uploadsDir: '%kernel.project_dir%/public/uploads'
+    App\EventListener\CommentModerationListener:
+        arguments:
+            $yamlPath: '%kernel.project_dir%/config/bad_words.yaml'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
