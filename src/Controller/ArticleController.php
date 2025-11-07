@@ -178,7 +178,7 @@ class ArticleController extends AbstractController
         }
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
-            'isApproved' => true, 
+            // 'isApproved' => true, 
             'parentComment' => NULL,
         ], [
             'createdAt' => 'ASC', 
@@ -238,5 +238,17 @@ class ArticleController extends AbstractController
             'article' => $article,
             'comments' => $validatedComments,
         ]);
+    }
+
+    #[Route('/comment/{id}/approve', name: 'comment_approve', methods: ['POST'])]
+    public function approve(Comment $comment, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $comment->setIsApproved(true);
+        $em->flush();
+
+        $this->addFlash('success', 'Commentaire approuvé avec succès.');
+        return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
 }
