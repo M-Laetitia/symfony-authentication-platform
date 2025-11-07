@@ -16,6 +16,27 @@ class MediaRepository extends ServiceEntityRepository
         parent::__construct($registry, Media::class);
     }
 
+    // public function findArticleCoverByArticleId(int $articleId): ?Media
+    // {
+    //     /** @var array<string, mixed> $params */
+    //     $params = [
+    //         'articleId' => $articleId,
+    //         'typeImage' => MediaType::ARTICLE_COVER,
+    //     ];
+    //     return $this->createQueryBuilder('m')
+    //         ->innerJoin('m.Article', 'a')
+    //         ->where('a.id = :articleId')
+    //         ->andWhere('m.typeImage = :typeImage')
+    //         ->setParameters($params)
+    //         // ->setParameters(new \Doctrine\Common\Collections\ArrayCollection(
+    //         //     [ 'articleId' => $articleId, 
+    //         //     'typeImage' => MediaType::ARTICLE_COVER, ]
+    //         //     ))
+    //         ->setMaxResults(1)
+    //         ->getQuery()
+    //         ->getOneOrNullResult();
+    // }
+
 //    /**
 //     * @return Media[] Returns an array of Media objects
 //     */
