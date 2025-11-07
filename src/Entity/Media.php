@@ -35,7 +35,7 @@ class Media
     private ?string $caption = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
-    private ?Article $Article = null;
+    private ?Article $article = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $width = null;
@@ -114,12 +114,12 @@ class Media
 
     public function getArticle(): ?Article
     {
-        return $this->Article;
+        return $this->article;
     }
 
-    public function setArticle(?Article $Article): static
+    public function setArticle(?Article $article): static
     {
-        $this->Article = $Article;
+        $this->article = $article;
 
         return $this;
     }
