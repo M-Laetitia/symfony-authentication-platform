@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\VarDumper\VarDumper;
 
 class ArticleController extends AbstractController
@@ -169,7 +170,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em): Response
+    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, RateLimiterFactory $commentPostingLimiter ): Response
     {   
 
         $article = $articleRepository->findOneBy(['slug' => $slug]);
@@ -210,6 +211,23 @@ class ArticleController extends AbstractController
 
             // entité hydraté - récursion d'objet liés getOne - limité à la première entit" qu'il va trouver 
             // $request > $request fetch all > array
+
+            // $comment->getContent();
+            // $content = $comment->getContent();
+            // dd($content);
+
+            // comment rate limiter 
+            $ip = $request->getClientIp();
+            // $limiter = $commentPostingLimiter->create($ip); // pour tout le site 
+            $limiter = $commentPostingLimiter->create($ip . '-' . $article->getId()); // par article
+
+            $limit = $limiter->consume(1);
+            // Symfony stocke ça automatiquement en cache
+
+            if (!$limit->isAccepted()) {
+                return new Response('Trop de commentaires, réessayez plus tard.', 429);
+            }
+
   
             if ($this->getUser()) {
                 $comment->setAuthor($this->getUser());
