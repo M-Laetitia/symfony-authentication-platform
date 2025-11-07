@@ -12,8 +12,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 
 class CommentFormType extends AbstractType
@@ -28,7 +28,7 @@ class CommentFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('content', TextareaType::class);
+            ->add('content', TextareaType::class)
             // ->add('authorName', TextareaType::class);
             // ->add('author', EntityType::class, [
             //     'class' => User::class,
@@ -40,6 +40,11 @@ class CommentFormType extends AbstractType
             //         'label' => 'Votre nom',
             //     ]);
             // }
+            ->add('submittedAt', HiddenType::class, [
+                'mapped' => false,   // ne correspond pas à une propriété de Comment
+                'data' => time(),    // timestamp au moment du rendu du formulaire
+            ]);
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             
