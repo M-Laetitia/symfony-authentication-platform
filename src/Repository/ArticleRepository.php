@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Enum\MediaType;
 
 /**
  * @extends ServiceEntityRepository<Article>
@@ -16,6 +17,21 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+
+    public function findPublishedArticlesWithCover(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
+            ->addSelect('m') 
+            ->where('a.status = :status')
+            ->setParameter('status', 'published')
+            ->setParameter('typeImage', MediaType::ARTICLE_COVER)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    
     //    /**
     //     * @return Article[] Returns an array of Article objects
     //     */
