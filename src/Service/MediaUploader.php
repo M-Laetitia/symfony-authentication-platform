@@ -30,7 +30,8 @@ class MediaUploader implements MediaUploaderInterface
         MediaType $type = MediaType::DEFAULT,
         ?string $subfolder = null,
         array $constraints = []
-    ): Media {
+        ): Media {
+
         $defaultConstraints = [
             'max_size' => '3M',
             'allowed_types' => ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'],
@@ -69,7 +70,7 @@ class MediaUploader implements MediaUploaderInterface
 
         $this->logger->info("Fichier temporaire déplacé : $absoluteTempPath");
 
-        $absoluteWebpPath = $this->generateWebp($absoluteTempPath, $uploadDir);
+        $absoluteWebpPath = $this->generateWebp($absoluteTempPath, $uploadDir, $type);
 
         //  Récupération des dimensions
         // [$width, $height] = @getimagesize($absoluteWebpPath) ?: [0, 0];
@@ -83,8 +84,6 @@ class MediaUploader implements MediaUploaderInterface
         $height = $imageInfo[1] ?? 400;
 
         $relativeWebpPath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
-
-
 
         $this->em->beginTransaction(); // démarre la transaction 
         // démarre une transaction de base de données, ce qui signifie que toutes les opérations suivantes (insert, update, delete) ne seront pas réellement validées tant que que commit n'est pas appelé.
@@ -155,7 +154,7 @@ class MediaUploader implements MediaUploaderInterface
         }
     }
 
-    private function generateWebp(string $absoluteTempPath, string $uploadDir): string
+    private function generateWebp(string $absoluteTempPath, string $uploadDir, MediaType $type): string
     {
         $filterName = 'webp_upload';
         $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteTempPath);
@@ -169,7 +168,8 @@ class MediaUploader implements MediaUploaderInterface
             throw new HttpException(500, "Erreur LiipImagine lors de la génération WebP : " . $e->getMessage());
         }
 
-        $webpFilename = uniqid('media_', true) . '.webp';
+        $prefix = $type instanceof MediaType ? $type->value : 'media';
+        $webpFilename = uniqid($prefix . '_', true) . '.webp';
         $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
 
         try {
@@ -187,8 +187,43 @@ class MediaUploader implements MediaUploaderInterface
         // Suppression du fichier temporaire
         @unlink($absoluteTempPath);
 
+        // mise en cache immédiate :
+        $this->copyToCache($absoluteWebpPath, $filterName);
+
         return $absoluteWebpPath;
     }
+
+    private function copyToCache(string $absoluteWebpPath, string $filterName): void
+    {
+        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+        $relativePath = 'uploads/' . ltrim($relativePath, '/');
+
+        try {
+            $cacheFile = $this->uploadsDir . '/../media/cache/' . $filterName . '/' . $relativePath;
+            $cacheDir = dirname($cacheFile);
+            
+            if (!is_dir($cacheDir)) {
+                mkdir($cacheDir, 0777, true);
+            }
+            
+            copy($absoluteWebpPath, $cacheFile);
+
+            // dd([
+            //     'absoluteWebpPath' => $absoluteWebpPath,
+            //     'absoluteWebpPath_exists' => file_exists($absoluteWebpPath),
+            //     'relativePath' => $relativePath,
+            //     'cacheFile' => $cacheFile,
+            //     'cacheDir' => $cacheDir,
+            //     'cacheDir_exists' => is_dir($cacheDir),
+            //     'cacheFile_exists' => file_exists($cacheFile),
+            //     'copy_success' => file_exists($cacheFile) && filesize($cacheFile) > 0
+            // ]);
+        } catch (\Exception $e) {
+            dd('ERREUR:', $e->getMessage());
+        }
+    }
+
+
 
 
     // $media = $mediaUploader->upload($file, 'caption', 'alt text', MediaType::ARTICLE_IMAGE);
