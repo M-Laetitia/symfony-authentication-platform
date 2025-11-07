@@ -16,8 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
-use Symfony\Component\VarDumper\VarDumper;
+use App\Service\CommentSecurityService;
 
 class ArticleController extends AbstractController
 {
@@ -170,7 +169,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, RateLimiterFactory $commentPostingLimiter ): Response
+    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
     {   
 
         $article = $articleRepository->findOneBy(['slug' => $slug]);
@@ -184,10 +183,6 @@ class ArticleController extends AbstractController
         ], [
             'createdAt' => 'ASC', 
         ]);
-
-        if (!$article) {
-            throw $this->createNotFoundException('Article non trouvé');
-        }
 
         $comment = new Comment();
         $comment->setArticle($article);
@@ -216,16 +211,30 @@ class ArticleController extends AbstractController
             // $content = $comment->getContent();
             // dd($content);
 
-            // comment rate limiter 
-            $ip = $request->getClientIp();
-            // $limiter = $commentPostingLimiter->create($ip); // pour tout le site 
-            $limiter = $commentPostingLimiter->create($ip . '-' . $article->getId()); // par article
+            // _______________
+            // comment rate limiter - OLD avant service
+            // $ip = $request->getClientIp();
+            // // $limiter = $commentPostingLimiter->create($ip); // pour tout le site 
+            // $limiter = $commentPostingLimiter->create($ip . '-' . $article->getId()); // par article
 
-            $limit = $limiter->consume(1);
-            // Symfony stocke ça automatiquement en cache
+            // $limit = $limiter->consume(1);
+            // // Symfony stocke ça automatiquement en cache
+            // if (!$limit->isAccepted()) {
+            //     return new Response('Trop de commentaires, réessayez plus tard.', 429);
+            // }
+            // ________________
 
-            if (!$limit->isAccepted()) {
-                return new Response('Trop de commentaires, réessayez plus tard.', 429);
+            $submittedAt = (int)$form->get('submittedAt')->getData();
+            // soumission frauduleuse - ajouter une valeur par défaut car si y'a rien ça m'arrange pas
+            // dd($submittedAt);
+            // alert + redirection ux / ui
+
+            if (!$CommentSecurityService->checkRateLimit($request)) {
+                return new Response('Trop de commentaires. Réessayez plus tard.', 429); 
+            }
+    
+            if (!$CommentSecurityService->checkSubmissionTime($submittedAt)) {
+                return new Response('Soumission trop rapide, suspicion de bot.', 400);
             }
 
   
