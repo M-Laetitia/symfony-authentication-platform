@@ -3,21 +3,19 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+// use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class CommentSecurityService
 {
-    private RateLimiterFactory $limiter; // bien pour les tests 
+    private RateLimiterFactoryInterface $limiter; // bien pour les tests 
     private LoggerInterface $logger;
 
-    public function __construct(RateLimiterFactory $commentPostingLimiter,LoggerInterface $logger)
+    public function __construct(RateLimiterFactoryInterface $commentPostingLimiter,LoggerInterface $logger)
     {
         $this->limiter = $commentPostingLimiter;
         $this->logger = $logger;
-        // $this->logger->emergency('TEST LOG'); 
-        // dd($this->logger->getHandlers());
-        
     }
 
     /**
@@ -38,11 +36,19 @@ class CommentSecurityService
      * Vérifie le temps de soumission du formulaire.
      * Retourne un tableau avec le statut et le temps restant.
      */
-    public function checkSubmissionTime(?int $submittedAt, int $minSeconds = 3): array
+    public function checkSubmissionTime(
+        int $submittedAt,
+        Request $request,
+        int $minSeconds = 60
+    ): array
     {
         // $now = time();
         // return ($now - $submittedAt) >= $minSeconds;
-        $this->logger->error('TEST DE LOG MANUEL', ['test' => true]);
+        // dd($this->logger->getHandlers());
+        // dd($this->logger->getName()); 
+        // dd('ON EST BIEN DANS checkSubmissionTime()');
+        // $this->logger->error('TEST DE LOG MANUEL');
+        $this->logger->error("DEBUT DE LA METHODE", ['submittedAt' => $submittedAt]);
         // Valeur par défaut pour éviter soumission frauduleuse
         if ($submittedAt === null || $submittedAt === 0) {
             $this->logger->warning('Tentative de soumission sans timestamp', [
@@ -64,10 +70,12 @@ class CommentSecurityService
         if (!$isValid) {
             $remaining = $minSeconds - $timePassed;
             
-            $this->logger->error('Soumission trop rapide', [
-                'timePassed' => $timePassed,
-                'min_required' => $minSeconds,
-                'remaining' => $remaining,
+            $this->logger->error('Soumission d\'un commentaire trop rapide - suspicion de bot ', [
+                'ip' => $request->getClientIp(),          // IP du client
+                'user_agent' => $request->headers->get('User-Agent'),  // Navigateur/robot
+                'url' => $request->getUri(),              // URL demandée
+                'route' => $request->attributes->get('_route'),  // Route Symfony
+                'method' => $request->getMethod(),        // Méthode HTTP (GET/POST)
             ]);
 
             return [
@@ -81,12 +89,13 @@ class CommentSecurityService
             ];
         }
 
-        file_put_contents('test-direct.txt', "OK\n", FILE_APPEND);
+        // file_put_contents('test-direct.txt', "OK\n", FILE_APPEND);
         return [
             'valid' => true,
             'remaining_seconds' => 0,
             'message' => null,
         ];
+        $this->logger->error("FIN DE LA METHODE");
     }
 
     // a ajouter
