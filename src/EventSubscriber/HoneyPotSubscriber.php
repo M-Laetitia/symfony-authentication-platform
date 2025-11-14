@@ -95,6 +95,16 @@ class HoneyPotSubscriber implements EventSubscriberInterface
             'faxNumber' => $faxNumber
         ] = $data;
 
+        // Suppression systématique des champs honeypot avant persistance - principe fall-safe
+        //^ on supprime avant toute logique de traitement
+        //^ Même si la détection bot échoue ou est contournée, les champs honeypot ne polluent jamais l’objet.
+        //^ $event->getData() ne contient jamais ces champs après ce point.Tous les traitements ultérieurs voient des données “propres”.
+        foreach (['phone', 'faxNumber'] as $honeypotField) {
+            if (isset($data[$honeypotField])) {
+                unset($data[$honeypotField]);
+            }
+        }
+        $event->setData($data);
         
         // Détection du bot
         if($phone !== '' || $faxNumber !== '') {
