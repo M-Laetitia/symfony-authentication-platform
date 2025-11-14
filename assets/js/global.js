@@ -1,6 +1,5 @@
 // Gestion automatique des messages flash
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("hello")
     const flashes = document.querySelectorAll('.flash-message');
     if (!flashes.length) return;
 
@@ -10,5 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element.style.opacity = '0';
             setTimeout(() => element.remove(), 500);
         });
-    }, 3000);
+    }, 4000);
+    
+    
 });
