@@ -256,7 +256,7 @@ class ArticleController extends AbstractController
             //     return new Response('Soumission trop rapide, suspicion de bot.', 400);
             // }
 
-            $timeCheck = $CommentSecurityService->checkSubmissionTime($submittedAt);
+            $timeCheck = $CommentSecurityService->checkSubmissionTime($submittedAt, $request);
             // dd($timeCheck);
             if (!$timeCheck['valid']) {
                 // Cas suspect (timestamp = 0 ou manipulation)
@@ -315,5 +315,13 @@ class ArticleController extends AbstractController
         return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
 
+
+    // #[Route('/test-logger', name: 'test_logger')]
+    // public function testLogger(LoggerInterface $logger): Response
+    // {
+    //     $logger->error("LOG DEPUIS CONTROLLER");
+
+    //     return new Response("OK");
+    // }
 
 }
