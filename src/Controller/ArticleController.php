@@ -1,6 +1,9 @@
 <?php 
 namespace App\Controller;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Media;
@@ -17,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
 use App\Service\CommentSecurityService;
+
+use Psr\Log\LoggerInterface;
+
 
 class ArticleController extends AbstractController
 {
@@ -169,8 +175,21 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
+    public function show(ArticleRepository $articleRepository, LoggerInterface $logger, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
     {   
+
+        // dump(get_class($logger));
+        // dd(get_class($logger)); // "Monolog\Logger"
+        // dd($logger);
+        $logger->error('TEST DE LOG DIRECT');
+        // dd('Log test envoyé');
+        // if (method_exists($logger, 'getHandlers')) {
+        //     dump($logger->getHandlers());
+        // }
+    
+        // $logger->emergency('TEST LOG MONOLOG');
+        // return $this->json(['ok' => true]);
+    
 
         $article = $articleRepository->findOneBy(['slug' => $slug]);
         if (!$article) {
@@ -233,8 +252,25 @@ class ArticleController extends AbstractController
                 return new Response('Trop de commentaires. Réessayez plus tard.', 429); 
             }
     
-            if (!$CommentSecurityService->checkSubmissionTime($submittedAt)) {
-                return new Response('Soumission trop rapide, suspicion de bot.', 400);
+            // if (!$CommentSecurityService->checkSubmissionTime($submittedAt)) {
+            //     return new Response('Soumission trop rapide, suspicion de bot.', 400);
+            // }
+
+            $timeCheck = $CommentSecurityService->checkSubmissionTime($submittedAt);
+            // dd($timeCheck);
+            if (!$timeCheck['valid']) {
+                // Cas suspect (timestamp = 0 ou manipulation)
+                if ($submittedAt === null || $submittedAt === 0) {
+                    // Pas de message pour ne pas révéler la sécurité
+                    return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
+                }
+                
+                // Utilisateur juste trop rapide (1-2 sec)
+                $this->addFlash('warning', $timeCheck['message']);
+                return $this->redirectToRoute('article_show', [
+                    'slug' => $article->getSlug()
+                    // '_fragment' => 'comments-article'
+                ]);
             }
 
   
@@ -278,4 +314,6 @@ class ArticleController extends AbstractController
         $this->addFlash('success', 'Commentaire approuvé avec succès.');
         return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
+
+
 }
