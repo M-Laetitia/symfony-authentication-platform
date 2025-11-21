@@ -22,42 +22,98 @@ class CommentSecurityService
      * Vérifie si l'user respecte le rate limit.
      * Retourne un objet RateLimit pour gérer les messages.
      */
-    public function checkRateLimit(Request $request): bool
+    public function checkRateLimit(Request $request): array
     {
         $ip = $request->getClientIp();
-        $limit = $this->limiter->create($ip)->consume(1); 
-
-        return $limit->isAccepted();
-        //journaliser les dépassement de limite, récupérer l'ip qui spamme souvent, injecter loggerinterface
-
+        $limit = $this->limiter->create($ip)->consume(1);
+    
+        // OK : le commentaire est accepté
+        if ($limit->isAccepted()) {
+            return [
+                'accepted' => true,
+                'retry_after' => null,
+                'status' => 'ok'
+            ];
+        }
+    
+        // Trop de requêtes → Rate-limit atteint
+        $retryAfter = $limit->getRetryAfter()?->getTimestamp();
+    
+        // 1. Tentative légèrement excessive → warning (spam léger)
+        if ($limit->getRemainingTokens() > -3) {
+            $this->logger->warning("[CommentRateLimit] Excessive usage detected — soft limit reached", [
+                'ip' => $ip,
+                'route' => $request->attributes->get('_route'),
+                'method' => $request->getMethod(),
+                'url' => $request->getUri(),
+                'user_agent' => $request->headers->get('User-Agent'),
+                'retry_after' => $retryAfter,
+            ]);
+    
+            return [
+                'accepted' => false,
+                'retry_after' => $retryAfter,
+                'status' => 'excess'
+            ];
+        }
+    
+        // 2. Tentatives nombreuses → spam probable
+        if ($limit->getRemainingTokens() > -10) {
+            $this->logger->error("CommentRateLimit] Repeated limit violations — probable spam activity", [
+                'ip' => $ip,
+                'route' => $request->attributes->get('_route'),
+                'method' => $request->getMethod(),
+                'url' => $request->getUri(),
+                'user_agent' => $request->headers->get('User-Agent'),
+                'retry_after' => $retryAfter,
+            ]);
+    
+            return [
+                'accepted' => false,
+                'retry_after' => $retryAfter,
+                'status' => 'spam'
+            ];
+        }
+    
+        // 3. Tentatives massives → bot évident
+        $this->logger->critical("[CommentRateLimit] Automated activity detected — bot blocked", [
+            'ip' => $ip,
+            'route' => $request->attributes->get('_route'),
+            'method' => $request->getMethod(),
+            'url' => $request->getUri(),
+            'user_agent' => $request->headers->get('User-Agent'),
+            'retry_after' => $retryAfter,
+        ]);
+    
+        return [
+            'accepted' => false,
+            'retry_after' => $retryAfter,
+            'status' => 'bot'
+        ];
     }
 
     /**
      * Vérifie le temps de soumission du formulaire.
      * Retourne un tableau avec le statut et le temps restant.
      */
-    public function checkSubmissionTime(
-        int $submittedAt,
-        Request $request,
-        int $minSeconds = 60
-    ): array
+    public function checkSubmissionTime(int $submittedAt, Request $request,int $minSeconds = 3): array
     {
-        // $now = time();
-        // return ($now - $submittedAt) >= $minSeconds;
-        // dd($this->logger->getHandlers());
-        // dd($this->logger->getName()); 
-        // dd('ON EST BIEN DANS checkSubmissionTime()');
-        // $this->logger->error('TEST DE LOG MANUEL');
-        $this->logger->error("DEBUT DE LA METHODE", ['submittedAt' => $submittedAt]);
+
         // Valeur par défaut pour éviter soumission frauduleuse
         if ($submittedAt === null || $submittedAt === 0) {
-            $this->logger->warning('Tentative de soumission sans timestamp', [
+            $this->logger->warning('[CommentSubmissionTime] Missing or invalid timestamp — potential tampering attempt', [
+                'ip' => $request->getClientIp(),
+                'route' => $request->attributes->get('_route'),
+                'url' => $request->getUri(),
+                'method' => $request->getMethod(),
+                'user_agent' => $request->headers->get('User-Agent'),
                 'submitted_at' => $submittedAt,
             ]);
             
             return [
                 'valid' => false,
                 'remaining_seconds' => $minSeconds,
+                'status' => 'tampered',
                 'message' => 'Erreur de validation du formulaire. Veuillez réessayer.',
             ];
         }
@@ -70,16 +126,18 @@ class CommentSecurityService
         if (!$isValid) {
             $remaining = $minSeconds - $timePassed;
             
-            $this->logger->error('Soumission d\'un commentaire trop rapide - suspicion de bot ', [
-                'ip' => $request->getClientIp(),          // IP du client
-                'user_agent' => $request->headers->get('User-Agent'),  // Navigateur/robot
-                'url' => $request->getUri(),              // URL demandée
-                'route' => $request->attributes->get('_route'),  // Route Symfony
-                'method' => $request->getMethod(),        // Méthode HTTP (GET/POST)
+            $this->logger->error('[CommentSubmissionTime] Submission too fast — suspicious automated behavior ', [
+                'ip' => $request->getClientIp(),
+                'route' => $request->attributes->get('_route'),
+                'url' => $request->getUri(),
+                'method' => $request->getMethod(),
+                'user_agent' => $request->headers->get('User-Agent'),
+                'submitted_at' => $submittedAt,
             ]);
 
             return [
                 'valid' => false,
+                'status' => 'too_fast',
                 'remaining_seconds' => $remaining,
                 'message' => sprintf(
                     'Veuillez attendre encore %d seconde%s avant de poster.',
@@ -89,18 +147,18 @@ class CommentSecurityService
             ];
         }
 
-        // file_put_contents('test-direct.txt', "OK\n", FILE_APPEND);
         return [
             'valid' => true,
             'remaining_seconds' => 0,
             'message' => null,
+            'status' => 'ok',
         ];
-        $this->logger->error("FIN DE LA METHODE");
     }
 
-    // a ajouter
-    // sanityzecontent
+    
 
+
+    // sanityzecontent
     // honeypot
 
 }
