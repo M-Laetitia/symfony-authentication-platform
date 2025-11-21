@@ -298,6 +298,11 @@ class ArticleController extends AbstractController
                 $comment->setIpHash($ipHash);
             }
 
+            $commentContent = $form->get('content')->getData();
+            $filteredContent = $CommentSecurityService->filterCommentContent($commentContent);
+
+            $comment->setContent($filteredContent);
+            // dd($filteredContent);
             $em->persist($comment);
             $em->flush();
 

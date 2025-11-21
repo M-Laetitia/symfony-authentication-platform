@@ -6,16 +6,27 @@ use Psr\Log\LoggerInterface;
 // use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Yaml\Yaml;
 
 class CommentSecurityService
 {
     private RateLimiterFactoryInterface $limiter; // bien pour les tests 
     private LoggerInterface $logger;
+    private string $pattern;
+    
 
-    public function __construct(RateLimiterFactoryInterface $commentPostingLimiter,LoggerInterface $logger)
+    public function __construct(RateLimiterFactoryInterface $commentPostingLimiter,LoggerInterface $logger, string $badWordsYamlPath)
     {
         $this->limiter = $commentPostingLimiter;
         $this->logger = $logger;
+
+        // Chargement et normalisation des mots interdits
+        $badWords = Yaml::parseFile($badWordsYamlPath)['bad_words'] ?? [];
+        $normalizedWords = array_map([$this, 'normalizeText'], $badWords);
+
+        // Précompilation regex
+        $escapedWords = array_map('preg_quote', $normalizedWords);
+        $this->pattern = '/\b(' . implode('|', $escapedWords) . ')\b/i';
     }
 
     /**
@@ -155,8 +166,16 @@ class CommentSecurityService
         ];
     }
 
-    
+    public function filterCommentContent(string $content): string
+    {
+        $normalizedContent = $this->normalizeText($content);
+        return preg_replace($this->pattern, '****', $normalizedContent);
+    }
 
+    private function normalizeText(string $text): string
+    {
+        return transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0080-\uffff] remove', $text);
+    }
 
     // sanityzecontent
     // honeypot
