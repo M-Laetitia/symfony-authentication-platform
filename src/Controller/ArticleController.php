@@ -243,37 +243,46 @@ class ArticleController extends AbstractController
             // }
             // ________________
 
-            $submittedAt = (int)$form->get('submittedAt')->getData();
-            // soumission frauduleuse - ajouter une valeur par défaut car si y'a rien ça m'arrange pas
-            // dd($submittedAt);
-            // alert + redirection ux / ui
 
-            if (!$CommentSecurityService->checkRateLimit($request)) {
-                return new Response('Trop de commentaires. Réessayez plus tard.', 429); 
-            }
-    
-            // if (!$CommentSecurityService->checkSubmissionTime($submittedAt)) {
-            //     return new Response('Soumission trop rapide, suspicion de bot.', 400);
-            // }
+            $limitCheck = $CommentSecurityService->checkRateLimit($request);
+            if (!$limitCheck['accepted']) {
 
-            $timeCheck = $CommentSecurityService->checkSubmissionTime($submittedAt, $request);
-            // dd($timeCheck);
-            if (!$timeCheck['valid']) {
-                // Cas suspect (timestamp = 0 ou manipulation)
-                if ($submittedAt === null || $submittedAt === 0) {
-                    // Pas de message pour ne pas révéler la sécurité
+                if ($limitCheck['status'] === 'excess') {
+                    $this->addFlash('warning',
+                        "Vous soumettez trop vite. Réessayez dans quelques instants."
+                    );
                     return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
                 }
-                
-                // Utilisateur juste trop rapide (1-2 sec)
-                $this->addFlash('warning', $timeCheck['message']);
-                return $this->redirectToRoute('article_show', [
-                    'slug' => $article->getSlug()
-                    // '_fragment' => 'comments-article'
-                ]);
+
+                if ($limitCheck['status'] === 'spam') {
+                    $this->addFlash('danger',
+                        "Trop de tentatives. Vous devez patienter un peu avant de commenter."
+                    );
+                    return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
+                }
+
+                if ($limitCheck['status'] === 'bot') {
+                    return new Response("Accès bloqué.", 429);
+                }
+            }
+            
+            $submittedAt = (int)$form->get('submittedAt')->getData();
+            $timeCheck = $CommentSecurityService->checkSubmissionTime($submittedAt, $request);
+            if (!$timeCheck['valid']) {
+
+                switch ($timeCheck['status']) {
+            
+                    case 'tampered':
+                        // Suspicion de bot → redirection silencieuse
+                        return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
+            
+                    case 'too_fast':
+                        // Simple utilisateur trop rapide
+                        $this->addFlash('warning', $timeCheck['message']);
+                        return $this->redirectToRoute('article_show', ['slug' => $article->getSlug(),]);
+                }
             }
 
-  
             if ($this->getUser()) {
                 $comment->setAuthor($this->getUser());
                 if (in_array('ROLE_ADMIN', $this->getUser()->getRoles()) || $this->getUser() === $article->getAuthor()) {
@@ -314,14 +323,5 @@ class ArticleController extends AbstractController
         $this->addFlash('success', 'Commentaire approuvé avec succès.');
         return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
-
-
-    // #[Route('/test-logger', name: 'test_logger')]
-    // public function testLogger(LoggerInterface $logger): Response
-    // {
-    //     $logger->error("LOG DEPUIS CONTROLLER");
-
-    //     return new Response("OK");
-    // }
 
 }
