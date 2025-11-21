@@ -3,14 +3,13 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
-// use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Yaml;
 
 class CommentSecurityService
 {
-    private RateLimiterFactoryInterface $limiter; // bien pour les tests 
+    private RateLimiterFactoryInterface $limiter; 
     private LoggerInterface $logger;
     private string $pattern;
     
@@ -47,19 +46,15 @@ class CommentSecurityService
             ];
         }
     
-        // Trop de requêtes → Rate-limit atteint
+        // Trop de requêtes >  Rate-limit atteint
         $retryAfter = $limit->getRetryAfter()?->getTimestamp();
     
-        // 1. Tentative légèrement excessive → warning (spam léger)
+        // 1. Tentative légèrement excessive >  warning (spam léger)
         if ($limit->getRemainingTokens() > -3) {
-            $this->logger->warning("[CommentRateLimit] Excessive usage detected — soft limit reached", [
-                'ip' => $ip,
-                'route' => $request->attributes->get('_route'),
-                'method' => $request->getMethod(),
-                'url' => $request->getUri(),
-                'user_agent' => $request->headers->get('User-Agent'),
-                'retry_after' => $retryAfter,
-            ]);
+            $this->logger->warning(
+                "[CommentRateLimit] Excessive usage detected — soft limit reached",
+                $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+            );
     
             return [
                 'accepted' => false,
@@ -68,16 +63,12 @@ class CommentSecurityService
             ];
         }
     
-        // 2. Tentatives nombreuses → spam probable
+        // 2. Tentatives nombreuses > spam probable
         if ($limit->getRemainingTokens() > -10) {
-            $this->logger->error("CommentRateLimit] Repeated limit violations — probable spam activity", [
-                'ip' => $ip,
-                'route' => $request->attributes->get('_route'),
-                'method' => $request->getMethod(),
-                'url' => $request->getUri(),
-                'user_agent' => $request->headers->get('User-Agent'),
-                'retry_after' => $retryAfter,
-            ]);
+            $this->logger->error(
+                "[CommentRateLimit] Repeated limit violations — probable spam activity", 
+                $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+            );
     
             return [
                 'accepted' => false,
@@ -86,15 +77,11 @@ class CommentSecurityService
             ];
         }
     
-        // 3. Tentatives massives → bot évident
-        $this->logger->critical("[CommentRateLimit] Automated activity detected — bot blocked", [
-            'ip' => $ip,
-            'route' => $request->attributes->get('_route'),
-            'method' => $request->getMethod(),
-            'url' => $request->getUri(),
-            'user_agent' => $request->headers->get('User-Agent'),
-            'retry_after' => $retryAfter,
-        ]);
+        // 3. tentatives massives > bot évident
+        $this->logger->critical(
+            "[CommentRateLimit] Automated activity detected — bot blocked",
+            $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+        );
     
         return [
             'accepted' => false,
@@ -112,14 +99,10 @@ class CommentSecurityService
 
         // Valeur par défaut pour éviter soumission frauduleuse
         if ($submittedAt === null || $submittedAt === 0) {
-            $this->logger->warning('[CommentSubmissionTime] Missing or invalid timestamp — potential tampering attempt', [
-                'ip' => $request->getClientIp(),
-                'route' => $request->attributes->get('_route'),
-                'url' => $request->getUri(),
-                'method' => $request->getMethod(),
-                'user_agent' => $request->headers->get('User-Agent'),
-                'submitted_at' => $submittedAt,
-            ]);
+            $this->logger->warning(
+                '[CommentSubmissionTime] Missing or invalid timestamp — potential tampering attempt',
+                $this->buildCommonLogContext($request, ['submitted_at' => $submittedAt])
+            );
             
             return [
                 'valid' => false,
@@ -137,14 +120,10 @@ class CommentSecurityService
         if (!$isValid) {
             $remaining = $minSeconds - $timePassed;
             
-            $this->logger->error('[CommentSubmissionTime] Submission too fast — suspicious automated behavior ', [
-                'ip' => $request->getClientIp(),
-                'route' => $request->attributes->get('_route'),
-                'url' => $request->getUri(),
-                'method' => $request->getMethod(),
-                'user_agent' => $request->headers->get('User-Agent'),
-                'submitted_at' => $submittedAt,
-            ]);
+            $this->logger->error(
+                '[CommentSubmissionTime] Submission too fast — suspicious automated behavior',
+                $this->buildCommonLogContext($request, ['submitted_at' => $submittedAt])
+            );
 
             return [
                 'valid' => false,
@@ -177,7 +156,17 @@ class CommentSecurityService
         return transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0080-\uffff] remove', $text);
     }
 
-    // sanityzecontent
-    // honeypot
+    private function buildCommonLogContext(Request $request, array $extra = []): array
+    {
+        return array_merge([
+            'ip' => $request->getClientIp(),
+            'route' => $request->attributes->get('_route'),
+            'url' => $request->getUri(),
+            'method' => $request->getMethod(),
+            'user_agent' => $request->headers->get('User-Agent'),
+        ], $extra);
+    }
+
+    // ajouter honeypot
 
 }
