@@ -175,21 +175,8 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
-    public function show(ArticleRepository $articleRepository, LoggerInterface $logger, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
+    public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
     {   
-
-        // dump(get_class($logger));
-        // dd(get_class($logger)); // "Monolog\Logger"
-        // dd($logger);
-        $logger->error('TEST DE LOG DIRECT');
-        // dd('Log test envoyé');
-        // if (method_exists($logger, 'getHandlers')) {
-        //     dump($logger->getHandlers());
-        // }
-    
-        // $logger->emergency('TEST LOG MONOLOG');
-        // return $this->json(['ok' => true]);
-    
 
         $article = $articleRepository->findOneBy(['slug' => $slug]);
         if (!$article) {
@@ -197,7 +184,6 @@ class ArticleController extends AbstractController
         }
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
-            // 'isApproved' => true, 
             'parentComment' => NULL,
         ], [
             'createdAt' => 'ASC', 
@@ -212,37 +198,6 @@ class ArticleController extends AbstractController
         
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // $data = $form->getData();
-            // var_dump($data);die;
-
-            // var_dump([
-            //     'content' => $comment->getContent(),
-            //     'authorName' => $comment->getAuthorName(),
-          
-            // ]);
-            // die;
-            // var_dump($comment);die;
-
-            // entité hydraté - récursion d'objet liés getOne - limité à la première entit" qu'il va trouver 
-            // $request > $request fetch all > array
-
-            // $comment->getContent();
-            // $content = $comment->getContent();
-            // dd($content);
-
-            // _______________
-            // comment rate limiter - OLD avant service
-            // $ip = $request->getClientIp();
-            // // $limiter = $commentPostingLimiter->create($ip); // pour tout le site 
-            // $limiter = $commentPostingLimiter->create($ip . '-' . $article->getId()); // par article
-
-            // $limit = $limiter->consume(1);
-            // // Symfony stocke ça automatiquement en cache
-            // if (!$limit->isAccepted()) {
-            //     return new Response('Trop de commentaires, réessayez plus tard.', 429);
-            // }
-            // ________________
-
 
             $limitCheck = $CommentSecurityService->checkRateLimit($request);
             if (!$limitCheck['accepted']) {
@@ -303,6 +258,7 @@ class ArticleController extends AbstractController
 
             $comment->setContent($filteredContent);
             // dd($filteredContent);
+            
             $em->persist($comment);
             $em->flush();
 
