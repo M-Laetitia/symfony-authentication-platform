@@ -35,9 +35,13 @@ services:
     App\Service\MediaUploader:
         arguments:
             $uploadsDir: '%kernel.project_dir%/public/uploads'
-
     App\Service\CommentSecurityService:
         arguments:
             $logger: '@monolog.logger.comments'
             $badWordsYamlPath: '%bad_words_yaml_path%'
-            
+    App\EventSubscriber\HoneyPotSubscriber:
+        arguments:
+            $honeyPotLogger: '@logger'
+            $requestStack: '@request_stack'
+            $field1: 'phone'  
+            $field2: 'faxNumber'         
