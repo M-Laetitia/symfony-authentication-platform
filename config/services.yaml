@@ -39,3 +39,7 @@ services:
             $yamlPath: '%kernel.project_dir%/config/bad_words.yaml'
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+    App\Service\CommentSecurityService:
+        arguments:
+            $logger: '@monolog.logger.comments'
+            
