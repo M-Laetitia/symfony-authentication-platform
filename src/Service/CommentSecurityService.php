@@ -161,8 +161,8 @@ class CommentSecurityService
     private function buildCommonLogContext(Request $request, LogEncryptor $encryptor, array $extra = []): array
     {
         return array_merge([
-            // 'ip' => $request->getClientIp(),
-            'ip' => $encryptor->encryptIp($request->getClientIp()), // IP chiffrée
+            'ip' => $request->getClientIp(),
+            // 'ip' => $encryptor->encryptIp($request->getClientIp()), // IP chiffrée
             'route' => $request->attributes->get('_route'),
             // 'url' => $request->getUri(),
             'url' => $this->cleanUrl($request->getUri()), // Nettoyage de l'URL
