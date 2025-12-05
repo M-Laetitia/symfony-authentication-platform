@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+use donatj\UserAgent\UserAgentParser;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Yaml;
@@ -12,11 +13,12 @@ class CommentSecurityService
     private RateLimiterFactoryInterface $limiter; 
     private LoggerInterface $logger;
     private string $pattern;
+    private LogEncryptor $logEncryptor;
     
-
-    public function __construct(RateLimiterFactoryInterface $commentPostingLimiter,LoggerInterface $logger, string $badWordsYamlPath)
+    public function __construct(RateLimiterFactoryInterface $commentPostingLimiter, LoggerInterface $logger, string $badWordsYamlPath, LogEncryptor $logEncryptor)
     {
         $this->limiter = $commentPostingLimiter;
+        $this->logEncryptor = $logEncryptor;
         $this->logger = $logger;
 
         // Chargement et normalisation des mots interdits
@@ -53,7 +55,7 @@ class CommentSecurityService
         if ($limit->getRemainingTokens() > -3) {
             $this->logger->warning(
                 "[CommentRateLimit] Excessive usage detected — soft limit reached",
-                $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+                $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
             );
     
             return [
@@ -67,7 +69,7 @@ class CommentSecurityService
         if ($limit->getRemainingTokens() > -10) {
             $this->logger->error(
                 "[CommentRateLimit] Repeated limit violations — probable spam activity", 
-                $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+                $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
             );
     
             return [
@@ -80,7 +82,7 @@ class CommentSecurityService
         // 3. tentatives massives > bot évident
         $this->logger->critical(
             "[CommentRateLimit] Automated activity detected — bot blocked",
-            $this->buildCommonLogContext($request, ['retry_after' => $retryAfter])
+            $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
         );
     
         return [
@@ -94,14 +96,14 @@ class CommentSecurityService
      * Vérifie le temps de soumission du formulaire.
      * Retourne un tableau avec le statut et le temps restant.
      */
-    public function checkSubmissionTime(int $submittedAt, Request $request,int $minSeconds = 3): array
+    public function checkSubmissionTime(int $submittedAt, Request $request,int $minSeconds = 60): array
     {
 
         // Valeur par défaut pour éviter soumission frauduleuse
         if ($submittedAt === null || $submittedAt === 0) {
             $this->logger->warning(
                 '[CommentSubmissionTime] Missing or invalid timestamp — potential tampering attempt',
-                $this->buildCommonLogContext($request, ['submitted_at' => $submittedAt])
+                $this->buildCommonLogContext($request, $this->logEncryptor, ['submitted_at' => $submittedAt])
             );
             
             return [
@@ -122,7 +124,7 @@ class CommentSecurityService
             
             $this->logger->error(
                 '[CommentSubmissionTime] Submission too fast — suspicious automated behavior',
-                $this->buildCommonLogContext($request, ['submitted_at' => $submittedAt])
+                $this->buildCommonLogContext($request, $this->logEncryptor, ['submitted_at' => $submittedAt])
             );
 
             return [
@@ -156,17 +158,40 @@ class CommentSecurityService
         return transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0080-\uffff] remove', $text);
     }
 
-    private function buildCommonLogContext(Request $request, array $extra = []): array
+    private function buildCommonLogContext(Request $request, LogEncryptor $encryptor, array $extra = []): array
     {
         return array_merge([
-            'ip' => $request->getClientIp(),
+            // 'ip' => $request->getClientIp(),
+            'ip' => $encryptor->encryptIp($request->getClientIp()), // IP chiffrée
             'route' => $request->attributes->get('_route'),
-            'url' => $request->getUri(),
+            // 'url' => $request->getUri(),
+            'url' => $this->cleanUrl($request->getUri()), // Nettoyage de l'URL
             'method' => $request->getMethod(),
-            'user_agent' => $request->headers->get('User-Agent'),
+            // 'user_agent' => $request->headers->get('User-Agent'),
+            'user_agent' => $this->simplifyUserAgent($request->headers->get('User-Agent'), new UserAgentParser()),
         ], $extra);
     }
 
-    // ajouter honeypot
+    private function cleanUrl(string $url): string
+    {
+        $parsedUrl = parse_url($url);
+        return $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . ($parsedUrl['path'] ?? '');
+    }
+
+    private function simplifyUserAgent(?string $userAgent, UserAgentParser $parser): string
+    {
+        if (empty($userAgent)) {
+            return 'Unknown';
+        }
+    
+        try {
+            $ua = $parser->parse($userAgent);
+            return sprintf('%s / %s', $ua->browser(), $ua->platform());
+        } catch (\Exception $e) {
+            // Optionnel : Log l'erreur si tu utilises un logger
+            // $this->logger?->warning('Failed to parse User-Agent: ' . $e->getMessage());
+            return 'Unknown';
+        }
+    }
 
 }
