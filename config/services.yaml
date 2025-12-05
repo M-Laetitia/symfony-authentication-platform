@@ -48,3 +48,6 @@ services:
     App\Service\LogEncryptor:
         arguments:
             $encryptionKey: '%env(LOG_ENCRYPTION_KEY)%'
+    App\Monolog\Processor\IpAnonymizationProcessor:
+        tags:
+            - { name: monolog.processor }
