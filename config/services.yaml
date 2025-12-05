@@ -45,3 +45,6 @@ services:
             $requestStack: '@request_stack'
             $field1: 'phone'  
             $field2: 'faxNumber'         
+    App\Service\LogEncryptor:
+        arguments:
+            $encryptionKey: '%env(LOG_ENCRYPTION_KEY)%'
