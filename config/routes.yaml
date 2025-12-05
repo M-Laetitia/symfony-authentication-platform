@@ -7,3 +7,6 @@ controllers:
 connect_google_register:
     path: /connect/registration/google
     controller: App\Controller\SecurityController::registerWithGoogle
+# test_encryption:
+#     path: /test-encryption
+#     controller: App\Controller\TestEncryptionController::testEncryption
