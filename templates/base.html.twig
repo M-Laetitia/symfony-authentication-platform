@@ -24,6 +24,15 @@
 
 
     <body>
-        {% block body %}{% endblock %}
+        <div class="page-wrapper">
+            {# {% include 'components/navbar.html.twig' %} #}
+    
+            <main class="content">
+                {% block body %}{% endblock %}
+
+            </main>
+    
+            {% include 'layout/footer.html.twig' %}
+        </div>
     </body>
 </html>
