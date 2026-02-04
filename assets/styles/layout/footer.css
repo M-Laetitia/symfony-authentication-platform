@@ -1,0 +1,154 @@
+footer {
+    background-color: var(--color-grey-900);
+    width: 100%;
+    color: var(--color-white);
+    padding: 110px 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .footer__top, .footer__bottom {
+        display: flex;
+        width: 1340px;
+        justify-content: space-between;
+    }
+
+    .footer__top {
+        border-bottom: 1px solid #474746;
+        padding-bottom: 50px;
+        margin-bottom: 40px ;
+        
+        .footer__branding {
+            width: 335px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            
+            .footer__logo-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+    
+                .footer__logo {
+                    width: 27px;
+                    height: 27px;
+                    border-radius: 50%;
+                    background-color: var(--color-accent);
+                }
+                .footer__brand-name {
+                    font-size: 36px;
+                    font-family: var(--font-heading);
+                    font-weight: 600;
+                    line-height: 0;
+                }
+            }
+            .footer__description {
+                font-weight: 300;
+                color: var(--color-grey-200);
+            }
+        }
+
+        .footer__links {
+            width: 830px;
+            padding-right: 80px;
+            justify-content: space-between;
+            display: flex;
+            .footer__links-title {
+                text-transform: uppercase ;
+                color: var(--color-accent);
+                font-size: 20px;
+                font-weight: 300;
+                margin-bottom: 10px;
+            }
+            .footer__nav-list{
+                .footer__nav-item {
+                    margin-bottom: 6px;
+                    .footer__nav-link {
+                        display: inline-block;
+                        transition: var(--transition-base);
+                        &:hover {
+                            color: var(--color-accent);
+                            translate: 5px 0px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .footer__links-block-contact {
+            .footer__links-title {
+                margin-bottom: 13px;
+            }
+            .footer__contact-item {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .footer__contact-link {
+                transition: var(--transition-base);
+                &:hover {
+                    color: var(--color-accent);
+                }
+            }
+        }
+
+        .footer__links-block-social {
+            .footer__social {
+                display: flex;
+                gap: 10px;
+            }
+            .footer__social-link {
+                transition: color .3s ease;
+                border: 1px solid var(--color-white);
+                display: flex;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition-base);
+            }
+            
+            .footer__social-icon {
+                width: 20px;
+                fill: currentColor;
+                transition: var(--transition-base);
+            }
+            
+            .footer__social-link:hover {
+                color: var(--color-grey-900);
+            }
+            
+            .footer__social-link:hover {
+                transform: translateY(-3px);
+                background-color: var(--color-accent);
+                border-color: var(--color-accent);
+            }
+        }
+        
+    }
+
+    .footer__bottom {
+
+        p {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 1px;
+
+            a {
+                transition: var(--transition-base);
+                &:hover {
+                    color: var(--color-accent);
+                }
+            }
+        }
+
+        span {
+            color: var(--color-accent);
+        }
+    }
+
+}
+
