@@ -1,0 +1,27 @@
+.newsletter {
+    height: 255px;
+    background-color: var(--color-accent);
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .newsletter__wrapper {
+        width: var(--width-content);
+        display: flex;
+        justify-content: space-between;
+    }
+    .newsletter__title {
+        font-family: var(--font-heading);
+        font-size: 26px;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+    }
+
+    .newsletter__form {
+        width: 620px;
+    }
+    .newsletter__content {
+        width: 580px;
+    }
+}

@@ -18,9 +18,11 @@
     /* --text-primary: var(--grey-900);
     --text-secondary: var(--grey-700);
     --border-default: var(--grey-800); */
+    
   
+    --width-content : 75%;
     /* --radius-sm: 4px;
-    --radius-md: 8px;
+    --radius-md: 8px;*/
   
-    --transition-base: 0.2s ease; */
+    --transition-base: ease-in-out 0.3s; 
 }
