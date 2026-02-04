@@ -6,7 +6,5 @@
 @import './base/globals.css';
 
 
-/* @import '@styles/base/reset.css';
-@import '@styles/base/variables.css';
-@import '@styles/base/fonts.css';
-@import '@styles/base/globals.css'; */
+/* LAYOUT */
+@import './layout/footer.css';
