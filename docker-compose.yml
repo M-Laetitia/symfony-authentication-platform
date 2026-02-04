@@ -8,6 +8,8 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
+      - symfony_vendor:/var/www/html/vendor
+      - symfony_var:/var/www/html/var
     depends_on:
       - db
       - mailhog
@@ -33,7 +35,6 @@ services:
       - "8025:8025"  # interface web mailhog
       - "1025:1025"  # port SMTP
 
-  # Service fail2ban
   fail2ban:
     image: crazymax/fail2ban:latest
     container_name: symfony_fail2ban
@@ -52,6 +53,8 @@ services:
     restart: unless-stopped
     depends_on:
       - php-apache
-     
+
 volumes:
   db_data:
+  symfony_vendor:
+  symfony_var:

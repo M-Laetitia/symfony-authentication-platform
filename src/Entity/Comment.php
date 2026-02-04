@@ -56,6 +56,8 @@ class Comment
     public function __construct()
     {
         $this->replies = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->isApproved = '0';
     }
 
     public function getId(): ?int

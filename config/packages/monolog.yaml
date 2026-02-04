@@ -5,10 +5,16 @@ monolog:
 
 when@dev:
     monolog:
-        channels: ['honey_pot']
+        channels: ['app', 'honey_pot', 'security', 'comments']
         handlers:
+            comments:
+                type: rotating_file
+                path: "%kernel.logs_dir%/security/comments/comments.%kernel.environment%.log"
+                level: warning
+                max_files: 10
+                channels: ['comments']
             honeypot: 
-                level: info
+                level: warning
                 type: rotating_file
                 max_files: 10
                 path: "%kernel.logs_dir%/security/honeypot/honeypot.%kernel.environment%.log"
@@ -19,16 +25,12 @@ when@dev:
                 type: rotating_file
                 max_files: 10
                 path: "%kernel.logs_dir%/security/auth/security.%kernel.environment%.log"
-                channels:
-                    - security
+                channels: ['security']
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: 
-                    - "!event"
-                    - "!security"
-                    - "!honey_pot"
+                channels: ["!event", "!security", "!honey_pot"]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:

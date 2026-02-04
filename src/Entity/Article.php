@@ -17,7 +17,8 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 150, unique: true, nullable: false)]
-    private string $title;
+    // private string $title;
+    private string $title = '';
 
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private \DateTimeImmutable $createdAt;
@@ -28,8 +29,8 @@ class Article
     #[ORM\Column(length: 20, nullable: false)]
     private string $status;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $content = null;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $content = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $excerpt = null;
@@ -65,11 +66,20 @@ class Article
     #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'article')]
     private Collection $articleEditHistories;
 
+    /**
+     * @var Collection<int, Media>
+     */
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'article', orphanRemoval: true)]
+    private Collection $medias;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
+        $this->status = 'unsaved';
+        $this->createdAt = new \DateTimeImmutable();
+        $this->medias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,12 +136,12 @@ class Article
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): ?array
     {
         return $this->content;
     }
 
-    public function setContent(?string $content): static
+    public function setContent(?array $content): static
     {
         $this->content = $content;
 
@@ -279,6 +289,36 @@ class Article
             // set the owning side to null (unless already changed)
             if ($articleEditHistory->getArticle() === $this) {
                 $articleEditHistory->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+    public function addMedia(Media $media): static
+    {
+        if (!$this->medias->contains($media)) {
+            $this->medias->add($media);
+            $media->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedia(Media $media): static
+    {
+        if ($this->medias->removeElement($media)) {
+            // set the owning side to null (unless already changed)
+            if ($media->getArticle() === $this) {
+                $media->setArticle(null);
             }
         }
 
