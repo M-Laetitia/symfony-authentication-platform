@@ -1,0 +1,21 @@
+body {
+font-family: var(--font-base);
+}
+
+h1, h2, h3 {
+font-family: var(--font-heading);
+}
+
+h1 {
+    color: pink;
+}
+
+body {
+    background-color: var(--color-grey-700);
+}
+
+.comment {
+    border: 1px solid black;
+    padding: 30px;
+}
+  

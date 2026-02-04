@@ -1,0 +1,26 @@
+:root {
+    /* PALETTE */
+    --color-white : #F2F2F2;
+    --color-black : #151515;
+
+    --color-grey-900: #242424;
+    --color-grey-800: #2F2F2F;
+    --color-grey-700: #585858;
+    --color-grey-200: #D2D2CE;
+    
+    --color-accent: #5FEEAB;
+
+    /* TYPO */
+    --font-base: 'Lato', sans-serif;
+    --font-heading: 'Oswald', sans-serif;
+
+    /* USAGE */
+    /* --text-primary: var(--grey-900);
+    --text-secondary: var(--grey-700);
+    --border-default: var(--grey-800); */
+  
+    /* --radius-sm: 4px;
+    --radius-md: 8px;
+  
+    --transition-base: 0.2s ease; */
+}

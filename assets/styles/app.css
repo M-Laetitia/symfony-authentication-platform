@@ -1,8 +1,12 @@
-body {
-    background-color: rgb(176, 201, 210);
-}
 
-.comment {
-    border: 1px solid black;
-    padding: 30px;
-}
+/* BASE */
+@import './base/reset.css';
+@import './base/variables.css';
+@import './base/fonts.css';
+@import './base/globals.css';
+
+
+/* @import '@styles/base/reset.css';
+@import '@styles/base/variables.css';
+@import '@styles/base/fonts.css';
+@import '@styles/base/globals.css'; */
