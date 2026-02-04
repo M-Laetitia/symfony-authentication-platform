@@ -1,0 +1,66 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}New article{% endblock %}
+
+{% block body %}
+            {# Voir toutes les variables disponibles #}
+    {# <pre>{{ dump(_context|keys) }}</pre> #}
+
+    {# Voir le contenu de form si disponible #}
+    {# {% if form is defined %}
+        <pre>{{ dump(form.vars) }}</pre>
+    {% endif %} #}
+    <h1>créer un article</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.metaTitle) }}
+    {{ form_row(form.metaDescription) }}
+    {{ form_row(form.category) }}
+    {{ form_row(form.excerpt) }}
+    <div class="form-group">
+        {{ form_label(form.coverFile) }}
+        {{ form_widget(form.coverFile) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.coverAlt) }}
+        {{ form_widget(form.coverAlt) }}
+    </div>
+    
+    <div class="form-group">
+        <label>Tags</label>
+        <div class="checkboxes">
+            {{ form_widget(form.tags) }}
+        </div>
+    </div>
+    {# {{ form_row(form._token) }} #}
+
+    <div class="form-group">
+        <label>Contenu de l'article</label>
+        <div id="editorjs"></div>
+        {{ form_row(form.content, { 'attr': { 'id': 'article_content' } }) }}
+    </div>
+
+    <button type="submit">Enregistrer</button>
+
+
+    {# <div class="form-buttons">
+        <button type="submit" name="action" value="publish" >Publier</button>
+        <button type="submit" name="action" value="draft" >Enregistrer comme brouillon</button>
+    </div> #}
+
+    {# Modifie le libellé du bouton en fonction du statut #}
+    {# {% if article.status == 'draft' %}
+        {{ form_row(form.save, { 'label': 'Publier' }) }}
+    {% endif %} #}
+
+
+    {{ form_end(form) }}
+    <a href="{{ path('blog_index') }}" >Retour à la liste</a>
+    {{ encore_entry_script_tags('editor') }}
+
+
+{% endblock %}
+

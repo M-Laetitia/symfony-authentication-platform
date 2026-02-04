@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    bad_words_yaml_path: '%kernel.project_dir%/config/bad_words.yaml'
 
 services:
     # default configuration for services in *this* file
@@ -31,3 +32,22 @@ services:
             $properties:
                 'google': 'googleId'
     App\Security\OAuthRegistrationFormHandler: ~
+    App\Service\MediaUploader:
+        arguments:
+            $uploadsDir: '%kernel.project_dir%/public/uploads'
+    App\Service\CommentSecurityService:
+        arguments:
+            $logger: '@monolog.logger.comments'
+            $badWordsYamlPath: '%bad_words_yaml_path%'
+    App\EventSubscriber\HoneyPotSubscriber:
+        arguments:
+            $honeyPotLogger: '@logger'
+            $requestStack: '@request_stack'
+            $field1: 'phone'  
+            $field2: 'faxNumber'         
+    App\Service\LogEncryptor:
+        arguments:
+            $encryptionKey: '%env(LOG_ENCRYPTION_KEY)%'
+    App\Monolog\Processor\IpAnonymizationProcessor:
+        tags:
+            - { name: monolog.processor }

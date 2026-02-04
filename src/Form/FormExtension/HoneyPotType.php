@@ -8,16 +8,13 @@ use App\EventSubscriber\HoneyPotSubscriber;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HoneyPotType extends AbstractType
 {
     private LoggerInterface $honeyPotLogger;
-    
     private RequestStack $requestStack;
 
-    protected const DELICIOUS_HONEY_CANDY_FOR_BOT = "phone";
-
-    protected const FABULOUS_HONEY_CANDY_FOR_BOT = "faxNumber";
 
     public function __construct(LoggerInterface $honeyPotLogger, RequestStack $requestStack)
     {
@@ -28,10 +25,10 @@ class HoneyPotType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(self::DELICIOUS_HONEY_CANDY_FOR_BOT, TextType::class, $this->setHoneyPotConfiguration())
-            ->add(self::FABULOUS_HONEY_CANDY_FOR_BOT, TextType::class, $this->setHoneyPotConfiguration())
-            ->addEventSubscriber(new HoneyPotSubscriber($this->honeyPotLogger, $this->requestStack))
-        ;
+        ->add($options['honeypot_field_1'], TextType::class, $this->setHoneyPotConfiguration())
+        ->add($options['honeypot_field_2'], TextType::class, $this->setHoneyPotConfiguration())
+        ->addEventSubscriber(new HoneyPotSubscriber($this->honeyPotLogger, $this->requestStack, $options['honeypot_field_1'], $options['honeypot_field_2']))
+    ;
     }
 
     protected function setHoneyPotConfiguration(): array
@@ -45,5 +42,13 @@ class HoneyPotType extends AbstractType
             'mapped' => false,
             'required' => false
         ];
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'honeypot_field_1' => 'phone',
+            'honeypot_field_2' => 'faxNumber',
+        ]);
     }
 }

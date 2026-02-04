@@ -1,0 +1,10 @@
+framework:
+  rate_limiter:
+    comment_posting:
+      policy: 'fixed_window'
+      limit: 3
+      interval: '1 minute'
+
+# policy: fixed_window : Le temps est découpé en blocs de durée fixe — par exemple, 1 minute.
+# policy: sliding_window : la “fenêtre de temps” se déplace en continu plutôt que d’être découpée par minute entière.
+# policy: token_bucket : Chaque utilisateur/IP a un “seau” de jetons
