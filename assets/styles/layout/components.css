@@ -16,3 +16,27 @@
     height: auto; 
 }
 
+/* &-------- SECTION INTRO ---------- */
+/* &--------------------------------- */
+
+.section-intro {
+    display: flex;
+    gap: 100px;
+    justify-content: space-between;
+    margin-bottom: 60px;
+
+    .section-intro__text {
+        flex: 1;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--color-grey-700);
+
+        .section-intro__title {
+            margin-bottom: 10px;
+        }
+    }
+
+    .section-intro__action {
+        display: flex;
+        align-items: flex-end;
+    }
+}
