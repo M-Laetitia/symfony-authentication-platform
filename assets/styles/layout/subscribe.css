@@ -20,8 +20,12 @@
 
     .newsletter__form {
         width: 620px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
     .newsletter__content {
         width: 580px;
     }
+
 }

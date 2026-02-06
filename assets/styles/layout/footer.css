@@ -8,6 +8,10 @@ footer {
     justify-content: center;
     flex-direction: column;
 
+    p {
+        color: var(--color-white);
+    }
+
     .footer__top, .footer__bottom {
         display: flex;
         width: var(--width-content);
