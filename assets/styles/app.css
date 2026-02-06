@@ -8,5 +8,7 @@
 /* LAYOUT */
 @import './layout/footer.css';
 @import './layout/subscribe.css';
+@import './layout/contact.css';
+@import './layout/components.css';
 
 /* COMPONENTS */
