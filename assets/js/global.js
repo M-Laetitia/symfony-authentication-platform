@@ -10,6 +10,43 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => element.remove(), 500);
         });
     }, 4000);
-    
-    
+});
+
+const accentColor = "#5FEEAB";
+const grey900 = "#242424";
+
+// hover effect icon-box
+document.querySelectorAll('.contact__detail').forEach(detail => {
+    if (!detail) return;
+
+    const link = detail.querySelector('.contact__detail-link');
+    const svg = detail.querySelector('.icon-box__svg');
+    const icons = detail.querySelectorAll('.icon-box');  
+    console.log("icon", icons)         
+
+    if (!link || !svg) return;
+
+    const paths = svg.querySelectorAll('path');
+
+    link.addEventListener('mouseenter', () => {
+        paths.forEach(path => {
+            path.style.fill = '#242424';
+            path.style.stroke = 'transparent';
+        });
+        icons.forEach(icon => {
+            icon.style.backgroundColor = accentColor;
+            icon.style.borderColor = grey900;
+        });
+    });
+
+    link.addEventListener('mouseleave', () => {
+        paths.forEach(path => {
+            path.style.fill = '#D2D2CE';
+            path.style.stroke = 'transparent';
+        });
+        icons.forEach(icon => {
+            icon.style.backgroundColor = grey900;
+            icon.style.borderColor = accentColor;
+        });
+    });
 });
