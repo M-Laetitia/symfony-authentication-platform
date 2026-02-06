@@ -1,0 +1,23 @@
+/* &-------------- HERO ------------- */
+/* &--------------------------------- */
+
+.hero {
+    height: 100vh;
+    background: black;
+}
+/* &------------ ABOUT US ----------- */
+/* &--------------------------------- */
+
+.section-about {
+    height: 100vh;
+    padding-top: 60px;
+
+    .scroll-text-section {
+        height: 100%;
+        padding: 0 20px;
+    }
+
+    .section-about__text-image {
+        display: flex;
+    }
+}

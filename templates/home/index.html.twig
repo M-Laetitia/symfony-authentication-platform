@@ -3,7 +3,77 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue sur la page d'accueil ! 🚀</h1>
+    <section class="hero">
+
+    </section>
+
+    <section class="section section-about" aria-labelledby="about-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--about" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                </div>
+            </div>
+    
+            <div class="section-about__content scroll-text-section__content section-centered">
+
+                <twig:SectionIntro
+                    title="ABOUT US"
+                    subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    buttonText="Discover more"
+                />
+
+                <div class="section-about__text-image">
+                    <!-- Texte -->
+                    <div class="section-about__text">
+                        <h3 class="section-about__subtitle">A photographic story...</h3>
+                        <div class="section-divider__large" aria-hidden="true"></div>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, vel mollis neque facilisis vel. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas eget diam sed sagittis. Vivamus consectetur purus vel felis molestie sollicitudin. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
+                        </p>
+                    </div>
+        
+                    <!-- Image -->
+                    <div class="section-about__image-wrapper">
+                        <figure class="section-about__figure">
+                            {# <img src="" alt="" class="section-about__image"> #}
+                        </figure>
+                    </div>
+                </div>
+        
+                <!-- Bloc mission / vision / valeur -->
+                <div class="section-about__features">
+                    <div class="section-about__feature">
+                        <div class="section-about__feature-icon">[Icone]</div>
+                        <div class="section-about__feature-text">
+                            <h4 class="section-about__feature-title">Our mission</h4>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="section-about__feature">
+                        <div class="section-about__feature-icon">[Icone]</div>
+                        <div class="section-about__feature-text">
+                            <h4 class="section-about__feature-title">Our vision</h4>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="section-about__feature">
+                        <div class="section-about__feature-icon">[Icone]</div>
+                        <div class="section-about__feature-text">
+                            <h4 class="section-about__feature-title">Our value</h4>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+    
+        </div>
+
+    </section>
 
     <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
         Se connecter avec Google
