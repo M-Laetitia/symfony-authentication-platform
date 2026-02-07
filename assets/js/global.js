@@ -16,13 +16,12 @@ const accentColor = "#5FEEAB";
 const grey900 = "#242424";
 
 // hover effect icon-box
-document.querySelectorAll('.contact__detail').forEach(detail => {
+document.querySelectorAll('.icon-box__container').forEach(detail => {
     if (!detail) return;
 
-    const link = detail.querySelector('.contact__detail-link');
+    const link = detail.querySelector('.icon-box__link');
     const svg = detail.querySelector('.icon-box__svg');
     const icons = detail.querySelectorAll('.icon-box');  
-    console.log("icon", icons)         
 
     if (!link || !svg) return;
 
