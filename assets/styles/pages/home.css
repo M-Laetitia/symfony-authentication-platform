@@ -19,5 +19,46 @@
 
     .section-about__text-image {
         display: flex;
+        gap:90px;
+        border: 1px solid var(--color-grey-200);
+        padding: 48px;
+        margin-bottom: 64px;
+
+        .section-divider__large {
+            margin: 16px 0 ;
+        }
+
+        .text-medium {
+            strong {
+                color: var(--color-white);
+                background-color: var(--color-grey-900);
+            }
+        }
+    }
+
+    .section-about__image-wrapper {
+
+        .section-about__figure {
+            width: 305px;
+            height: 305px;
+            border: 1px solid var(--color-grey-200);
+            margin-right: 140px;
+        }
+    }
+
+    .section-about__features {
+        display: flex;
+        justify-content: space-between;
+
+        .section-about__feature {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+            width: 30%;
+        }
+
+        .section-about__feature-title {
+            margin-bottom: 7px;
+        }
     }
 }

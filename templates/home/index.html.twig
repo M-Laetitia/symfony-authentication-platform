@@ -31,8 +31,8 @@
                     <div class="section-about__text">
                         <h3 class="section-about__subtitle">A photographic story...</h3>
                         <div class="section-divider__large" aria-hidden="true"></div>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, vel mollis neque facilisis vel. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas eget diam sed sagittis. Vivamus consectetur purus vel felis molestie sollicitudin. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
+                        <p class="text-medium">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna <strong>pulvinar laoreet.</strong> Nullam erat ipsum, mattis nec mollis ac, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, <strong>vel mollis neque facilisis vel</strong>. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas eget diam sed sagittis. Vivamus consectetur purus <strong>vel felis molestie sollicitudin</strong>. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
                         </p>
                     </div>
         
@@ -44,26 +44,62 @@
                     </div>
                 </div>
         
-                <!-- Bloc mission / vision / valeur -->
+                <!-- Bloc mission / vision / value -->
                 <div class="section-about__features">
-                    <div class="section-about__feature">
-                        <div class="section-about__feature-icon">[Icone]</div>
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                                <twig:IconBox 
+                                    svg='<svg 
+                                    width="30" 
+                                    viewBox="0 0 30 35" 
+                                    fill="none" 
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="icon-box__svg"
+                                >
+                                    <path d="M20 30L10 26.5L2.25 29.5C1.69444 29.7222 1.18056 29.66 0.708333 29.3133C0.236111 28.9667 0 28.5011 0 27.9167V4.58333C0 4.22222 0.104444 3.90278 0.313333 3.625C0.522222 3.34722 0.806667 3.13889 1.16667 3L10 0L20 3.5L27.75 0.5C28.3056 0.277778 28.8194 0.340556 29.2917 0.688334C29.7639 1.03611 30 1.50111 30 2.08333V25.4167C30 25.7778 29.8961 26.0972 29.6883 26.375C29.4806 26.6528 29.1956 26.8611 28.8333 27L20 30ZM18.3333 25.9167V6.41667L11.6667 4.08333V23.5833L18.3333 25.9167ZM21.6667 25.9167L26.6667 24.25V4.5L21.6667 6.41667V25.9167ZM3.33333 25.5L8.33333 23.5833V4.08333L3.33333 5.75V25.5Z" fill="#D2D2CE"/>
+                                </svg>'
+                                />
+                        </div>
                         <div class="section-about__feature-text">
-                            <h4 class="section-about__feature-title">Our mission</h4>
+                            <h6 class="section-about__feature-title icon-box__link">Our mission</h6>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
-                    <div class="section-about__feature">
-                        <div class="section-about__feature-icon">[Icone]</div>
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                            <twig:IconBox 
+                            svg='<svg 
+                            width="30" 
+                            viewBox="0 0 30 35" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon-box__svg"
+                        >
+                            <path d="M20 30L10 26.5L2.25 29.5C1.69444 29.7222 1.18056 29.66 0.708333 29.3133C0.236111 28.9667 0 28.5011 0 27.9167V4.58333C0 4.22222 0.104444 3.90278 0.313333 3.625C0.522222 3.34722 0.806667 3.13889 1.16667 3L10 0L20 3.5L27.75 0.5C28.3056 0.277778 28.8194 0.340556 29.2917 0.688334C29.7639 1.03611 30 1.50111 30 2.08333V25.4167C30 25.7778 29.8961 26.0972 29.6883 26.375C29.4806 26.6528 29.1956 26.8611 28.8333 27L20 30ZM18.3333 25.9167V6.41667L11.6667 4.08333V23.5833L18.3333 25.9167ZM21.6667 25.9167L26.6667 24.25V4.5L21.6667 6.41667V25.9167ZM3.33333 25.5L8.33333 23.5833V4.08333L3.33333 5.75V25.5Z" fill="#D2D2CE"/>
+                        </svg>'
+                        />
+                        </div>
                         <div class="section-about__feature-text">
-                            <h4 class="section-about__feature-title">Our vision</h4>
+                            <h6 class="section-about__feature-title icon-box__link">Our vision</h6>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
-                    <div class="section-about__feature">
-                        <div class="section-about__feature-icon">[Icone]</div>
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                            <twig:IconBox 
+                            svg='<svg 
+                            width="30" 
+                            viewBox="0 0 30 35" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon-box__svg"
+                        >
+                            <path d="M20 30L10 26.5L2.25 29.5C1.69444 29.7222 1.18056 29.66 0.708333 29.3133C0.236111 28.9667 0 28.5011 0 27.9167V4.58333C0 4.22222 0.104444 3.90278 0.313333 3.625C0.522222 3.34722 0.806667 3.13889 1.16667 3L10 0L20 3.5L27.75 0.5C28.3056 0.277778 28.8194 0.340556 29.2917 0.688334C29.7639 1.03611 30 1.50111 30 2.08333V25.4167C30 25.7778 29.8961 26.0972 29.6883 26.375C29.4806 26.6528 29.1956 26.8611 28.8333 27L20 30ZM18.3333 25.9167V6.41667L11.6667 4.08333V23.5833L18.3333 25.9167ZM21.6667 25.9167L26.6667 24.25V4.5L21.6667 6.41667V25.9167ZM3.33333 25.5L8.33333 23.5833V4.08333L3.33333 5.75V25.5Z" fill="#D2D2CE"/>
+                        </svg>'
+                        />
+                        </div>
                         <div class="section-about__feature-text">
-                            <h4 class="section-about__feature-title">Our value</h4>
+                            <h6 class="section-about__feature-title icon-box__link">Our value</h6>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
