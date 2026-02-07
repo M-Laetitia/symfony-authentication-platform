@@ -11,4 +11,7 @@
 @import './layout/contact.css';
 @import './layout/components.css';
 
+/* PAGES */
+@import './pages/home.css';
+
 /* COMPONENTS */

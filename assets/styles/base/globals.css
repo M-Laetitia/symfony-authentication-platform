@@ -3,6 +3,7 @@ html, body {
     height: 100%;
     font-size: 16px;
     font-weight: 400;
+    /* background-color: var(--color-white); */
 
 
     p, :is(h1, h2, h3, h4, h5, h6)  {
@@ -20,7 +21,7 @@ html, body {
     flex: 1; 
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     text-transform: uppercase;
 }
@@ -40,6 +41,17 @@ h5 {
     font-weight: 300;
 }
 
+h6 {
+    font-size: 18px;
+}
+
+.text-medium {
+    font-size: 20px;
+    color: var(--color-grey-700);
+    font-weight: 300;
+    line-height: 1.5rem;
+}
+
 body {
     background-color: var(--color-white);
 }
@@ -47,6 +59,17 @@ body {
 .comment {
     border: 1px solid black;
     padding: 30px;
+}
+
+.section-centered {
+    width: var(--width-content);
+    margin: auto;
+}
+
+.section-divider__large {
+    background-color: var(--color-accent);
+    height: 7px ;
+    width: 90px;
 }
 
 
@@ -68,6 +91,7 @@ body {
     width: calc(100% + 60px);
     overflow: hidden;
     pointer-events: none;
+    z-index: -1;
 }
 .bg-text__track {
     color: var(--color-grey-200);
@@ -80,7 +104,7 @@ body {
     display: flex;
     gap: 4rem;
     width: max-content;
-    animation: scroll-left 21s linear infinite;
+    animation: scroll-left 20s linear infinite;
 }
 @keyframes scroll-left {
     from {
@@ -105,7 +129,11 @@ body {
 
 .button--large {
     width: 100%;
+}
 
+.button--small {
+    height: 42px;
+    width: 175px;
 }
 .button--black {
     border: 1px solid var(--color-grey-900);
@@ -118,11 +146,11 @@ body {
     }
 }
 .button--accent {
-    border: 1px solid var(--color-accent);
+    border: 1px solid var(--color-grey-900);
     background-color: var(--color-accent);
     color: var(--color-grey-900);
     &:hover {
-        background-color: var(--color-grey-90);
+        background-color: var(--color-grey-900);
         border-color: var(--color-accent);
         color: var(--color-white);
     }
