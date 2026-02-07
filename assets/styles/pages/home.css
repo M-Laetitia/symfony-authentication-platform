@@ -1,3 +1,8 @@
+.section-about, .section-services {
+    height: 100vh;
+    padding-top: 40px;
+}
+
 /* &-------------- HERO ------------- */
 /* &--------------------------------- */
 
@@ -9,9 +14,6 @@
 /* &--------------------------------- */
 
 .section-about {
-    height: 100vh;
-    padding-top: 60px;
-
     .scroll-text-section {
         height: 100%;
         padding: 0 20px;
@@ -50,15 +52,43 @@
         display: flex;
         justify-content: space-between;
 
+
         .section-about__feature {
             display: flex;
             gap: 35px;
             align-items: center;
             width: 30%;
+            border-bottom: 1px solid var(--color-grey-200);
+            padding: 50px;
         }
 
         .section-about__feature-title {
             margin-bottom: 7px;
+        }
+    }
+}
+
+/* &------------ SERVICE ---_-------- */
+/* &--------------------------------- */
+
+.section-services {
+    .section-intro {
+        width: var(--width-content);
+        margin: auto;
+    }
+    .section-services__content {
+        .section-services__list {
+            display: flex;
+            gap: 25px;
+        }
+        .section-services__item {
+            width: 25%;
+        }
+
+        figure {
+            width: 100%;
+            height: 50%;
+            
         }
     }
 }
