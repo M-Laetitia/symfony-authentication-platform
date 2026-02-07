@@ -11,4 +11,5 @@ final class SectionIntro
     public string $subtile = 'Subtile';
     public string $buttonText = 'See more';
     public ?string $variant = null;
+    public string $linkBtn ="";
 }

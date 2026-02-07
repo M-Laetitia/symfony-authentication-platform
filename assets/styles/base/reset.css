@@ -89,11 +89,11 @@ html {
 }
 
 ::selection {
-  background-color: #eeaf42;
-  color: #151515;
+  background-color: var(--color-accent);
+  color: var(--color-grey-900);
 }
 
 ::-moz-selection {
-  background-color: #eeaf42;
-  color: #151515;
+  background-color: var(--color-accent);
+  color: var(--color-grey-900);
 }
