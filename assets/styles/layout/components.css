@@ -51,7 +51,8 @@
 
 .section-intro--light {
     width: var(--width-content);
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     h5, h2  {
     color: var(--color-grey-200);
 }
@@ -131,4 +132,74 @@
     .section-services__icon svg {
     rotate: 45deg;
   }
+}
+
+/* &-------- PHOTOGRAPH BOX --------- */
+/* &--------------------------------- */
+
+.photograph-box {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    width: 33%;
+    height: 500px;
+    position: relative;
+
+    .section-photographs__media{
+        height: 100%;
+        position: absolute;
+
+        img {
+            filter: saturate(0);
+            transition: var(--transition-base);
+            &:hover {
+                filter: saturate(1);
+            }
+        }
+    }
+
+    .section-photographs__infos {
+        background-color: var(--color-white);
+        border: 1px solid var(--color-white);
+        width: 240px;
+        height: 120px;
+        position: absolute;
+        padding: 25px;
+        transition: var(--transition-base);
+        &:hover {
+            background-color: var(--color-black);
+            border-color: var(--color-accent);
+        }
+        &:hover p {
+            color: var(--color-grey-200);
+        }
+        &:hover h4 {
+            color: var(--color-grey-200)
+        }
+
+        .section-photographs__service {
+            text-transform: uppercase;
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 300;
+            transition: var(--transition-base);
+        }
+        .section-photographs__name {
+            margin: 10px 0;
+            position: relative;
+            transition: var(--transition-base);
+            &:hover {
+                color: var(--color-accent);
+            }
+            &:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -14px;
+                width: 60px;
+                height: 7px;
+                background-color: var(--color-accent);
+            }
+        }
+    }
 }

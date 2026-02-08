@@ -73,7 +73,7 @@
     }
 }
 
-/* &------------ SERVICE ---ç-------- */
+/* &------------ SERVICES ----------- */
 /* &--------------------------------- */
 
 .section-services {
@@ -93,4 +93,15 @@
         }
         
     }
+}
+
+
+/* &------------ PHOTOGRAPH ---------- */
+/* &--------------------------------- */
+
+.section-photographs__list {
+    width: var(--width-content);
+    display: flex;
+    gap: 25px;
+    margin: auto;
 }
