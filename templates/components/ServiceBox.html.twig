@@ -1,7 +1,7 @@
 <div 
-    class="section-services__item"
+    class="section-services__item service-box"
     role="group"
-    aria-labelledby="service-wedding-title"
+    aria-labelledby="service-title"
     >
 
     <figure class="section-services__media">
@@ -19,12 +19,19 @@
             <h4 class="section-services__title">
                 <a href="{{ link }}">{{ title }}</a>
             </h4>
-            <p {{ subtitle }} class="section-services__description">
-                
-            </p>
         </div>
 
-        <div class="section-services__icon">picto svg</div>
+        <div class="section-services__desc-icon">
+            <p  class="section-services__description">
+                {{ subtitle }}
+            </p>
+            <div class="section-services__icon">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M43.0131 0.12043L9.89949 0L0 9.89949L26.4847 9.99582L0.0885871 36.3919L6.74162 43.0449L33.1377 16.6489L33.234 43.1335L43.1335 33.234L43.0131 0.12043Z" fill="#242424"/>
+                </svg>
+            </div>
+        </div>
+
 
     </div>
 </div>
