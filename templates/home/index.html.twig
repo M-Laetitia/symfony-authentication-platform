@@ -113,6 +113,8 @@
 
     </section>
 
+    <div class="u-divider-medium"></div>
+
     <section class="section section-services" aria-labelledby="services-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--services" aria-hidden="true">
@@ -165,6 +167,8 @@
         </div>
     </section>
 
+    <div class="u-divider-medium"></div>
+
     <section class="section section-dark section-photographs" aria-labelledby="photographs-title">
 
         <div class="scroll-text-section">
@@ -211,6 +215,7 @@
 
     </section>
 
+    <div class="u-divider-medium"></div>
 
     <section class="section section-works " aria-labelledby="works-title">
 
@@ -340,6 +345,8 @@
 
     </section>
 
+    <div class="u-divider-medium"></div>
+
     <section class="section section-testimonials " aria-labelledby="testimonials-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--testimonials" aria-hidden="true">
@@ -377,7 +384,7 @@
         </div>
     </section>
 
-
+    <div class="u-divider-medium"></div>
 
 
     {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
@@ -393,8 +400,66 @@
     {% endif %}
     <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
 
+
+
     {% include 'layout/contact.html.twig' %}
+
     <div class="u-divider-medium"></div>
+
+    <section class="section section-articles " aria-labelledby="articles-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--articles" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                </div>
+            </div>
+    
+            <div class="section-articles__content scroll-text-section__content section-centered">
+
+                <twig:SectionIntro
+                title="Articles & blog"
+                subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
+                buttonText="Learn more"
+                linkBtn="#"
+                />
+
+                <div class="section-articles__container">
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Tutorial"
+                    link="#"
+                    :tags="['Art', 'Technique', 'Outdoor']"
+                    date="3 March 2026"
+                    />
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Interview"
+                    link="#"
+                    :tags="['Travel', 'Photograph']"
+                    date="10 Feb 2026"
+                    />
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Street Photography"
+                    link="#"
+                    :tags="['Art', 'Technique', 'Street photography']"
+                    date="10 Feb 2026"
+                    />
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="u-divider-large"></div>
+
+
     {% include 'layout/subscribe.html.twig' %}
 
 {% endblock %}

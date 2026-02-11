@@ -1,6 +1,16 @@
-.section-about, .section-services, .section-photographs, .section-works, .section-testimonials {
+.section-about, .section-services, .section-works, .section-articles  {
+    height: auto;
+    padding-top: 40px;
+}
+
+.section-photographs {
     height: 100vh;
     padding-top: 40px;
+}
+
+.section-testimonials {
+    padding-top: 40px;
+    margin-bottom: 80px;
 }
 
 .section-dark {
@@ -29,7 +39,7 @@
         gap:90px;
         border: 1px solid var(--color-grey-200);
         padding: 48px;
-        margin-bottom: 64px;
+        margin-bottom: 15px;
 
         .section-divider__large {
             margin: 16px 0 ;
@@ -227,6 +237,9 @@
 /* &--------------------------------- */
 
 .section-testimonials {
+    .scroll-text-section {
+        padding-bottom: 45px;
+    }
     .section-testimonials__container {
         display: flex;
         column-gap: 140px;
@@ -296,4 +309,77 @@
     .testimonial-card__author-name {
         font-size: 20px;
     }
+}
+
+/* &-------------- BLOG ------------- */
+/* &--------------------------------- */
+
+.section-articles__container {
+    display: flex;
+    gap: 33px;
+
+    .article-card {
+        width: 33%;
+    }
+    .article-card__media {
+        position: relative;
+        overflow: hidden;
+        &:hover .article-card__picture img {
+            transform: scale(1.05);
+        }
+        .article-card__date {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            padding: 10px 8px;
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 16px;
+            z-index: 1;
+        }
+        
+        .article-card__picture{
+            height: 500px;
+            img {
+                transition: ease-in-out 0.5s;
+            }
+        }
+    }
+
+
+
+    .article-card__content {
+        .article-card__title {
+            text-transform: capitalize;
+            font-weight: 500;
+            margin: 15px 0;
+            text-wrap: auto;
+        }
+
+        .article-card__link {
+            text-wrap: auto!important;
+            transition: var(--transition-base);
+            &:hover {
+                opacity: 0.6;
+            }
+        }
+    }
+    .article-card__tags {
+        display: flex;
+        gap: 10px;
+
+        .article-card__tag {
+            background-color: var(--color-accent);
+            padding: 5px 8px;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+        }
+    }
+
+
 }
