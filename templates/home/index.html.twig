@@ -358,15 +358,29 @@
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Discover more"
                 linkBtn="#"
-            />
+                />
 
+                <div class="section-testimonials__container">
+                    <twig:TestimonialBox
+                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien. Vivamus mauris neque, venenatis quis metus quis, varius convallis leo. Ut vulputate mauris mi, non sodales nisl dictum ut. Suspendisse tincidunt lectus est, eget rhoncus justo tempor non. Vivamus eget facilisis orci, quis pharetra nunc. Nulla facilisi.placerat nisl.Praesent eu arcu sapien. Vivamus mauris neque, venenatis quis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien."
+                    subtitle="Bquis pharetra nunc. "
+                    username="Username Name"
+                    />
+
+                    <twig:TestimonialBox
+                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien.mauris neque, venenatis quis metus quis, varius convallis leo. Ut vulputate mauris mi, non sodales nisl dictum ut. Suspendisse tincidunt lectus est, eget rhoncus justo tempor non. Vivamus eget facilisis orci, quis pharetra nunc. Nulla facilisi. Donec at viverra tellus, ac placerat nisl."
+                    subtitle="Bquis pharetra nunc"
+                    username="Username Name"
+                    />
+                </div>
             </div>
         </div>
-        
     </section>
 
 
-    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
+
+
+    {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
         Se connecter avec Google
     </a>
 
@@ -377,9 +391,10 @@
         <p><a href="{{ path('app_login') }}">Se connecter</a></p>
         <p><a href="{{ path('app_register') }}">S'inscrire</a></p>
     {% endif %}
-    <p><a href="{{ path('blog_index') }}">BLOG</a></p>
+    <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
 
     {% include 'layout/contact.html.twig' %}
-
+    <div class="u-divider-medium"></div>
     {% include 'layout/subscribe.html.twig' %}
+
 {% endblock %}
