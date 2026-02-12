@@ -1,6 +1,10 @@
+/* &-------------LOGIN -------------- */
+/* &--------------------------------- */
+
 .account {
     width: 100%;
     height: 100vh;
+    padding-top: var(--height-navbar );
     /* height: calc(100vh - var(--height-navbar )); */
 
     .account__container {
@@ -59,5 +63,91 @@
     .auth-form__submit {
         margin-top: 60px;
     }
+
+    .auth-form__group--checkbox {
+        a {
+            color: var(--color-accent);
+            transition: var(--transition-base);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+}
+
+/* &------------REGISTER ------------ */
+/* &--------------------------------- */
+
+.account--register {
+
+}
+
+/* &------------ PROFILE ------------ */
+/* &--------------------------------- */
+
+.account--profile {
+    height: auto;
+    padding-top: 0;
+    padding: 0 20px;
+    
+    .account__container {
+        width: var(--width-content);
+        background-color: var(--color-grey-900);
+        padding: 80px;
+    }
+
+    .profile__layout {
+        display: flex;
+        justify-content:space-between;
+        column-gap: 30px;
+    }
+
+    .profile__panel--left, .profile__panel--right {
+        display: flex;
+        flex-direction: column;
+    }
+    .profile__panel--left {
+        width: 30%;
+        gap: 90px ;
+    }
+
+    .profile__panel--right {
+        width: 48%;
+        justify-content: space-between;
+    }
+
+    .profile-avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 35px;
+    }
+    .profile-avatar__media {
+        width: 230px;
+        height: 230px;
+
+        img {
+            opacity: 0.5;
+        }
+    }
+
+    .profile__title {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .profile-password__form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .profile-password__submit {
+        margin-top: 20px;
+    }
+
 
 }
