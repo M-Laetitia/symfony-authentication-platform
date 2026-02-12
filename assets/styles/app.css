@@ -10,8 +10,10 @@
 @import './layout/subscribe.css';
 @import './layout/contact.css';
 @import './layout/components.css';
+@import './layout/navbar.css';
 
 /* PAGES */
 @import './pages/home.css';
+@import './pages/account.css';
 
 /* COMPONENTS */

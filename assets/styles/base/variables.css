@@ -3,7 +3,7 @@
     --color-white : #F2F2F2;
     --color-black : #151515;
 
-    --color-grey-900: #242424;
+    --color-grey-900: #1c1c1c;
     --color-grey-800: #2F2F2F;
     --color-grey-700: #585858;
     --color-grey-200: #D2D2CE;
@@ -20,6 +20,7 @@
     
   
     --width-content : 75%;
+    --height-navbar : 100px;
     /* --radius-sm: 4px;
     --radius-md: 8px;*/
   
