@@ -1,0 +1,52 @@
+header.site-header {
+    background-color: var(--color-black);
+    width: 100%;
+    padding: 0 20px;
+    height: var(--height-navbar );
+    color: white!important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    
+    .navbar {
+    border-bottom: 1px solid #eee;
+    }
+    
+    .navbar__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 1rem 2rem;
+    }
+    
+    .navbar__brand a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    }
+    
+    .navbar__menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    }
+    
+    .navbar__link {
+    text-decoration: none;
+    color: inherit;
+    }
+    
+    .navbar__actions {
+    display: flex;
+    gap: 1rem;
+    }
+}
+      
