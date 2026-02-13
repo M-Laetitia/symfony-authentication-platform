@@ -8,7 +8,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class Banner
 {
     public string $title = 'Title';
-    public string $subtile = 'Subtile';
+    public ?string $subtile = 'Subtile';
     public ?string $imageSrc = '';
     public ?string $variant ='';
 }
