@@ -149,5 +149,34 @@
         margin-top: 20px;
     }
 
+    .profile-info__submit {
+        margin-top: 26px;
+    }
+
+    .profile-info .profile-info__form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 25px;
+
+        input {
+            margin-top: 20px;
+        }
+        
+    }
+
+    .profile-delete-account {
+
+        .profile-delete-account__title {
+            color: var(--color-accent);
+        }
+        .profile-delete-account__action {
+            margin-top: 45px;
+        }
+
+        .profile-delete-account__text {
+            font-weight: 300;
+        }
+    }
+
 
 }
