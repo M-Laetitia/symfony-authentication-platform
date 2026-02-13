@@ -2,37 +2,63 @@
     <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__container">
 
-            <!-- Brand -->
-            <div class="navbar__brand">
-                <a href="/" class="navbar__logo-link">
-                    <span class="navbar__logo">LOGO</span>
-                    <span class="navbar__site-name">Site Name</span>
-                </a>
+            <div class="navbar__left-menu">
+                <button
+                    class="side-panel__toggle"
+                    aria-expanded="false"
+                    aria-controls="side-panel"
+                    aria-label="Toggle side panel"
+                >
+                    <span class="side-panel__icon" aria-hidden="true"></span>
+                </button>
+    
+                <!-- Brand -->
+                <div class="navbar__brand">
+                    <a href="{{ path('home') }}" class="navbar__logo-link">
+                        <span class="navbar__logo"></span>
+                        <span class="navbar__site-name">MOSAIC</span>
+                    </a>
+                </div>
             </div>
+            <!-- Aside toggle -->
 
-            <!-- Main navigation -->
-            <ul class="navbar__menu">
-                <li class="navbar__item">
-                    <a href="/" class="navbar__link" aria-current="page">Home</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/team" class="navbar__link">Team</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/gallery" class="navbar__link">Gallery</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/blog" class="navbar__link">Blog</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/contact" class="navbar__link">Contact</a>
-                </li>
-            </ul>
+            <div class="navbar__right-menu">
 
-            <!-- Actions -->
-            <div class="navbar__actions">
-                <a href="/search" class="navbar__action">Search</a>
-                <a href="/account" class="navbar__action">Profile</a>
+                <!-- Main navigation -->
+                <ul class="navbar__menu">
+                    <li class="navbar__item">
+                        <a href="{{ path('home') }}"
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'home' %}navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'home' %}aria-current="page"{% endif %}>
+                        Home
+                     </a>
+                    </li>
+                    <li class="navbar__item">
+                        <a href="/team" class="navbar__link" {% if app.request.attributes.get('_route') == 'team' %}navbar__link--active{% endif %}>Team</a>
+                    </li>
+                    <li class="navbar__item">
+                        <a href="/gallery" class="navbar__link">Gallery</a>
+                    </li>
+                    <li class="navbar__item">
+                        <a href="/blog" class="navbar__link">Blog</a>
+                    </li>
+                    <li class="navbar__item">
+                        <a href="/contact" class="navbar__link">About Us</a>
+                    </li>
+                    <li class="navbar__item">
+                        <a href="/contact" class="navbar__link">Contact</a>
+                    </li>
+                </ul>
+    
+                <!-- Actions -->
+                <div class="navbar__actions">
+                    <a href="/search" class="navbar__action">
+                        <svg id="fi_7535830" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m20.7 19.3-3.4-3.4c1.1-1.4 1.7-3.1 1.7-4.9 0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8c1.8 0 3.5-.6 4.9-1.7l3.4 3.4c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4zm-15.7-8.3c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"  fill="#F2F2F2"></path></svg>
+                    </a>
+                    <a href="/profile" class="navbar__action">
+                        <svg fill="none" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg" id="fi_4519729"><path clip-rule="evenodd" d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10zm-4.2863 4.4006c.3279.3345.3279.8644-.0001 1.199-1.4519 1.4813-3.4754 2.4004-5.7135 2.4004-2.23824 0-4.26176-.9191-5.71374-2.4006-.32791-.3345-.3279-.8644.00001-1.199 1.45197-1.4813 3.47544-2.4004 5.71363-2.4004 2.2382 0 4.2617.9192 5.7137 2.4006zm-5.7137-4.4006c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3s-3 1.34315-3 3c0 1.6569 1.3431 3 3 3z" fill="#F2F2F2" fill-rule="evenodd"></path></svg>
+                    </a>
+                </div>
             </div>
 
         </div>
