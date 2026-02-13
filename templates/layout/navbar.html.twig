@@ -51,16 +51,71 @@
                 </ul>
     
                 <!-- Actions -->
+                <!-- Search -->
                 <div class="navbar__actions">
                     <a href="/search" class="navbar__action">
                         <svg id="fi_7535830" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m20.7 19.3-3.4-3.4c1.1-1.4 1.7-3.1 1.7-4.9 0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8c1.8 0 3.5-.6 4.9-1.7l3.4 3.4c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4zm-15.7-8.3c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"  fill="#F2F2F2"></path></svg>
                     </a>
-                    <a href="/profile" class="navbar__action">
-                        <svg fill="none" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg" id="fi_4519729"><path clip-rule="evenodd" d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10zm-4.2863 4.4006c.3279.3345.3279.8644-.0001 1.199-1.4519 1.4813-3.4754 2.4004-5.7135 2.4004-2.23824 0-4.26176-.9191-5.71374-2.4006-.32791-.3345-.3279-.8644.00001-1.199 1.45197-1.4813 3.47544-2.4004 5.71363-2.4004 2.2382 0 4.2617.9192 5.7137 2.4006zm-5.7137-4.4006c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3s-3 1.34315-3 3c0 1.6569 1.3431 3 3 3z" fill="#F2F2F2" fill-rule="evenodd"></path></svg>
-                    </a>
+
+                    <!-- log in/register/profile -->
+                    <div class="navbar__user" aria-label="User menu">
+                        <button class="navbar__user-btn" aria-haspopup="true" aria-expanded="false">
+                            {% if app.user %}
+                                <svg class="navbar__user-icon navbar__user-icon-profile {% if app.request.attributes.get('_route') == 'app_profile' %}navbar__icone--active{% endif %}" fill="none" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg">
+                                    <path clip-rule="evenodd" d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10zm-4.2863 4.4006c.3279.3345.3279.8644-.0001 1.199-1.4519 1.4813-3.4754 2.4004-5.7135 2.4004-2.23824 0-4.26176-.9191-5.71374-2.4006-.32791-.3345-.3279-.8644.00001-1.199 1.45197-1.4813 3.47544-2.4004 5.71363-2.4004 2.2382 0 4.2617.9192 5.7137 2.4006zm-5.7137-4.4006c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3s-3 1.34315-3 3c0 1.6569 1.3431 3 3 3z" fill="currentColor" fill-rule="evenodd"></path>
+                                </svg>
+                            {% else %}
+
+                            {% set currentRoute = app.request.attributes.get('_route') %}
+
+                            <svg class="navbar__user-icon navbar__user-icon-log
+                                {% if currentRoute in ['app_register', 'app_login'] %}
+                                    navbar__icone--active
+                                {% endif %}"
+                                width="25"
+                                height="25"
+                                viewBox="0 0 26 26"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.1449 4.43516e-05C8.67715 -0.0116744 4.74551 2.29985 2.49844 5.79204C2.39883 5.94731 2.51016 6.15239 2.69473 6.15239H4.7543C4.89492 6.15239 5.02676 6.09086 5.11465 5.98247C5.31973 5.73344 5.53945 5.49321 5.7709 5.26469C6.72598 4.31254 7.83633 3.56254 9.07266 3.04106C10.35 2.502 11.7094 2.22661 13.1127 2.22661C14.516 2.22661 15.8754 2.49907 17.1527 3.04106C18.3891 3.56254 19.4994 4.31254 20.4545 5.26469C21.4096 6.21684 22.1566 7.32719 22.6811 8.56059C23.223 9.83794 23.4955 11.1944 23.4955 12.5977C23.4955 14.001 23.2201 15.3575 22.6811 16.6348C22.1596 17.8682 21.4096 18.9786 20.4545 19.9307C19.4994 20.8829 18.3891 21.6329 17.1527 22.1543C15.8744 22.6943 14.5004 22.9713 13.1127 22.9688C11.7094 22.9688 10.35 22.6934 9.07266 22.1543C7.83874 21.6334 6.71748 20.8783 5.7709 19.9307C5.53945 19.6993 5.32266 19.459 5.11465 19.2129C5.02676 19.1045 4.89199 19.043 4.7543 19.043H2.69473C2.51016 19.043 2.3959 19.2481 2.49844 19.4034C4.74258 22.8868 8.65664 25.1954 13.1127 25.1954C20.0326 25.1954 25.6518 19.626 25.7221 12.7266C25.7924 5.71587 20.1645 0.0176225 13.1449 4.43516e-05ZM9.43359 15.8789V13.6524H0.234375C0.105469 13.6524 0 13.5469 0 13.418V11.7774C0 11.6485 0.105469 11.543 0.234375 11.543H9.43359V9.31645C9.43359 9.12016 9.66211 9.00883 9.81445 9.13188L13.9717 12.4131C13.9997 12.4351 14.0223 12.4631 14.0379 12.495C14.0535 12.527 14.0616 12.5621 14.0616 12.5977C14.0616 12.6333 14.0535 12.6684 14.0379 12.7004C14.0223 12.7323 13.9997 12.7603 13.9717 12.7823L9.81445 16.0635C9.66211 16.1836 9.43359 16.0752 9.43359 15.8789Z" fill="currentColor" fill="black"/>
+                                </svg>
+                            {% endif %}
+                            <span class="visually-hidden">User menu</span>
+                        </button>
+
+                        <ul class="navbar__user-menu" aria-label="User actions">
+                            <div class="navbar__user-container">
+                                {% if app.user %}
+                                    <li class="navbar__user-item">
+                                        
+
+                                        <a href="{{ path('app_profile') }}"
+                                        class="navbar__user-link "
+                                        {% if app.request.attributes.get('_route') == 'app_profile' %}aria-current="page"{% endif %}>
+                                        Profile
+                                     </a>
+
+
+                                    </li>
+                                    <li class="navbar__user-item">
+                                        <a href="{{ path('app_logout') }}" class="navbar__user-link">Log out</a>
+                                    </li>
+                                {% else %}
+                                    <li class="navbar__user-item">
+                                        <a href="{{ path('app_register') }}" class="navbar__user-link">Register</a>
+                                    </li>
+                                    <li class="navbar__user-item">
+                                        <a href="{{ path('app_login') }}" class="navbar__user-link">Log in</a>
+                                    </li>
+                                {% endif %}
+                            </div>
+                        </ul>
+</div>
+                    
                 </div>
             </div>
 
         </div>
     </nav>
 </header>
+
