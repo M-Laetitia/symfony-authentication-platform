@@ -18,6 +18,7 @@
     --text-secondary: var(--grey-700);
     --border-default: var(--grey-800); */
     
+    --breakpoint-mobile: 768px;
   
     --width-content : 75%;
     --height-navbar : 100px;
