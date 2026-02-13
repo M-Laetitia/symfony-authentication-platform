@@ -84,3 +84,17 @@ document.addEventListener('keydown', e => {
 });
 
 
+// menu burger
+
+document.addEventListener('DOMContentLoaded', function() {
+    const burger = document.querySelector('.navbar__burger');
+    const menu = document.querySelector('.navbar__menu-container');
+
+    if (burger && menu) {
+        burger.addEventListener('click', function() {
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !isExpanded);
+            menu.setAttribute('aria-hidden', isExpanded);
+        });
+    }
+});
