@@ -4,14 +4,15 @@
 
             <div class="navbar__left-menu">
                 <button
-                    class="side-panel__toggle"
+                    class=" navbar_icon-btn side-panel__toggle"
                     aria-expanded="false"
                     aria-controls="side-panel"
                     aria-label="Toggle side panel"
                 >
-                    <span class="side-panel__icon" aria-hidden="true"></span>
+                    <span class="navbar_icon side-panel__icon" aria-hidden="true"></span>
                 </button>
-    
+
+                
                 <!-- Brand -->
                 <div class="navbar__brand">
                     <a href="{{ path('home') }}" class="navbar__logo-link">
@@ -49,6 +50,16 @@
                         <a href="/contact" class="navbar__link">Contact</a>
                     </li>
                 </ul>
+
+                <!-- Burger menu -->
+                <button
+                class="navbar_icon-btn navbar__burger"
+                aria-expanded="false"
+                aria-controls="navbar__menu"
+                aria-label="Menu"
+                >
+                    <span class="navbar_icon navbar__burger-icon" aria-hidden="true"></span>
+                </button>
     
                 <!-- Actions -->
                 <!-- Search -->
@@ -56,6 +67,9 @@
                     <a href="/search" class="navbar__action">
                         <svg id="fi_7535830" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m20.7 19.3-3.4-3.4c1.1-1.4 1.7-3.1 1.7-4.9 0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8c1.8 0 3.5-.6 4.9-1.7l3.4 3.4c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4zm-15.7-8.3c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"  fill="#F2F2F2"></path></svg>
                     </a>
+
+
+
 
                     <!-- log in/register/profile -->
                     <div class="navbar__user" aria-label="User menu">
