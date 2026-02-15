@@ -48,37 +48,31 @@ body.page--account .page-wrapper {
     flex: 1; 
 }
 
-
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     text-transform: uppercase;
+    font-weight: 400;
 }
-
+h1, h2 {
+    font-weight: 700;
+}
 h1 {
     font-size: 48px;
-    font-weight: 700;
 }
-
 h2 {
     font-size: 80px;
-    font-weight: 700;
 }
-
 h3 {
     font-size: 46px;
     font-weight: 500;
 }
-
 h4 {
     font-size: 26px;
-    font-weight: 400;
 }
-
 h5 {
     font-size: 20px;
     font-weight: 300;
 }
-
 h6 {
     font-size: 18px;
 }
@@ -360,4 +354,57 @@ h6 {
     white-space: nowrap;
     border: 0;
 }
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+    .section-centered {
+        width: 90%;
+    }
+}
+
+@media (max-width: 1280px) {
+
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+    h2 { font-size: 60px; }
+    h3 { font-size: 36px; }
+    h4 { font-size: 22px; }
+    h5 { font-size: 18px; }
+    h6 { font-size: 16px; }
+
+    .u-divider-medium {
+        height: 90px;
+    }
+    
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 768px ) {
+    h2 { font-size: 42px; }
+    h3 { font-size: 30px; }
+    h4 { font-size: 20px; }
+    h5 { font-size: 18px; }
+    h6 { font-size: 18px; }
+}
+
+@media (max-width: 900px ) {
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+    h2 { font-size: 34px; }
+    h3 { font-size: 26px; }
+    h4 { font-size: 18px; }
+    h5 { font-size: 16px; }
+    h6 { font-size: 14px; }
+}
+
 

@@ -78,3 +78,54 @@
 }
 
 
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+
+}
+
+@media (max-width: 1280px) {
+    .section-contact {
+        .contact__form-wrapper {
+            padding: 30px;
+        }
+        .contact__container {
+            align-items: normal;
+            flex-direction:column-reverse;
+        }
+    }
+    .section-contact {
+        .contact__info, .contact__form-wrapper {
+            width: 100%;
+        }
+    }
+
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+
+
+    
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 768px ) {
+
+}
+
+@media (max-width: 900px ) {
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+
+}
+
+

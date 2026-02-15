@@ -176,6 +176,9 @@
   }
 }
 
+
+
+
 /* &-------- PHOTOGRAPH BOX --------- */
 /* &--------------------------------- */
 
@@ -244,4 +247,46 @@
             }
         }
     }
+}
+
+
+/* ?-------- MEDIA QUERIES  --------- */
+/* ?--------------------------------- */
+
+
+/* ?------------- LARGE ------------- */
+
+
+@media (max-width: 1280px) {
+    .service-box {
+        width: 100%;
+    }
+}
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+
+}
+
+/* ?------------- SMALL ------------- */
+
+
+@media (max-width: 900px ) {
+    .photograph-box {
+        width: 100%;;
+    }
+
+}
+@media (max-width: 768px ) {
+    .section-intro {
+        gap: 30px;
+    }
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+
 }

@@ -383,3 +383,130 @@
 
 
 }
+
+
+/* ?-------- MEDIA QUERIES  --------- */
+/* ?--------------------------------- */
+
+
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+    .section-services .section-intro,
+    .section-works .section-intro,
+    .section-intro--light,
+    .section-photographs__list {
+      width: 90%;
+    }
+  }
+
+
+@media (max-width: 1280px) {
+    .section-about {
+        & .section-about__features {
+            gap: 30px;
+            .section-about__feature {
+                padding: 40px 20px;
+                width: 100%;
+            }
+        }
+    }
+    .section-services {
+        & .section-services__content {
+            .section-services__list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px; 
+
+            }
+        }
+    }
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+    .section-about {
+        .section-about__text-image {
+            gap: 50px;
+            flex-direction: column;
+        }
+    }
+    .section-about {
+        & .section-about__features {
+            flex-direction: column;
+            gap: 30px;
+        }
+    }
+
+    .section-testimonials {
+        & .testimonial-card__quote {
+            svg {
+                width: 90px;
+            }
+        }
+        .section-testimonials__container
+     {
+            column-gap: 80px;
+        }
+        .testimonial-card__author-subtitle {
+            font-size: 20px;
+
+        }
+    }
+
+    
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 900px ) {
+    .section-photographs__list {
+        flex-direction: column;
+    }
+    .section-photographs
+    {
+        height: 100%;
+        padding-bottom: 80px;
+    }
+}
+
+
+
+@media (max-width: 768px ) {
+    .section-about {
+        & .section-about__features {
+            margin-top: 40px;
+        }
+    }
+    .section-services {
+        & .section-services__content {
+            .section-services__list {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    }
+
+    .section-testimonials {
+        .section-testimonials__container
+        {
+            flex-direction: column;
+            gap: 80px;
+
+        }
+        .testimonial-card {
+               width: 100%;
+           }
+    }
+
+
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+
+}
