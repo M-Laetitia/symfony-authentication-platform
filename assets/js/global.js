@@ -68,8 +68,7 @@ function togglePanel() {
 
 toggle.addEventListener('click', () => {
     toggle.classList.toggle('active');
-
- 
+    togglePanel();
     const panel = document.getElementById(toggle.getAttribute('aria-controls'));
     const isExpanded = toggle.classList.contains('active');
     toggle.setAttribute('aria-expanded', isExpanded);
@@ -88,13 +87,14 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('DOMContentLoaded', function() {
     const burger = document.querySelector('.navbar__burger');
-    const menu = document.querySelector('.navbar__menu-container');
+    const menu = document.querySelector('.navbar__menu');
 
     if (burger && menu) {
         burger.addEventListener('click', function() {
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', !isExpanded);
-            menu.setAttribute('aria-hidden', isExpanded);
+            const isOpen = menu.classList.toggle('is-open');
+
+            this.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
         });
     }
 });
