@@ -66,6 +66,7 @@
     .section-about__features {
         display: flex;
         justify-content: space-between;
+        margin-top: 80px;
 
 
         .section-about__feature {
