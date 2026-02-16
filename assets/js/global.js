@@ -1,16 +1,29 @@
-// Gestion automatique des messages flash
+// FLash messages
 document.addEventListener('DOMContentLoaded', () => {
     const flashes = document.querySelectorAll('.flash-message');
     if (!flashes.length) return;
 
-    setTimeout(() => {
-        flashes.forEach(element => {
-            element.style.transition = 'opacity 0.5s';
-            element.style.opacity = '0';
-            setTimeout(() => element.remove(), 500);
+    flashes.forEach(flash => {
+        if (!flash.querySelector('.flash-close')) {
+            setTimeout(() => {
+                flash.style.transition = 'opacity 0.5s ease';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 500);
+            }, 4000);
+        }
+    });
+
+    // Close btn
+    document.querySelectorAll('.flash-close').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const flash = e.target.closest('.flash-message');
+            flash.style.transition = 'opacity 0.5s ease';
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 500);
         });
-    }, 4000);
+    });
 });
+
 
 const accentColor = "#5FEEAB";
 const grey900 = "#242424";
@@ -170,3 +183,5 @@ document.addEventListener('DOMContentLoaded', function () {
       specialReq.classList.toggle('invalid', !/[^A-Za-z0-9]/.test(value));
     });
   });
+
+  

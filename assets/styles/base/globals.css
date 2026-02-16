@@ -12,7 +12,6 @@ html, body {
 
 body {
     background-color: var(--color-white);
-
 }
 
 body:is(.page--account, .page--profile) {
@@ -92,7 +91,6 @@ h6 {
 }
 
 
-
 .comment {
     border: 1px solid black;
     padding: 30px;
@@ -170,6 +168,43 @@ h6 {
     align-items: center;
     justify-content: space-between;
 }
+
+.register-form-error {
+    color: var(--color-error);
+}
+
+.flash-message {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 25px 25px;
+    background-color: var(--color-black);
+    border: 1px solid var(--color-accent);
+    color: var(--color-white);
+    font-size: 16px;
+    opacity: 1;
+    transition: opacity 0.5s ease, top 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+}
+
+.flash-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+}
+
+/* .flash-message.alert-success { background-color: #4caf50; }
+.flash-message.alert-error   { background-color: #e63946; }
+.flash-message.alert-warning { background-color: #f4b400; }
+.flash-message.alert-info    { background-color: #2196f3; } */
+
 
 /* &--------- TEXT SCROLL ----------- */
 /* &--------------------------------- */

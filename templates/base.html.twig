@@ -14,14 +14,22 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-
+    
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="flash-message alert alert-{{ label }}">
-                {{ message }}
-            </div>
+            {% if label == 'success' and message.type is defined and message.type == 'registration' %}
+                <div class="flash-message alert alert-{{ label }}">
+                    {{ message.text|nl2br }}
+                    <button type="button" class="flash-close" aria-label="Close">&times;</button>
+                </div>
+            {% else %}
+                <div class="flash-message alert alert-{{ label }}">
+                    {{ message|nl2br }}
+                </div>
+            {% endif %}
         {% endfor %}
     {% endfor %}
+        
 
 
     {% include 'layout/navbar.html.twig' %}
