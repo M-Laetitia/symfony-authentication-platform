@@ -83,10 +83,13 @@
     .auth-form__group--password {
         display: flex;
         flex-direction: column;
-        gap: 21px; 
+    }
+    .password-wrapper--firstPassword {
+        margin-bottom: 21px;
     }
     .password-wrapper {
         position: relative;
+
 
         .toggle-password {
             height: auto;
@@ -100,6 +103,27 @@
         }
     }
 }
+
+.password-requirements {
+    overflow: hidden;        
+    max-height: 0;  
+    transition: max-height 1s ease, opacity 1s ease;
+    opacity: 0;  
+}
+
+.password-requirements.show {
+    max-height: 200px; 
+    opacity: 1;
+    margin-bottom: 20px;
+}
+  
+  .password-requirements li {
+    margin-bottom: 4px;
+  }
+  
+  .password-requirements li.valid {
+    text-decoration: line-through;
+  }
 
 /* &------------ PROFILE ------------ */
 /* &--------------------------------- */

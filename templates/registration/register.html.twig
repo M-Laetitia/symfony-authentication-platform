@@ -72,7 +72,7 @@
     
                 <!-- Password -->
                 <div class="auth-form__group auth-form__group--password">
-                    <div class="password-wrapper">
+                    <div class="password-wrapper password-wrapper--firstPassword">
                         {{ form_label(registrationForm.plainPassword.first, 'Password', {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
                         {{ form_widget(registrationForm.plainPassword.first, {
                             'attr': {
@@ -86,11 +86,19 @@
                             </svg>
                         </span>
                     </div>
+
+                    <ul class="password-requirements">
+                        <li id="length" class="invalid">At least 8 characters</li>
+                        <li id="uppercase" class="invalid">At least 1 uppercase letter</li>
+                        <li id="number" class="invalid">At least 1 number</li>
+                        <li id="special" class="invalid">At least 1 special character (!@#$...)</li>
+                    </ul>
+                    
                     <div class="field-error register-form-error">
                         {{ form_errors(registrationForm.plainPassword.first) }}
                     </div>
 
-                    <div class="password-wrapper">
+                    <div class="password-wrapper password-wrapper--secondPassword">
                         {{ form_label(registrationForm.plainPassword.second, 'Password', {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
                         {{ form_widget(registrationForm.plainPassword.second, {
                             'attr': {
