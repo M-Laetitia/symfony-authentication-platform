@@ -9,6 +9,8 @@
     --color-grey-200: #D2D2CE;
     --color-accent: #5FEEAB;
 
+    --color-error: #ffb8b2; 
+
     /* TYPO */
     --font-base: 'Lato', sans-serif;
     --font-heading: 'Oswald', sans-serif;
