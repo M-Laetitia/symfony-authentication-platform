@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\FormExtension\HoneyPotType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,14 +24,21 @@ class RegistrationForm extends HoneyPotType
 
         $builder
             ->add('email', EmailType::class, [
+                'attr' => [
+                    'placeholder' => 'Email address*'
+                ],
                 'constraints' => [
                     new NotBlank(message: 'Please enter an email address.'),
-                    new Email(message: 'Please enter a valid email address.'),
+                    new Email(message: 'Please enter a valid email address'),
                 ],
             ])
             ->add('username', TextType::class, [
-                'required' => false,
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Username*'
+                ],
                 'constraints' => [
+                    new NotBlank(message: 'Please enter a username'),
                     new Length(max: 30, maxMessage: 'The username must not exceed {{ limit }} characters.'),
                 ],
             ])
@@ -42,16 +50,35 @@ class RegistrationForm extends HoneyPotType
                     new IsTrue(message: 'You should agree to our terms.'),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'invalid_message' => 'The passwords do not match.',
+                'first_options'  => [
+                    'label' => false,
+                    'attr' => [
+                        'class' => 'auth-form__input input input--dark input--large',
+                        'placeholder' => 'Password*',
+                        'autocomplete' => 'new-password*',
+                    ],
+                ],
+                'second_options' => [
+                    'label' => false,
+                    'attr' => [
+                        'class' => 'auth-form__input input input--dark input--large',
+                        'placeholder' => 'Confirm password*',
+                        'autocomplete' => 'new-password*',
+                    ],
+                ],
                 'constraints' => [
-                    new NotBlank(message: 'Please enter a password'),
-                    new Length(
-                        min: 6,
-                        minMessage: 'Your password should be at least {{ limit }} characters',
-                        max: 4096
-                    ),
+                    new NotBlank([
+                        'message' => 'Please enter a password',
+                    ]),
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'max' => 4096,
+                    ]),
                 ],
             ])
         ;

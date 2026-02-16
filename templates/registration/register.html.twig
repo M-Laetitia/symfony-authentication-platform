@@ -3,9 +3,9 @@
 {% block title %}Register{% endblock %}
 {% block body_class %}page--account{% endblock %}
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
+    {# {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+    {% endfor %} #}
 
 
 <section class="register account account--register u-display-center" aria-labelledby="register-title">
@@ -47,10 +47,14 @@
                     {{ form_label(registrationForm.username, null, {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
                     {{ form_widget(registrationForm.username, {
                         'attr': {
-                            'class': 'auth-form__input input input--dark input--large',
-                            'placeholder': 'Username'
+                            'class': 'auth-form__input input input--dark input--large'
                         }
                     }) }}
+                    {% if registrationForm.vars.submitted %}
+                        <div class="field-error register-form-error">
+                        {{ form_errors(registrationForm.username) }}
+                        </div>
+                    {% endif %}
                 </div>
     
                 <!-- Email -->
@@ -58,21 +62,41 @@
                     {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
                     {{ form_widget(registrationForm.email, {
                         'attr': {
-                            'class': 'auth-form__input input input--dark input--large',
-                            'placeholder': 'Email address'
+                            'class': 'auth-form__input input input--dark input--large'
                         }
                     }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
                 </div>
     
                 <!-- Password -->
-                <div class="auth-form__group">
-                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
-                    {{ form_widget(registrationForm.plainPassword, {
+                <div class="auth-form__group auth-form__group--password">
+                    {{ form_label(registrationForm.plainPassword.first, 'Password', {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.first, {
                         'attr': {
-                            'class': 'auth-form__input input input--dark input--large',
-                            'placeholder': 'Password'
+                            'class': 'auth-form__input input input--dark input--large'
+
                         }
                     }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(registrationForm.plainPassword.first) }}
+                    </div>
+
+
+                    {{ form_label(registrationForm.plainPassword.second, 'Password', {'label_attr': {'class': 'auth-form__label sr-only'}}) }}
+                    {{ form_widget(registrationForm.plainPassword.second, {
+                        'attr': {
+                            'class': 'auth-form__input input input--dark input--large'
+                        }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(registrationForm.plainPassword.second) }}
+                    </div>
+                    <div class="field-error register-form-error">
+                        {{ form_errors(registrationForm.plainPassword) }}
+                    </div>
+
                 </div>
     
             </fieldset>
@@ -81,6 +105,9 @@
             <div class="auth-form__group auth-form__group--checkbox">
                 {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'auth-form__checkbox'}}) }}
                 {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'auth-form__label'}}) }}
+            </div>
+            <div class="field-error register-form-error">
+                {{ form_errors(registrationForm.agreeTerms) }}
             </div>
     
             <!-- Submit -->
