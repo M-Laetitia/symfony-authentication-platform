@@ -98,3 +98,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// toggle password register form
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        });
+    });
+});

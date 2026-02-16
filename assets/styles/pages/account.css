@@ -80,7 +80,25 @@
 /* &--------------------------------- */
 
 .account--register {
+    .auth-form__group--password {
+        display: flex;
+        flex-direction: column;
+        gap: 21px; 
+    }
+    .password-wrapper {
+        position: relative;
 
+        .toggle-password {
+            height: auto;
+            position: absolute;
+            display: inline-block;
+            right: 25px;
+            transform: translateY(-50%);
+            top : 50%;
+            cursor: pointer;
+            /* pointer-events: none;  */
+        }
+    }
 }
 
 /* &------------ PROFILE ------------ */
