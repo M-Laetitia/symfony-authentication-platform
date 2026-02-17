@@ -27,15 +27,15 @@
 
             {{ form_start(requestForm) }}
 
-            <div class="resset-password-form__group">
+            <div class="reset-password-form__group">
                 <label for="{{ requestForm.email.vars.id }}"
-                       class="resset-password-form__label sr-only">
+                       class="reset-password-form__label sr-only">
                     Email
                 </label>
             
                 {{ form_widget(requestForm.email, {
                     attr: {
-                        class: 'resset-password-form__input input input--dark input--large',
+                        class: 'reset-password-form__input input input--dark input--large',
                         placeholder: 'Email address',
                         autocomplete: 'email'
                     }
