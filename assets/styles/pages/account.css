@@ -21,7 +21,7 @@
         margin-bottom: 65px;
         
     }
-    .auth__title {
+    .auth__title, .reset-password__title {
         color: var(--color-white);
         font-size: 30px;
         font-family: var(--font-heading);
@@ -225,6 +225,19 @@
 
 }
 
+/* &--------- RESET PASSWORD --------- */
+/* &--------------------------------- */
+.account--reset-password  {
+    .reset-password__title {
+        margin-bottom: 65px;
+    }
+    .reset-password__text {
+        margin-bottom: 20px;
+    }
+    .resset-password-form__group {
+        margin-bottom: 30px;
+    }
+}
 
 /* ?-------- MEDIA QUERIES  --------- */
 /* ?--------------------------------- */
