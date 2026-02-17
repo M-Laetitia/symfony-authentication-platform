@@ -239,6 +239,23 @@
     }
 }
 
+.account--check-email {
+    .check-email__text {
+        strong {
+            color: var(--color-accent);
+        }
+    }
+    .check-email__subtext {
+        a {
+            transition: var(--transition-base);
+            color: var(--color-accent);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 /* ?-------- MEDIA QUERIES  --------- */
 /* ?--------------------------------- */
 
