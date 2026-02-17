@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!flashes.length) return;
 
     flashes.forEach(flash => {
+        setTimeout(() => flash.classList.add('show'), 50);
+
         if (!flash.querySelector('.flash-close')) {
             setTimeout(() => {
-                flash.style.transition = 'opacity 0.5s ease';
-                flash.style.opacity = '0';
-                setTimeout(() => flash.remove(), 500);
+                flash.classList.remove('show'); 
+                setTimeout(() => flash.remove(), 500); 
             }, 4000);
         }
     });
