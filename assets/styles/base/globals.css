@@ -169,8 +169,23 @@ h6 {
     justify-content: space-between;
 }
 
+/* &------------ ALERT _------------- */
+/* &--------------------------------- */
+
+
 .register-form-error {
     color: var(--color-error);
+}
+
+.auth-form__alert {
+
+}
+
+.auth-form__alert-emailVerified {
+    padding: 19px;
+    border: 1px solid var(--color-error);
+    margin-bottom: 20px;
+    /* background-color: var(--color-grey-700); */
 }
 
 .flash-message {
