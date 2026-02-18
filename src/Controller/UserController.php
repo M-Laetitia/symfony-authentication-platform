@@ -5,12 +5,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Form\ProfileFormType;
 
 class UserController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
     #[IsGranted('ROLE_USER')]
-    public function profile(): Response
+    public function profile(Request $request,  EntityManagerInterface $entityManager): Response
     {
         // Récupère l'utilisateur connecté via AbstractController
         $user = $this->getUser();
@@ -24,9 +27,22 @@ class UserController extends AbstractController
         //     throw $this->createAccessDeniedException('Accès refusé : rôle insuffisant.');
         // }
 
+
+        $profilInfoForm = $this->createForm(ProfileFormType::class, $user);
+        $profilInfoForm->handleRequest($request);
+        if ($profilInfoForm->isSubmitted() && $profilInfoForm->isValid()) {
+
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Profile updated successfully.');
+    
+            return $this->redirectToRoute('app_profile');
+        }
+        
         // Rend la vue avec l'utilisateur
         return $this->render('user/profile.html.twig', [
             'user' => $user,
+            'profilInfoForm' => $profilInfoForm->createView(),
         ]);
     }
 }

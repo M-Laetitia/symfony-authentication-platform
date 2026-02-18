@@ -119,41 +119,46 @@ variant="dark"
                     aria-labelledby="profile-info-title"
                 >
 
-                    <form class="profile-info__form">
+                {{ form_start(profilInfoForm, {
+                    attr: { class: 'profile-info__form' }
+                }) }}
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.username, 'Username', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.username, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(profilInfoForm.username) }}
+                    </div>
+                    
+                </div>
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.email, 'Email address', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.email, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
 
-                        <div class="profile-info__group">
-                            <label for="username" class="profile__title profile-info__label">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                class="input input--dark"
-                            >
-                        </div>
+                    </div>
+                    {{ form_errors(profilInfoForm.email) }}
+                </div>
 
-                        <div class="profile-info__group">
-                            <label for="email" class="profile__title profile-info__label">
-                                Email address
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                class="input input--dark"
-                                autocomplete="email"
-                            >
-                        </div>
+                <button
+                    type="submit"
+                    class="button button--large button--accent profile-info__submit"
+                >
+                    Update information
+                </button>
 
-                        <button
-                            type="submit"
-                            class="button button--large button--accent profile-info__submit"
-                        >
-                            Update information
-                        </button>
-
-                    </form>
+                {{ form_end(profilInfoForm) }}
                 </section>
-
+                
                 <!-- Delete account -->
                 <section
                     class="profile-delete-account"
