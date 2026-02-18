@@ -172,7 +172,7 @@
         height: 230px;
 
         img {
-            opacity: 0.5;
+            /* opacity: 0.5; */
         }
     }
 
@@ -221,6 +221,48 @@
             font-weight: 300;
         }
     }
+
+    .profile-avatar__form{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+
+        input {
+            padding: 0px;
+        }
+    }
+
+    .profile-avatar__avatar-delete, .profile-avatar__avatar-form {
+        width: 100%;
+    }
+
+    /* .input-file-hidden {
+        display: none; 
+    }
+    
+    .custom-file-upload {
+        width: 100%;
+        label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF; 
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .button {
+            margin-bottom: 20px;
+        }
+    }
+    
+    
+    .custom-file-upload label:hover {
+        background-color: #0056b3;
+    } */
 
 
 }
