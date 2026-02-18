@@ -46,6 +46,32 @@ variant="dark"
                     </button>
                 </section>
 
+                <section>
+                    {{ form_start(formAvatar, {
+                        attr: {
+                            class: 'profile-avatar__form'
+                        }
+                    }) }}
+                    
+                        <div class="profile-avatar__group">
+                            {{ form_widget(formAvatar.avatar, {
+                                attr: {
+                                    class: 'input input--dark'
+                                }
+                            }) }}
+                            {{ form_errors(formAvatar.avatar) }}
+                        </div>
+                    
+                        <button
+                            type="submit"
+                            class="button button--large button--accent profile-avatar__submit"
+                        >
+                            Update my avatar
+                        </button>
+                    
+                    {{ form_end(formAvatar) }}
+                </section>
+
              
                 <!-- Change password -->
                 <section

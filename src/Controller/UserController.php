@@ -8,10 +8,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\ProfileFormType;
+use App\Form\ProfileAvatarUploadFormType;
 use App\Form\ProfileChangePasswordFormType;
+use App\Enum\MediaType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Form\FormError;
-
+use App\Service\MediaUploader;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
 
@@ -19,7 +22,7 @@ class UserController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
     #[IsGranted('ROLE_USER')]
-    public function profile(Request $request,  EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function profile(Request $request,  EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, MediaUploader $mediaUploader): Response
     {
         // Récupère l'utilisateur connecté via AbstractController
         /** @var \App\Entity\User $user */
@@ -66,11 +69,41 @@ class UserController extends AbstractController
             }
         }
 
+        //^ Avatar upload
+        $formAvatar = $this->createForm(ProfileAvatarUploadFormType::class);
+        $formAvatar->handleRequest($request);
+    
+        if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
+            /** @var UploadedFile $avatarFile */
+            $avatarFile = $formAvatar->get('avatar')->getData();
+            if ($avatarFile instanceof UploadedFile) {
+                // Delete the old image
+                if ($user->getAvatar()) {
+                    @unlink($this->getParameter('uploads_directory') . '/' . $user->getAvatar()->getPath());
+                }
+
+    
+                $media = $mediaUploader->upload(
+                    $avatarFile,
+                    $user->getUsername() . 'avatar ',
+                    'Avatar',
+                    MediaType::AVATAR,
+                    'avatar',
+                );
+    
+                $user->setAvatar($media);
+                $entityManager->flush();
+    
+                $this->addFlash('success', 'Avatar updated successfully.');
+                return $this->redirectToRoute('app_profile');
+            }
+        }
 
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'profilInfoForm' => $profilInfoForm->createView(),
             'formPassword' => $formPassword->createView(),
+            'formAvatar' => $formAvatar->createView(),
         ]);
     }
 }
