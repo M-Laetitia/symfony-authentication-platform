@@ -134,6 +134,7 @@
     height: auto;
     padding-top: 0;
     padding: 0 20px;
+    margin-top: 0;
     
     .account__container {
         width: var(--width-content);
@@ -305,11 +306,24 @@
 /* ?------------- LARGE ------------- */
 
 @media (max-width: 1500px) {
+    .account--profile {
+        .profile__panel--left {
+            width: 40%;
+        }
+    }
 
+    .profile__panel--right {
+        width: 60%;
+        justify-content: space-between;
+    }
 }
 
 @media (max-width: 1280px) {
-
+    .account--profile {
+        .account__container {
+            width: 100%;
+        }
+    }
 }
 
 /* ?------------- MEDIUM ------------ */
@@ -330,6 +344,15 @@
             width: 100%;
         }
     }
+    .account--profile {
+        padding-top: 0;
+    }
+    .account--profile {
+        .account__container
+     {
+            padding: 50px;
+        }
+    }
 
 }
 @media (max-width: 768px ) {
@@ -339,6 +362,25 @@
             padding: 30px;
         }
     }
+
+    .account--profile {
+        .profile__layout {
+            row-gap: 80px;
+            flex-direction: column;
+        }
+        .profile__panel--left, .profile__panel--right
+        {
+            width: 100%;
+        }
+
+        .profile-delete-account {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--color-grey-700);
+        }
+    }
+
+
 }
 
 
