@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 use App\Event\UserRegisteredEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -33,6 +34,13 @@ class RegistrationController extends AbstractController
 
             // Déléguer toute la logique d'inscription au service
             $this->userRegistrationService->register($user, $plainPassword);
+
+            $this->addFlash('success', [
+                'text' => 'Your account has been created successfully.
+                           We’ve sent you a confirmation email to verify your email address.
+                           Please click the link in the email to activate your account before logging in.',
+                'type' => 'registration'
+            ]);
 
             // Le controller ne s'occupe que de la redirection
             return $this->redirectToRoute('app_login');

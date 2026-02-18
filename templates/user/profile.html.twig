@@ -1,25 +1,211 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon profil{% endblock %}
+
+{% block title %}My profile{% endblock %}
+
+{% block body_class %}page--profile{% endblock %}
 
 {% block body %}
-<div >
-    <h1>Mon profil</h1>
 
-    <div>
-        <p><strong>Pseudo :</strong> {{ user.username }}</p>
-        <p><strong>Email :</strong> {{ user.email }}</p>
-        <pre>{{ dump(user.roles) }}</pre>
-        <p><strong>Roles :</strong>
-            {% for role in user.roles %}
-                <span >{{ role }}</span>
-            {% else %}
-                <span >Aucun rôle</span>
-            {% endfor %}
-        </p>
+<twig:Banner
+title="My Profile"
+subtitle="Welcome back, {{ app.user ? app.user.username : '' }}"
+variant="dark"
+/>
+
+<section
+    class="profile account account--profile u-display-center"
+    aria-labelledby="profile-title"
+>
+    <div class="profile__container account__container auth__container">
+
+        <div class="profile__layout">
+
+            <!-- LEFT PANEL -->
+            <aside class="profile__panel profile__panel--left">
+
+                <!-- Avatar -->
+                <section class="profile-avatar" aria-labelledby="profile-avatar-title">
+                    <p id="profile-avatar-title" class="visually-hidden">
+                        Profile picture
+                    </p>
+
+                    <figure class="profile-avatar__media">
+                        <img
+                            src="media/images/avatar-profile.jpg"
+                            alt="Profile picture"
+                            class="profile-avatar__image u-img-cover "
+                        >
+                    </figure>
+
+                    <button
+                        type="button"
+                        class="profile-avatar__action button button--large button--border-accent"
+                    >
+                        Upload picture
+                    </button>
+                </section>
+
+                <!-- Change password -->
+                <section
+                    class="profile-password"
+                    aria-labelledby="profile-password-title"
+                >
+                    <p
+                        id="profile-password-title"
+                        class="profile__title profile-password__title "
+                    >
+                        Change your password
+                    </p>
+
+                    <form class="profile-password__form">
+
+                        <div class="profile-password__group">
+                            <label for="current-password" class="sr-only">
+                                Current password
+                            </label>
+                            <input
+                                type="password"
+                                id="current-password"
+                                placeholder="Current password"
+                                class="input input--dark"
+                                autocomplete="current-password"
+                            >
+                        </div>
+
+                        <div class="profile-password__group">
+                            <label for="new-password" class="sr-only">
+                                New password
+                            </label>
+                            <input
+                                type="password"
+                                id="new-password"
+                                placeholder="New password"
+                                class="input input--dark"
+                                autocomplete="new-password"
+                            >
+                        </div>
+
+                        <div class="profile-password__group">
+                            <label for="confirm-password" class="sr-only">
+                                Confirm new password
+                            </label>
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                placeholder="Confirm new password"
+                                class="input input--dark"
+                            >
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="button button--large button--accent profile-password__submit"
+                        >
+                            Change my password
+                        </button>
+
+                    </form>
+                </section>
+
+            </aside>
+
+            <!-- RIGHT PANEL -->
+            <main class="profile__panel profile__panel--right">
+
+                <!-- Account info -->
+                <section
+                    class="profile-info"
+                    aria-labelledby="profile-info-title"
+                >
+
+                    <form class="profile-info__form">
+
+                        <div class="profile-info__group">
+                            <label for="username" class="profile__title profile-info__label">
+                                Username
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                class="input input--dark"
+                            >
+                        </div>
+
+                        <div class="profile-info__group">
+                            <label for="email" class="profile__title profile-info__label">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                class="input input--dark"
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="button button--large button--accent profile-info__submit"
+                        >
+                            Update information
+                        </button>
+
+                    </form>
+                </section>
+
+                <!-- Delete account -->
+                <section
+                    class="profile-delete-account"
+                    aria-labelledby="profile-delete-account-title"
+                >
+                    <p
+                        id="profile-delete-account-title"
+                        class="profile__title profile-delete-account__title"
+                    >
+                        Delete your account
+                    </p>
+
+                    <p class="profile-delete-account__text">
+                        This will permanently deactivate your account and all
+                        your activities from Mosaic.
+                        <strong>This cannot be undone.</strong>
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button  button--large button--border-accent profile-delete-account__action"
+                    >
+                        Delete my account
+                    </button>
+                </section>
+
+            </main>
+
+        </div>
+    </div>
+</section>
+
+
+
+        <h1>Mon profil</h1>
+    
+        <div>
+            <p><strong>Pseudo :</strong> {{ user.username }}</p>
+            <p><strong>Email :</strong> {{ user.email }}</p>
+            {# <pre>{{ dump(user.roles) }}</pre> #}
+            <p><strong>Roles :</strong>
+                {% for role in user.roles %}
+                    <span >{{ role }}</span>
+                {% else %}
+                    <span >Aucun rôle</span>
+                {% endfor %}
+            </p>
+        </div>
     </div>
 
-    <p>Test is granted</p>
+
+    {# <p>Test is granted</p>
     {% if is_granted('ROLE_USER') %}
         <p>Role user </p>
     {% endif %}
@@ -34,8 +220,8 @@
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <p>Role super-admin</p>
-    {% endif %}
+    {% endif %} #}
 
 
-</div>
+
 {% endblock %}

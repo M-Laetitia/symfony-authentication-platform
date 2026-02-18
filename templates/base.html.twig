@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
@@ -13,17 +14,56 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-
+    
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="flash-message alert alert-{{ label }}">
-                {{ message }}
-            </div>
+            {% if label == 'success' and message.type is defined and message.type == 'registration' %}
+                <div class="flash-message alert alert-{{ label }}">
+                    {{ message.text|nl2br }}
+                    <button type="button" class="flash-close" aria-label="Close">&times;</button>
+                </div>
+            {% else %}
+                <div class="flash-message alert alert-{{ label }}">
+                    {{ message|nl2br }}
+                </div>
+            {% endif %}
         {% endfor %}
     {% endfor %}
+        
 
 
-    <body>
-        {% block body %}{% endblock %}
+    {% include 'layout/navbar.html.twig' %}
+    <body class="{% block body_class %}{% endblock %}">
+        <div class="page-wrapper">
+    
+            <main class="content">
+                {% block body %}{% endblock %}
+
+            </main>
+    
+            {% block footer %}
+                {% include 'layout/footer.html.twig' %}
+            {% endblock %}  
+        </div>
     </body>
+
+    
+    <!-- Overlay -->
+    <div class="side-panel__overlay"></div>
+
+    <!-- Aside -->
+    <aside
+        id="side-panel"
+        class="side-panel"
+        aria-hidden="true"
+    >
+
+
+        <div class="side-panel__content">
+            <!-- contenu -->
+        </div>
+    </aside>
+
+
+
 </html>

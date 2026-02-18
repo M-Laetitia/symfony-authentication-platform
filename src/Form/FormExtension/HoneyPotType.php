@@ -36,9 +36,11 @@ class HoneyPotType extends AbstractType
         return [
             'attr' => [
                 'autocomplete' => 'off',
-                'tabindex' => '-1'
+                'tabindex' => '-1',
             ],
-            // 'data' => 'fake data', // WARNING: DELETE THIS LINE AFTER TESTS !
+            'row_attr' => [
+                'class' => 'account-meta'
+            ],
             'mapped' => false,
             'required' => false
         ];

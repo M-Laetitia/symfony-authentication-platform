@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@symfony/webpack-encore": "^5.2.0",
+    "baseline-browser-mapping": "^2.9.19",
     "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
