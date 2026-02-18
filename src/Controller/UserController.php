@@ -15,11 +15,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Form\FormError;
 use App\Service\MediaUploader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 
 class UserController extends AbstractController
 {
+    public function __construct(
+        private string $uploadsDir
+    ) {}
+
     #[Route('/profile', name: 'app_profile')]
     #[IsGranted('ROLE_USER')]
     public function profile(Request $request,  EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, MediaUploader $mediaUploader): Response
@@ -37,7 +42,7 @@ class UserController extends AbstractController
         //     throw $this->createAccessDeniedException('Accès refusé : rôle insuffisant.');
         // }
 
-        //^ FORM INFO
+        //^ Form info
         $profilInfoForm = $this->createForm(ProfileFormType::class, $user);
         $profilInfoForm->handleRequest($request);
         if ($profilInfoForm->isSubmitted() && $profilInfoForm->isValid()) {
@@ -106,4 +111,30 @@ class UserController extends AbstractController
             'formAvatar' => $formAvatar->createView(),
         ]);
     }
+
+    #[Route('/profile/delete-avatar', name: 'app_profile_delete_avatar', methods: ['POST'])]
+    public function deleteAvatar(Request $request, EntityManagerInterface $entityManager): RedirectResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->getAvatar()) {
+            // Supprimer le fichier physique
+            $avatarPath = $this->uploadsDir . '/' . $user->getAvatar()->getPath();
+            if (file_exists($avatarPath)) {
+                unlink($avatarPath);
+            }
+
+            // Supprimer l’objet Media
+            $user->setAvatar(null);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Avatar deleted successfully.');
+        } else {
+            $this->addFlash('warning', 'No avatar to delete.');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
 }
+

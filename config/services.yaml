@@ -52,3 +52,6 @@ services:
     App\Monolog\Processor\IpAnonymizationProcessor:
         tags:
             - { name: monolog.processor }
+    App\Controller\UserController:
+        arguments:
+            $uploadsDir: '%kernel.project_dir%/public/uploads'         
