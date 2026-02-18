@@ -169,7 +169,9 @@ class MediaUploader implements MediaUploaderInterface
         }
 
         $prefix = $type instanceof MediaType ? $type->value : 'media';
-        $webpFilename = uniqid($prefix . '_', true) . '.webp';
+        $random = bin2hex(random_bytes(16));
+        $webpFilename = $prefix . '_' . $random . '.webp';
+        // $webpFilename = uniqid($prefix . '_', true) . '.webp';
         $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
 
         try {
