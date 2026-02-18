@@ -32,44 +32,38 @@ variant="dark"
 
                     <figure class="profile-avatar__media">
                         <img
-                            src="media/images/avatar-profile.jpg"
+                            src="{{ user.avatar ? asset('uploads/' ~ user.avatar.path) : 'media/images/avatar-profile.jpg' }}"
                             alt="Profile picture"
                             class="profile-avatar__image u-img-cover "
                         >
                     </figure>
 
-                    <button
-                        type="button"
-                        class="profile-avatar__action button button--large button--border-accent"
-                    >
-                        Upload picture
-                    </button>
-                </section>
+                    {# Upload avatar #}
+                    <div class="profile-avatar__avatar-form">
+                             {{ form_start(formAvatar, {attr: {class: 'profile-avatar__form'}}) }}
+                             {{ form_widget(formAvatar.avatar) }}
+                             <div class="field-error register-form-error">
+                               {{ form_errors(formAvatar.avatar) }}  
+                             </div>
+                             
+                             <button type="submit" class="button button--large button--accent">
+                                 Upload picture
+                             </button>
+                         {{ form_end(formAvatar) }}
+                    </div>
 
-                <section>
-                    {{ form_start(formAvatar, {
-                        attr: {
-                            class: 'profile-avatar__form'
-                        }
-                    }) }}
-                    
-                        <div class="profile-avatar__group">
-                            {{ form_widget(formAvatar.avatar, {
-                                attr: {
-                                    class: 'input input--dark'
-                                }
-                            }) }}
-                            {{ form_errors(formAvatar.avatar) }}
-                        </div>
-                    
-                        <button
-                            type="submit"
-                            class="button button--large button--accent profile-avatar__submit"
-                        >
-                            Update my avatar
-                        </button>
-                    
-                    {{ form_end(formAvatar) }}
+                    {# Delete avatar #}
+                    <div class="profile-avatar__avatar-delete">
+                        {% if user.avatar %}
+                        <form method="post" action="{{ path('app_profile_delete_avatar') }}" onsubmit="return confirm('Are you sure you want to delete your avatar?');">
+                            <button type="submit" class="button button--large button--border-accent">
+                                Delete Avatar
+                            </button>
+                        </form>
+                    {% endif %}
+                    </div>
+
+
                 </section>
 
              
@@ -228,9 +222,6 @@ variant="dark"
         <h1>Mon profil</h1>
     
         <div>
-            <p><strong>Pseudo :</strong> {{ user.username }}</p>
-            <p><strong>Email :</strong> {{ user.email }}</p>
-            {# <pre>{{ dump(user.roles) }}</pre> #}
             <p><strong>Roles :</strong>
                 {% for role in user.roles %}
                     <span >{{ role }}</span>
