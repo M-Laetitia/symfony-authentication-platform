@@ -38,6 +38,7 @@ security:
                 # provider: hwi_oauth.user.provider
                 default_target_path: /home 
             entry_point: form_login
+            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 # where to redirect after logout

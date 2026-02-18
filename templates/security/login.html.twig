@@ -1,38 +1,129 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block title %}Log in{% endblock %}
+
+{% block body_class %}page--account{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+<section class="auth account account--auth u-display-center" aria-labelledby="auth-title">
+    <div class="auth__container account__container">
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        <!-- Header -->
+        <div class="auth__header">
+            <h1 id="auth-title" class="auth__title">PROFILE</h1>
+
+            <div class="auth__nav" role="tablist" aria-label="Account navigation">
+                <a href="{{ path('app_login') }}"
+                   class="auth__tab tab--active"
+                   role="tab"
+                   aria-selected="true">
+                    Log in
+                </a>
+            
+                <a href="{{ path('app_register') }}"
+                   class="auth__tab"
+                   role="tab"
+                   aria-selected="false">
+                    Register
+                </a>
             </div>
-        {% endif %}
+        </div>
 
-        <h1>Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <!-- Form wrapper -->
+        <div class="auth__content">
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+            <form method="post" class="auth-form" novalidate>
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
-            </div>
-        #}
+                {% if error %}
+                    <div class="field-error error__alert auth-form__alert auth-form__alert-emailVerified" role="alert">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
+                {% if app.user %}
+                    <div class="auth-form__info">
+                        You are logged in as {{ app.user.userIdentifier }},
+                        <a href="{{ path('app_logout') }}" class="auth-form__link">
+                            Log out
+                        </a>
+                    </div>
+                {% endif %}
+
+                <fieldset class="auth-form__fieldset">
+                    <legend class="visually-hidden">Login credentials</legend>
+
+                    <!-- Email -->
+                    <div class="auth-form__group">
+                        <label for="username" class="auth-form__label sr-only">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="username"
+                            placeholder="Email address"
+                            name="_username"
+                            class="auth-form__input input input--dark input--large "
+                            value="{{ last_username }}"
+                            autocomplete="email"
+                            required
+                            autofocus
+                        >
+                    </div>
+
+                    <!-- Password -->
+                    <div class="auth-form__group">
+                        <label for="password" class="auth-form__label sr-only">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Password"
+                            name="_password"
+                            class="auth-form__input input input--dark input--large "
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <input type="hidden"
+                           name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}">
+                </fieldset>
+
+                <!-- Options -->
+                <div class="auth-form__options u-display-space-between">
+
+                    <div class="auth-form__remember">
+                        <input
+                            type="checkbox"
+                            id="_remember_me"
+                            name="_remember_me"
+                            class="auth-form__checkbox"
+                        >
+                        <label for="_remember_me">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <a href="{{ path('app_forgot_password_request') }}"
+                       class="auth-form__forgot">
+                        Lost your password&nbsp;?
+                    </a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="button button--large auth-form__submit button--accent">
+                    Log in
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+
+
 {% endblock %}

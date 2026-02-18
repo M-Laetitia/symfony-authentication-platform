@@ -1,0 +1,19 @@
+<header class="page-hero{% if variant %} page-hero--{{ variant }}{% endif %} u-display-center">
+    <div class="page-hero__container">
+
+        <div class="page-hero__content">
+
+            {% if subtitle is defined and subtitle %}
+                <div class="page-hero__detail">
+                    <p class="page-hero__subtitle">{{ subtitle }}</p>
+                </div>
+            {% endif %}
+
+            <h1 class="page-hero__title">
+                {{ title }}
+            </h1>
+
+        </div>
+
+    </div>
+</header>

@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block footer %}{% endblock %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body_class %}page--account{% endblock %}
+
+
+{% block body %}
+
+<section  class="reset-password account account--reset-password u-display-center" aria-labelledby="reset-password-title">
+
+    <div class="reset-password__container account__container">
+        <div class="reset-password__header">
+            <h1 id="reset-password-title" class="reset-password__title">RESET YOUR PASSWORD</h1>
+        </div>
+
+        {{ form_start(resetForm) }}
+        
+        <div class="reset-password-form__group">
+            <label for="{{ resetForm.plainPassword.first.vars.id }}"
+                   class="reset-password__label sr-only">
+                New password
+            </label>
+        
+            {{ form_widget(resetForm.plainPassword.first, {
+                attr: {
+                    class: 'reset-password__input input input--dark input--large',
+                    placeholder: 'New password',
+                    autocomplete: 'new-password'
+                }
+            }) }}
+            <div class="field-error register-form-error">
+                {{ form_errors(resetForm.plainPassword.first) }}
+            </div>
+      
+        
+
+            <label for="{{ resetForm.plainPassword.second.vars.id }}"
+                   class="reset-password__label sr-only">
+                Repeat password
+            </label>
+        
+            {{ form_widget(resetForm.plainPassword.second, {
+                attr: {
+                    class: 'reset-password__input input input--dark input--large',
+                    placeholder: 'Repeat password',
+                    autocomplete: 'new-password'
+                }
+            }) }}
+            <div class="field-error register-form-error">
+                {{ form_errors(resetForm.plainPassword.second) }}
+            </div>
+        </div>
+
+
+            <button class="button button--large reset-password__submit button--border-accent">Reset password</button>
+        {{ form_end(resetForm) }}
+    </div>
+
+</section>
+    
+
+{% endblock %}

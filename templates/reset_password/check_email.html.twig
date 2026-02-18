@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block footer %}{% endblock %}
+{% block title %}Password Reset Email Sent{% endblock %}
+{% block body_class %}page--account{% endblock %}
+
+{% block body %}
+
+<section class="check-email account account--check-email u-display-center" aria-labelledby="check-email-title">
+
+    <div class="check-email__container account__container">
+        <p class="check-email__text">
+            If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+            <strong>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</strong>.
+        </p><br>
+        <p class="check-email__subtext">If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+
+    </div>
+</section>
+
+
+{% endblock %}

@@ -1,19 +1,396 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Accueil</title>
-</head>
-<body>
-    <h1>Bienvenue sur la page d'accueil ! 🚀</h1>
-    {# <p><a href="{{ path('app_login') }}">Se connecter</a></p>
-    <p><a href="{{ path('app_register') }}">S'inscrire</a></p> #}
-    
+{% extends 'base.html.twig' %}
 
-    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <section class="hero">
+
+    </section>
+
+    <section class="section section-about" aria-labelledby="about-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--about" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                    <span>ABOUT US</span>
+                </div>
+            </div>
+    
+            <div class="section-about__content scroll-text-section__content section-centered">
+
+                <twig:SectionIntro
+                    title="ABOUT US"
+                    subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    buttonText="Discover more"
+                    linkBtn="#"
+                />
+
+                <div class="section-about__text-image">
+                    <!-- Text -->
+                    <div class="section-about__text">
+                        <h3 class="section-about__subtitle">A photographic story...</h3>
+                        <div class="section-divider__large" aria-hidden="true"></div>
+                        <p class="text-medium">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna <strong>pulvinar laoreet.</strong> Nullam erat ipsum, mattis nec mollis ac, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, <strong>vel mollis neque facilisis vel</strong>. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas eget diam sed sagittis. Vivamus consectetur purus <strong>vel felis molestie sollicitudin</strong>. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
+                        </p>
+                    </div>
+        
+                    <!-- Image -->
+                    <div class="section-about__image-wrapper">
+                        <figure class="section-about__figure">
+                            {# <img src="" alt="" class="section-about__image"> #}
+                        </figure>
+                    </div>
+                </div>
+        
+                <!-- Bloc mission / vision / value -->
+                <div class="section-about__features">
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                                <twig:IconBox 
+                                    svg='<svg 
+                                    width="30" 
+                                    viewBox="0 0 30 35" 
+                                    fill="none" 
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="icon-box__svg"
+                                >
+                                    <path d="M26.2491 3.75157L29.5987 4.42121C29.7786 4.45719 29.9265 4.58912 29.9784 4.76702C30.0047 4.85344 30.007 4.94536 29.9852 5.033C29.9634 5.12064 29.9182 5.20073 29.8545 5.26475L27.1105 8.01128C26.7817 8.3383 26.337 8.52221 25.8733 8.52301H23.597L17.881 14.2419C17.99 14.6538 18.0101 15.0841 17.9398 15.5043C17.8695 15.9245 17.7106 16.3248 17.4734 16.6787C17.2363 17.0326 16.9265 17.332 16.5647 17.5567C16.2028 17.7815 15.7972 17.9265 15.375 17.9822C14.9527 18.0379 14.5233 18.003 14.1156 17.8797C13.7079 17.7564 13.3311 17.5477 13.0104 17.2674C12.6896 16.987 12.4323 16.6416 12.2555 16.254C12.0787 15.8664 11.9866 15.4455 11.9852 15.0195C11.9851 14.5594 12.0908 14.1055 12.2943 13.6928C12.4978 13.2801 12.7934 12.9198 13.1584 12.6398C13.5234 12.3598 13.948 12.1675 14.3992 12.0779C14.8504 11.9883 15.3162 12.0038 15.7605 12.1231L21.4784 6.40214V4.12936C21.4784 3.66561 21.6623 3.21985 21.9901 2.89203L24.7361 0.145504C24.8002 0.0817957 24.8802 0.036629 24.9679 0.0148064C25.0555 -0.00701615 25.1474 -0.00467869 25.2338 0.0215702C25.4117 0.0735423 25.5436 0.221463 25.5795 0.401366L26.2491 3.75157Z" fill="#D2D2CE"/>
+                                    <path d="M2.99142 15.0194C2.99348 16.7344 3.36325 18.429 4.07579 19.9889C4.78834 21.5488 5.82708 22.9378 7.12195 24.062C8.41683 25.1863 9.93771 26.0197 11.582 26.5061C13.2263 26.9925 14.9558 27.1205 16.6538 26.8816C18.3518 26.6426 19.9788 26.0422 21.425 25.1209C22.8713 24.1995 24.1032 22.9787 25.0376 21.5407C25.972 20.1027 26.5872 18.481 26.8416 16.785C27.0961 15.089 26.984 13.3581 26.5128 11.7091C26.4466 11.5165 26.4204 11.3124 26.4356 11.1093C26.4508 10.9061 26.5072 10.7082 26.6013 10.5276C26.6955 10.347 26.8254 10.1874 26.9832 10.0586C27.1409 9.92977 27.3233 9.83442 27.5191 9.77833C27.7148 9.72225 27.92 9.7066 28.122 9.73235C28.3241 9.75809 28.5187 9.82469 28.6942 9.92809C28.8697 10.0315 29.0223 10.1695 29.1427 10.3338C29.2631 10.4981 29.3489 10.6851 29.3947 10.8836C30.3071 14.0769 30.1338 17.4829 28.902 20.5671C27.6701 23.6512 25.4495 26.2392 22.5884 27.9249C19.7273 29.6105 16.3876 30.2985 13.0934 29.881C9.79912 29.4634 6.73665 27.9639 4.38644 25.6177C2.03878 23.2676 0.537912 20.2044 0.119465 16.9088C-0.298982 13.6132 0.388692 10.2719 2.07452 7.4096C3.76035 4.54725 6.34886 2.32591 9.43366 1.09433C12.5185 -0.137257 15.9248 -0.309335 19.118 0.605107C19.4982 0.716271 19.819 0.973445 20.0102 1.32043C20.2014 1.66741 20.2475 2.07599 20.1384 2.45687C20.0294 2.83775 19.774 3.15996 19.4281 3.35309C19.0822 3.54622 18.674 3.59457 18.2926 3.48756C16.507 2.97473 14.6267 2.88386 12.8 3.2221C10.9733 3.56035 9.25012 4.31846 7.76643 5.43665C6.28274 6.55484 5.07911 8.00252 4.25045 9.6655C3.4218 11.3285 2.99079 13.1613 2.99142 15.0194Z" fill="#D2D2CE"/>
+                                    <path d="M8.98727 15.0193C8.98739 16.1118 9.28576 17.1837 9.85019 18.1191C10.4146 19.0546 11.2237 19.8181 12.1901 20.3275C13.1566 20.8368 14.2437 21.0726 15.3343 21.0093C16.4249 20.9461 17.4775 20.5862 18.3786 19.9686C19.2796 19.3494 19.9941 18.4956 20.445 17.4996C20.8959 16.5036 21.066 15.4033 20.9368 14.3176C20.9019 14.0542 20.9378 13.7862 21.0408 13.5412C21.1439 13.2962 21.3104 13.0832 21.5231 12.9239C21.7358 12.7647 21.9872 12.6651 22.2512 12.6353C22.5153 12.6055 22.7825 12.6466 23.0253 12.7545C23.2681 12.8609 23.4784 13.0298 23.6346 13.244C23.7909 13.4582 23.8875 13.7101 23.9147 13.9738C24.1319 15.829 23.7662 17.7058 22.8685 19.3437C21.9707 20.9817 20.5855 22.2994 18.9049 23.1142C17.2244 23.9289 15.332 24.2002 13.4903 23.8903C11.6486 23.5805 9.94902 22.7049 8.62745 21.3852C7.30589 20.0654 6.42789 18.3668 6.11531 16.5253C5.80273 14.6838 6.07109 12.7906 6.88313 11.1085C7.69517 9.42649 9.01061 8.03898 10.6469 7.13861C12.2832 6.23824 14.1591 5.86967 16.0143 6.08405C16.2129 6.10248 16.4059 6.16039 16.5819 6.25439C16.7579 6.34838 16.9133 6.47656 17.0391 6.63143C17.165 6.78629 17.2586 6.96471 17.3146 7.15623C17.3705 7.34775 17.3877 7.54853 17.3651 7.74678C17.3425 7.94503 17.2805 8.13677 17.1829 8.31076C17.0852 8.48475 16.9538 8.63749 16.7963 8.76003C16.6389 8.88257 16.4585 8.97243 16.2659 9.02436C16.0733 9.07629 15.8722 9.08924 15.6745 9.06245C14.8344 8.96489 13.9832 9.04619 13.1768 9.30102C12.3703 9.55584 11.6269 9.97842 10.9953 10.541C10.3638 11.1036 9.85835 11.7934 9.51227 12.5652C9.16618 13.3371 8.98726 14.1734 8.98727 15.0193Z" fill="#D2D2CE"/>
+                                </svg>'
+                                />
+                        </div>
+                        <div class="section-about__feature-text">
+                            <h6 class="section-about__feature-title icon-box__link">Our mission</h6>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                            <twig:IconBox 
+                            svg='<svg 
+                            width="30" 
+                            viewBox="0 0 30 35" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon-box__svg"
+                        >
+                        <path d="M25.5184 9.62374L25.1829 10.3878C25.1305 10.5122 25.0421 10.6185 24.9287 10.6932C24.8154 10.768 24.6823 10.8079 24.5461 10.8079C24.4099 10.8079 24.2768 10.768 24.1635 10.6932C24.0501 10.6185 23.9617 10.5122 23.9093 10.3878L23.5738 9.62374C22.984 8.27209 21.9038 7.18836 20.5464 6.5864L19.5114 6.12878C19.3858 6.0716 19.2795 5.97998 19.2049 5.86477C19.1303 5.74957 19.0907 5.61561 19.0907 5.47879C19.0907 5.34196 19.1303 5.20801 19.2049 5.0928C19.2795 4.9776 19.3858 4.88598 19.5114 4.8288L20.4892 4.39817C21.8807 3.77907 22.9793 2.65526 23.5588 1.25824L23.9038 0.433436C23.9545 0.305671 24.0429 0.195981 24.1574 0.118667C24.272 0.0413525 24.4074 0 24.5461 0C24.6848 0 24.8202 0.0413525 24.9348 0.118667C25.0493 0.195981 25.1377 0.305671 25.1884 0.433436L25.5334 1.25689C26.1123 2.65417 27.2104 3.77846 28.6017 4.39817L29.5808 4.83015C29.706 4.88749 29.812 4.9791 29.8862 5.09416C29.9605 5.20922 30 5.34291 30 5.47946C30 5.61601 29.9605 5.74971 29.8862 5.86477C29.812 5.97982 29.706 6.07143 29.5808 6.12878L28.5444 6.58505C27.1873 7.18761 26.1076 8.27182 25.5184 9.62374ZM27.2734 25.6501V13.0404C26.3973 13.346 25.475 13.5017 24.5461 13.5007C23.2847 13.5007 22.0915 13.2172 21.0237 12.7137C21.8541 14.438 22.0422 16.3973 21.5547 18.2455C21.0672 20.0937 19.9355 21.7119 18.3596 22.8141C16.7837 23.9164 14.865 24.4319 12.9423 24.2695C11.0197 24.1071 9.21694 23.2772 7.85249 21.9265C6.48805 20.5758 5.64974 18.7912 5.48566 16.888C5.32159 14.9847 5.8423 13.0853 6.95582 11.5253C8.06933 9.96524 9.70399 8.84499 11.571 8.36242C13.438 7.87985 15.4173 8.06602 17.1591 8.88803C16.6351 7.79886 16.3634 6.60756 16.3641 5.40117C16.3641 4.45487 16.5277 3.54637 16.8291 2.70131H9.5457L6.81836 5.40117H1.36367C1.002 5.40117 0.655148 5.54339 0.39941 5.79655C0.143672 6.04971 0 6.39307 0 6.75109V25.6501C0 26.0081 0.143672 26.3515 0.39941 26.6046C0.655148 26.8578 1.002 27 1.36367 27H25.9098C26.2714 27 26.6183 26.8578 26.874 26.6046C27.1298 26.3515 27.2734 26.0081 27.2734 25.6501ZM13.6367 21.6003C12.19 21.6003 10.8026 21.0314 9.77967 20.0188C8.75672 19.0061 8.18203 17.6327 8.18203 16.2006C8.18203 14.7685 8.75672 13.3951 9.77967 12.3824C10.8026 11.3698 12.19 10.8009 13.6367 10.8009C15.0834 10.8009 16.4708 11.3698 17.4938 12.3824C18.5167 13.3951 19.0914 14.7685 19.0914 16.2006C19.0914 17.6327 18.5167 19.0061 17.4938 20.0188C16.4708 21.0314 15.0834 21.6003 13.6367 21.6003Z" fill="#D2D2CE"/>    
+                        </svg>'
+                        />
+                        </div>
+                        <div class="section-about__feature-text">
+                            <h6 class="section-about__feature-title icon-box__link">Our vision</h6>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="section-about__feature icon-box__container">
+                        <div class="section-about__feature-icon">
+                            <twig:IconBox 
+                            svg='<svg 
+                            width="30" 
+                            viewBox="0 0 30 35" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon-box__svg"
+                        >
+                            <path d="M5.02 26.4H30V3.3C30 1.48005 28.505 0 26.6667 0H5C2.99 0 0 1.31835 0 4.95V28.05C0 31.6816 2.99 33 5 33H30V29.7H5.02C4.25 29.6802 3.33333 29.3799 3.33333 28.05C3.33333 27.885 3.34667 27.7348 3.37333 27.5995C3.56 26.6491 4.34667 26.4165 5.02 26.4ZM9.41333 9.3093C10.1071 8.63126 11.0427 8.25107 12.0175 8.25107C12.9923 8.25107 13.9279 8.63126 14.6217 9.3093L14.995 9.67065L15.3667 9.3093C16.0607 8.63116 16.9965 8.25092 17.9717 8.25092C18.9468 8.25092 19.8827 8.63116 20.5767 9.3093C20.9207 9.63719 21.1944 10.0304 21.3813 10.4655C21.5683 10.9005 21.6646 11.3684 21.6646 11.8412C21.6646 12.314 21.5683 12.7819 21.3813 13.217C21.1944 13.652 20.9207 14.0453 20.5767 14.3732L14.9967 19.8L9.415 14.3732C9.07085 14.0454 8.79704 13.6522 8.60996 13.2172C8.42288 12.7822 8.32637 12.3144 8.32622 11.8416C8.32606 11.3688 8.42226 10.9008 8.60905 10.4657C8.79585 10.0306 9.0694 9.6373 9.41333 9.3093Z" fill="#D2D2CE"/>
+                        </svg>'
+                        />
+                        </div>
+                        <div class="section-about__feature-text">
+                            <h6 class="section-about__feature-title icon-box__link">Our value</h6>
+                            <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+    
+        </div>
+
+    </section>
+
+    <div class="u-divider-medium"></div>
+
+    <section class="section section-services" aria-labelledby="services-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--services" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>SERVICES</span>
+                    <span>SERVICES</span>
+                    <span>SERVICES</span>
+                    <span>SERVICES</span>
+                </div>
+            </div>
+
+            <div class="section-services__content scroll-text-section__content">
+
+                <twig:SectionIntro
+                title="Our services"
+                subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                buttonText="Discover more"
+                linkBtn="#"
+                />
+                
+                <div class="section-services__list">
+                    <!-- item service -->
+                    <twig:ServiceBox 
+                        title="Wedding session"
+                        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        link="#"
+                        imageSrc="media/images/concert_photography.jpg"
+                    />
+                    <twig:ServiceBox 
+                        title="Model Photoshoot"
+                        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        link="#"
+                        imageSrc="media/images/concert_photography.jpg"
+                    />
+                    <twig:ServiceBox 
+                        title="Event photography"
+                        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        link="#"
+                        imageSrc="media/images/concert_photography.jpg"
+                    />
+                    <twig:ServiceBox 
+                        title="Lorem ipsum"
+                        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        link="#"
+                        imageSrc="media/images/concert_photography.jpg"
+                    />
+                </div>
+    
+            </div>
+        </div>
+    </section>
+
+    <div class="u-divider-medium"></div>
+
+    <section class="section section-dark section-photographs" aria-labelledby="photographs-title">
+
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--light bg-text--photographs" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>PHOTOGRAPHS</span>
+                    <span>PHOTOGRAPHS</span>
+                    <span>PHOTOGRAPHS</span>
+                    <span>PHOTOGRAPHS</span>
+                </div>
+            </div>
+
+            <twig:SectionIntro
+            title="Our photographs"
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            buttonText="Discover more"
+            linkBtn="#"
+            variant="light"
+            />
+
+            <div class="section-photographs__content scroll-text-section__content" >
+                <div class="section-photographs__list">
+                    <twig:PhotographBox 
+                    service="events"
+                    name="Name Name"
+                    link="#"
+                    imageSrc="media/images/concert_photography.jpg"
+                    />
+                    <twig:PhotographBox 
+                    service="events"
+                    name="Name Name"
+                    link="#"
+                    imageSrc="media/images/concert_photography.jpg"
+                    />
+                    <twig:PhotographBox 
+                    service="events"
+                    name="Name Name"
+                    link="#"
+                    imageSrc="media/images/concert_photography.jpg"
+                    />
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="u-divider-medium"></div>
+
+    <section class="section section-works " aria-labelledby="works-title">
+
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll  bg-text--works" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>LATEST WORKS</span>
+                    <span>LATEST WORKS</span>
+                    <span>LATEST WORKS</span>
+                    <span>LATEST WORKS</span>
+                </div>
+            </div>
+
+            <twig:SectionIntro
+            title="Our lastest works"
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            buttonText="Explore more"
+            linkBtn="#"
+            />
+
+            <div class="section-works__content scroll-text-section__content">
+
+                <div class="section-works__gallery">
+                    <figure class="gallery__item gallery__item--landscape">
+                        <img class="gallery__image  u-img-cover" src="media/images/concert_photography.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                  
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--portrait">
+                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+                    <figure class="gallery__item gallery__item--landscape">
+                        <img class=" gallery__image u-img-cover" src="media/images/wedding.jpg" alt="">
+                        <div class="gallery__detail">
+                            <a href="" class="gallery__detail-link">
+                                <div class="gallery__detail-content">
+                                  <span class="gallery__name">NAME NAME</span>
+                                  <span class="separator" aria-hidden="true"></span>
+                                  <span class="gallery__service">Events</span>
+                                </div>
+                              </a>
+                        </div>
+                    </figure>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+
+    <div class="u-divider-medium"></div>
+
+    <section class="section section-testimonials " aria-labelledby="testimonials-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--testimonials" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>TESTIMONIALS</span>
+                    <span>TESTIMONIALS</span>
+                    <span>TESTIMONIALS</span>
+                    <span>TESTIMONIALS</span>
+                </div>
+            </div>
+    
+            <div class="section-testimonials__content scroll-text-section__content section-centered">
+
+                <twig:SectionIntro
+                title="Testimonials"
+                subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
+                buttonText="Discover more"
+                linkBtn="#"
+                />
+
+                <div class="section-testimonials__container">
+                    <twig:TestimonialBox
+                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien. Vivamus mauris neque, venenatis quis metus quis, varius convallis leo. Ut vulputate mauris mi, non sodales nisl dictum ut. Suspendisse tincidunt lectus est, eget rhoncus justo tempor non. Vivamus eget facilisis orci, quis pharetra nunc. Nulla facilisi.placerat nisl.Praesent eu arcu sapien. Vivamus mauris neque, venenatis quis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien."
+                    subtitle="Bquis pharetra nunc. "
+                    username="Username Name"
+                    />
+
+                    <twig:TestimonialBox
+                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu arcu sapien.mauris neque, venenatis quis metus quis, varius convallis leo. Ut vulputate mauris mi, non sodales nisl dictum ut. Suspendisse tincidunt lectus est, eget rhoncus justo tempor non. Vivamus eget facilisis orci, quis pharetra nunc. Nulla facilisi. Donec at viverra tellus, ac placerat nisl."
+                    subtitle="Bquis pharetra nunc"
+                    username="Username Name"
+                    />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="u-divider-medium"></div>
+
+
+    {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
         Se connecter avec Google
     </a>
-
-    {# <p><a href="{{ path('app_profile') }}"> Profil</a></p> #}
 
     {% if app.user %}
         <p><a href="{{ path('app_profile') }}">Profil</a></p>
@@ -22,9 +399,68 @@
         <p><a href="{{ path('app_login') }}">Se connecter</a></p>
         <p><a href="{{ path('app_register') }}">S'inscrire</a></p>
     {% endif %}
-        <p><a href="{{ path('blog_index') }}">BLOG</a></p>
+    <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
 
 
-</p>
-</body>
-</html>
+
+    {% include 'layout/contact.html.twig' %}
+
+    <div class="u-divider-medium"></div>
+
+    <section class="section section-articles " aria-labelledby="articles-title">
+        <div class="scroll-text-section">
+            <div class="bg-text--scroll bg-text--articles" aria-hidden="true">
+                <div class="bg-text__track">
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                    <span>ARTICLES</span>
+                </div>
+            </div>
+    
+            <div class="section-articles__content scroll-text-section__content section-centered">
+
+                <twig:SectionIntro
+                title="Articles & blog"
+                subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
+                buttonText="Learn more"
+                linkBtn="#"
+                />
+
+                <div class="section-articles__container">
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Tutorial"
+                    link="#"
+                    :tags="['Art', 'Technique', 'Outdoor']"
+                    date="3 March 2026"
+                    />
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Interview"
+                    link="#"
+                    :tags="['Travel', 'Photograph']"
+                    date="10 Feb 2026"
+                    />
+
+                    <twig:ArticleBox
+                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    category="Street Photography"
+                    link="#"
+                    :tags="['Art', 'Technique', 'Street photography']"
+                    date="10 Feb 2026"
+                    />
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="u-divider-large"></div>
+
+
+    {% include 'layout/subscribe.html.twig' %}
+
+{% endblock %}
