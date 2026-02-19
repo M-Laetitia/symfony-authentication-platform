@@ -85,7 +85,7 @@ class ConversationController extends AbstractController
             $em->persist($message);
             $em->flush();
     
-            //  Mercure
+            //  Mercure - topic = /conversation/{id} > chaque conversation a son propre topic
             $update = new Update(
                 '/conversation/'.$conversation->getId(),
                 json_encode([
@@ -94,10 +94,11 @@ class ConversationController extends AbstractController
                     'date' => $message->getCreationDate()->format('H:i'),
                 ])
             );
-    
-            $hub->publish($update);
+            // envoie le message à tous les clients abonnés à ce topic, en temps réel.
+            $hub->publish($update); 
 
             // Réponse AJAX : $request->isXmlHttpRequest() > sinon redirect
+            // Si la requête vient d’un AJAX fetch : pas besoin de recharger la page > renvoie un 204 No Content.
             if ($request->isXmlHttpRequest()) {
                 return new Response(null, 204);
             }
