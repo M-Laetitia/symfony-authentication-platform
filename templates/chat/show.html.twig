@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Conversation with {{ otherParticipant.username }} {% endblock %}
+
+
+
+{% block body %}
+
+{# <twig:Banner
+title="My blabla page"
+subtitle="Aut fuga culpa ab quibusdam"
+variant="dark"
+/> #}
+
+<section>
+    <h1>Conversation avec {{ otherParticipant.username }}</h1>
+
+    <ul>
+    {% for msg in messages %}
+        <li>
+            <strong>{{ msg.sender.username }}</strong> :
+            {{ msg.content }}
+            <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
+        </li>
+    {% else %}
+        <li>Aucun message</li>
+    {% endfor %}
+    </ul>
+</section>
+
+
+{% endblock %}
