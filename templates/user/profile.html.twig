@@ -32,20 +32,41 @@ variant="dark"
 
                     <figure class="profile-avatar__media">
                         <img
-                            src="media/images/avatar-profile.jpg"
+                            src="{{ user.avatar ? asset('uploads/' ~ user.avatar.path) : 'media/images/avatar-profile.jpg' }}"
                             alt="Profile picture"
                             class="profile-avatar__image u-img-cover "
                         >
                     </figure>
 
-                    <button
-                        type="button"
-                        class="profile-avatar__action button button--large button--border-accent"
-                    >
-                        Upload picture
-                    </button>
+                    {# Upload avatar #}
+                    <div class="profile-avatar__avatar-form">
+                             {{ form_start(formAvatar, {attr: {class: 'profile-avatar__form'}}) }}
+                             {{ form_widget(formAvatar.avatar) }}
+                             <div class="field-error register-form-error">
+                               {{ form_errors(formAvatar.avatar) }}  
+                             </div>
+                             
+                             <button type="submit" class="button button--large button--accent">
+                                 Upload picture
+                             </button>
+                         {{ form_end(formAvatar) }}
+                    </div>
+
+                    {# Delete avatar #}
+                    <div class="profile-avatar__avatar-delete">
+                        {% if user.avatar %}
+                        <form method="post" action="{{ path('app_profile_delete_avatar') }}" onsubmit="return confirm('Are you sure you want to delete your avatar?');">
+                            <button type="submit" class="button button--large button--border-accent">
+                                Delete Avatar
+                            </button>
+                        </form>
+                    {% endif %}
+                    </div>
+
+
                 </section>
 
+             
                 <!-- Change password -->
                 <section
                     class="profile-password"
@@ -53,59 +74,65 @@ variant="dark"
                 >
                     <p
                         id="profile-password-title"
-                        class="profile__title profile-password__title "
+                        class="profile__title profile-password__title"
                     >
                         Change your password
                     </p>
 
-                    <form class="profile-password__form">
+                    {{ form_start(formPassword, { attr: { class: 'profile-password__form' } }) }}
 
-                        <div class="profile-password__group">
-                            <label for="current-password" class="sr-only">
-                                Current password
-                            </label>
-                            <input
-                                type="password"
-                                id="current-password"
-                                placeholder="Current password"
-                                class="input input--dark"
-                                autocomplete="current-password"
-                            >
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.currentPassword, {
+                            attr: {
+                                class: 'input input--dark',
+                                placeholder: 'Current password',
+                                autocomplete: 'current-password',
+                                id: 'current-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                            {{ form_errors(formPassword.currentPassword) }}
                         </div>
+                        
+                    </div>
 
-                        <div class="profile-password__group">
-                            <label for="new-password" class="sr-only">
-                                New password
-                            </label>
-                            <input
-                                type="password"
-                                id="new-password"
-                                placeholder="New password"
-                                class="input input--dark"
-                                autocomplete="new-password"
-                            >
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.newPassword.first, {
+                            attr: {
+                                class: 'input input--dark',
+                                placeholder: 'New password',
+                                autocomplete: 'new-password',
+                                id: 'new-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                           {{ form_errors(formPassword.newPassword.first) }} 
                         </div>
+                        
+                    </div>
 
-                        <div class="profile-password__group">
-                            <label for="confirm-password" class="sr-only">
-                                Confirm new password
-                            </label>
-                            <input
-                                type="password"
-                                id="confirm-password"
-                                placeholder="Confirm new password"
-                                class="input input--dark"
-                            >
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.newPassword.second, {
+                            attr: {
+                                class: 'input input--dark',
+                                placeholder: 'Confirm new password',
+                                id: 'confirm-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                           {{ form_errors(formPassword.newPassword.second) }} 
                         </div>
+                        
+                    </div>
 
-                        <button
-                            type="submit"
-                            class="button button--large button--accent profile-password__submit"
-                        >
-                            Change my password
-                        </button>
+                    <button
+                        type="submit"
+                        class="button button--large button--accent profile-password__submit"
+                    >
+                        Change my password
+                    </button>
 
-                    </form>
+                    {{ form_end(formPassword) }}
                 </section>
 
             </aside>
@@ -119,39 +146,43 @@ variant="dark"
                     aria-labelledby="profile-info-title"
                 >
 
-                    <form class="profile-info__form">
+                {{ form_start(profilInfoForm, {
+                    attr: { class: 'profile-info__form' }
+                }) }}
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.username, 'Username', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.username, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(profilInfoForm.username) }}
+                    </div>
+                    
+                </div>
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.email, 'Email address', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.email, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(profilInfoForm.email) }}
+                    </div>
+                </div>
 
-                        <div class="profile-info__group">
-                            <label for="username" class="profile__title profile-info__label">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                class="input input--dark"
-                            >
-                        </div>
+                <button
+                    type="submit"
+                    class="button button--large button--accent profile-info__submit"
+                >
+                    Update information
+                </button>
 
-                        <div class="profile-info__group">
-                            <label for="email" class="profile__title profile-info__label">
-                                Email address
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                class="input input--dark"
-                                autocomplete="email"
-                            >
-                        </div>
-
-                        <button
-                            type="submit"
-                            class="button button--large button--accent profile-info__submit"
-                        >
-                            Update information
-                        </button>
-
-                    </form>
+                {{ form_end(profilInfoForm) }}
                 </section>
 
                 <!-- Delete account -->
@@ -191,9 +222,6 @@ variant="dark"
         <h1>Mon profil</h1>
     
         <div>
-            <p><strong>Pseudo :</strong> {{ user.username }}</p>
-            <p><strong>Email :</strong> {{ user.email }}</p>
-            {# <pre>{{ dump(user.roles) }}</pre> #}
             <p><strong>Roles :</strong>
                 {% for role in user.roles %}
                     <span >{{ role }}</span>
