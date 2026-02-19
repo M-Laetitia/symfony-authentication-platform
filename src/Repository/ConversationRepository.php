@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Conversation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,45 @@ class ConversationRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByUser($user)
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.participants', 'p') 
+            ->addSelect('p')
+            ->where('p.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('c.creation_date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOtherParticipant(Conversation $conversation, User $user): ?User
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT u
+            FROM App\Entity\User u
+            JOIN u.conversations c
+            WHERE c.id = :convId
+            AND u.id != :userId'
+        )
+        ->setParameter('convId', $conversation->getId())
+        ->setParameter('userId', $user->getId())
+        ->setMaxResults(1)
+        ->getOneOrNullResult();
+    }
+
+    public function isUserParticipant(Conversation $conversation, User $user): bool
+    {
+        return (bool) $this->createQueryBuilder('c')
+            ->innerJoin('c.participants', 'p')
+            ->where('c.id = :convId')
+            ->andWhere('p.id = :userId')
+            ->setParameter('convId', $conversation->getId())
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
 }
