@@ -30,6 +30,14 @@ class Message
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true, enumType: MessageType::class)]
     private ?array $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Conversation $conversation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $sender = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -94,6 +102,30 @@ class Message
     public function setStatus(?array $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getConversation(): ?Conversation
+    {
+        return $this->conversation;
+    }
+
+    public function setConversation(?Conversation $conversation): static
+    {
+        $this->conversation = $conversation;
+
+        return $this;
+    }
+
+    public function getSender(): ?User
+    {
+        return $this->sender;
+    }
+
+    public function setSender(?User $sender): static
+    {
+        $this->sender = $sender;
 
         return $this;
     }
