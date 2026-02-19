@@ -70,6 +70,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ArticleEditHistory::class, mappedBy: 'lastEditBy')]
     private Collection $articleEditHistories;
 
+    #[ORM\OneToOne(cascade: ['persist'], orphanRemoval: true)]
+    private ?Media $avatar = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -297,6 +300,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $articleEditHistory->setLastEditBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvatar(): ?Media
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Media $avatar): static
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
