@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}My chats{% endblock %}
+
+{# {% block body_class %}page--profile{% endblock %} #}
+
+{% block body %}
+
+<twig:Banner
+title="My blabla page"
+subtitle="Aut fuga culpa ab quibusdam"
+variant="dark"
+/>
+
+<section>
+    <h1>CHats: </h1>
+
+    <ul>
+        {% for conv in conversationData %}
+        <li>
+            <a href="{{ path('chat_conversation_show', {'id': conv.id}) }}">
+                Conversation ID : {{ conv.id }} - Avec : {{ conv.otherParticipant }}<br>
+                Dernier message : {{ conv.lastMessage }}
+                {% if conv.lastMessageDate %}
+                    - {{ conv.lastMessageDate|date('H:i d/m/Y') }}
+                {% endif %}
+            </a>
+        </li>
+    {% else %}
+        <li>Aucune conversation</li>
+    {% endfor %}
+        </ul>
+</section>
+
+
+{% endblock %}
