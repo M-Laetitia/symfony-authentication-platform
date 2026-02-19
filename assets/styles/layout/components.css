@@ -9,6 +9,15 @@
     padding: 0 20px;
     margin-bottom: 180px;
 
+    h1 {
+        color: rgb(179, 179, 179);
+    }
+
+    p {
+        color: var(--color-white);
+    }
+
+
     .page-hero__container {
         width: var(--width-content);
     }
