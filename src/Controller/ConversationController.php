@@ -5,9 +5,15 @@ namespace App\Controller;
 use App\Repository\ConversationRepository;
 use App\Repository\MessageRepository;
 use App\Entity\Conversation;
+use App\Entity\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\MessageFormtype;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ConversationController extends AbstractController
 {
@@ -46,8 +52,12 @@ class ConversationController extends AbstractController
     #[Route('/chat/conversation/{id}', name: 'chat_conversation_show')]
     public function show(
         Conversation $conversation,
+        Message $message, 
         ConversationRepository $conversationRepo,
-        MessageRepository $messageRepo
+        MessageRepository $messageRepo,
+        EntityManagerInterface $em,
+        HubInterface $hub, 
+        Request $request, 
     ): Response
     {
         $user = $this->getUser();
@@ -60,10 +70,48 @@ class ConversationController extends AbstractController
         $messages = $messageRepo->findByConversation($conversation);
         $otherParticipant = $conversationRepo->findOtherParticipant($conversation, $user);
 
+
+        // add a message
+        $message = new Message();
+        $form = $this->createForm(MessageFormType::class, $message);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+    
+            $message->setSender($user);
+            $message->setConversation($conversation);
+            $message->setCreationDate(new \DateTimeImmutable());
+    
+            $em->persist($message);
+            $em->flush();
+    
+            //  Mercure
+            $update = new Update(
+                '/conversation/'.$conversation->getId(),
+                json_encode([
+                    'author' => $user->getUserIdentifier(),
+                    'content' => $message->getContent(),
+                    'date' => $message->getCreationDate()->format('H:i'),
+                ])
+            );
+    
+            $hub->publish($update);
+
+            // Réponse AJAX : $request->isXmlHttpRequest() > sinon redirect
+            if ($request->isXmlHttpRequest()) {
+                return new Response(null, 204);
+            }
+    
+            return $this->redirectToRoute('chat_conversation_show', [
+                'id' => $conversation->getId()
+            ]);
+        }
+
         return $this->render('chat/show.html.twig', [
             'conversation' => $conversation,
             'messages' => $messages,
             'otherParticipant' => $otherParticipant,
+            'form'=> $form->createView()
         ]);
     }
-}
+} 

@@ -13,7 +13,7 @@ subtitle="Aut fuga culpa ab quibusdam"
 variant="dark"
 /> #}
 
-<section>
+<section id="conversation-page">
     <h1>Conversation avec {{ otherParticipant.username }}</h1>
 
     <ul>
@@ -27,6 +27,11 @@ variant="dark"
         <li>Aucun message</li>
     {% endfor %}
     </ul>
+
+    {{ form_start(form, {'attr': {'id': 'message-form'}}) }}
+    {{ form_widget(form.content, {'attr': {'id': 'message-input', 'placeholder': 'Écrire un message...'}}) }}
+    <button type="submit">Envoyer</button>
+{{ form_end(form) }}
 </section>
 
 
