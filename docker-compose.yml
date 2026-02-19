@@ -59,7 +59,7 @@ services:
     image: dunglas/mercure
     restart: unless-stopped
     ports:
-    - "3000:80"
+    - "3000:80" # host:container
     environment:
       # Uncomment the following line to disable HTTPS,
       SERVER_NAME: ':80'
@@ -70,17 +70,17 @@ services:
         cors_origins http://127.0.0.1:8080
     # Comment the following line to disable the development mode
     command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
-    # with https
+    # With https
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "https://localhost/healthz"]
     #   timeout: 5s
     #   retries: 5
     #   start_period: 60s
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost/healthz"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - mercure_data:/data
       - mercure_config:/config
