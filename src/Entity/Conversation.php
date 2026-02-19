@@ -17,7 +17,7 @@ class Conversation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $creation_date = null;
 
     #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: ConversationType::class)]
