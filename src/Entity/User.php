@@ -85,6 +85,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'participants')]
     private Collection $conversations;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Photograph $photograph = null;
+
+    /**
+     * @var Collection<int, ServiceProposal>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'client')]
+    private Collection $serviceProposals;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -92,6 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->articleEditHistories = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->conversations = new ArrayCollection();
+        $this->serviceProposals = new ArrayCollection();
     }
 
 
@@ -382,6 +392,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->conversations->removeElement($conversation)) {
             $conversation->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function getPhotograph(): ?Photograph
+    {
+        return $this->photograph;
+    }
+
+    public function setPhotograph(Photograph $photograph): static
+    {
+        // set the owning side of the relation if necessary
+        if ($photograph->getUser() !== $this) {
+            $photograph->setUser($this);
+        }
+
+        $this->photograph = $photograph;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceProposal>
+     */
+    public function getServiceProposals(): Collection
+    {
+        return $this->serviceProposals;
+    }
+
+    public function addServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if (!$this->serviceProposals->contains($serviceProposal)) {
+            $this->serviceProposals->add($serviceProposal);
+            $serviceProposal->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if ($this->serviceProposals->removeElement($serviceProposal)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceProposal->getClient() === $this) {
+                $serviceProposal->setClient(null);
+            }
         }
 
         return $this;
