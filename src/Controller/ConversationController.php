@@ -155,25 +155,19 @@ class ConversationController extends AbstractController
             $message->getConversation()->setIsFrozen(true);
     
             $em->flush();
-            $mailerService->sendMessageReportedEmail(
-                $message,
-                $user,
-                $reason
-            );
-            
-            $mailerService->sendAdminMessageReportNotification(
-                $message,
-                $user,
-                $reason
-            );
-            
+
+            // Envoi des mails
+            $mailerService->sendMessageReportedEmail($message, $user, $reason);
+            $mailerService->sendAdminMessageReportNotification($message, $user, $reason);
+
+            $this->addFlash('success', 'The message has been successfully reported. Emails have been sent to the user and the admin.');
     
             return $this->redirectToRoute('chat_conversation_show', [
                 'id' => $message->getConversation()->getId(),
             ]);
         }
     
-        // Si le formulaire n'est pas valide, retourne une erreur
+        // Si le formulaire pas valide, retourne une erreur
         return new Response('Formulaire invalide', 400);
     }
 } 
