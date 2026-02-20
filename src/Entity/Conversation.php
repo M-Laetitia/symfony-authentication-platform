@@ -35,6 +35,9 @@ class Conversation
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'conversations')]
     private Collection $participants;
 
+    #[ORM\Column]
+    private ?bool $isFrozen = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -123,6 +126,18 @@ class Conversation
     public function removeParticipant(User $participant): static
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function isFrozen(): ?bool
+    {
+        return $this->isFrozen;
+    }
+
+    public function setIsFrozen(bool $isFrozen): static
+    {
+        $this->isFrozen = $isFrozen;
 
         return $this;
     }
