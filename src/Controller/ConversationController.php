@@ -2,18 +2,21 @@
 
 namespace App\Controller;
 
-use App\Repository\ConversationRepository;
-use App\Repository\MessageRepository;
-use App\Entity\Conversation;
 use App\Entity\Message;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Enum\MessageType;
+use App\Entity\Conversation;
+use App\Form\MessageFormType;
+use App\Form\ReportMessageFormType;
+use App\Repository\MessageRepository;
+use Symfony\Component\Mercure\Update;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ConversationRepository;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\MessageFormtype;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ConversationController extends AbstractController
 {
@@ -70,6 +73,8 @@ class ConversationController extends AbstractController
         $messages = $messageRepo->findByConversation($conversation);
         $otherParticipant = $conversationRepo->findOtherParticipant($conversation, $user);
 
+        // report message 
+        $reportForm = $this->createForm(ReportMessageFormType::class);
 
         // add a message
         $message = new Message();
@@ -80,8 +85,8 @@ class ConversationController extends AbstractController
     
             $message->setSender($user);
             $message->setConversation($conversation);
+            $message->setStatus(MessageType::UNREAD);
             $message->setCreationDate(new \DateTimeImmutable());
-    
             $em->persist($message);
             $em->flush();
     
@@ -112,7 +117,49 @@ class ConversationController extends AbstractController
             'conversation' => $conversation,
             'messages' => $messages,
             'otherParticipant' => $otherParticipant,
-            'form'=> $form->createView()
+            'form'=> $form->createView(),
+            'reportForm' => $reportForm->createView(),
         ]);
+    }
+
+    #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPH')]
+    public function report(
+        Request $request,
+        EntityManagerInterface $em,
+        MessageRepository $messageRepo
+    ): Response {
+        $user = $this->getUser();
+        $form = $this->createForm(ReportMessageFormType::class);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $reason = $data['reason'];
+    
+            $messageId = $request->request->get('messageId');
+            $message = $messageRepo->find($messageId);
+    
+            if (!$message) {
+                throw $this->createNotFoundException('Message non trouvé.');
+            }
+    
+            if ($message->getSender() === $user) {
+                throw $this->createAccessDeniedException('Impossible de signaler son propre message.');
+            }
+    
+            $message->setIsReported(true);
+            $message->setReportReason($reason);
+            $message->getConversation()->setIsFrozen(true);
+    
+            $em->flush();
+    
+            return $this->redirectToRoute('chat_conversation_show', [
+                'id' => $message->getConversation()->getId(),
+            ]);
+        }
+    
+        // Si le formulaire n'est pas valide, retourne une erreur
+        return new Response('Formulaire invalide', 400);
     }
 } 
