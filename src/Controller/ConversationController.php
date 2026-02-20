@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\MailerService;
 
 class ConversationController extends AbstractController
 {
@@ -127,6 +128,7 @@ class ConversationController extends AbstractController
     public function report(
         Request $request,
         EntityManagerInterface $em,
+        MailerService $mailerService,
         MessageRepository $messageRepo
     ): Response {
         $user = $this->getUser();
@@ -153,6 +155,12 @@ class ConversationController extends AbstractController
             $message->getConversation()->setIsFrozen(true);
     
             $em->flush();
+            $mailerService->sendMessageReportedEmail(
+                $message->getSender(),
+                $user,                
+                $reason,
+                $message->getContent()
+            );
     
             return $this->redirectToRoute('chat_conversation_show', [
                 'id' => $message->getConversation()->getId(),

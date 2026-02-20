@@ -42,4 +42,21 @@ class MailerService
 
         $this->mailer->send($email);
     }
+
+    public function sendMessageReportedEmail(User $reportedUser, User $reporter, string $reason, string $messageContent): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@domain.com', 'Mosaic'))
+            ->to($reportedUser->getEmail())
+            ->subject('Your message have been reported')
+            ->htmlTemplate('emails/user/message_reported.html.twig')
+            ->context([
+                'reportedUser' => $reportedUser,
+                'reporter' => $reporter,
+                'reason' => $reason,
+                'messageContent' => $messageContent,
+            ]);
+
+        $this->mailer->send($email);
+    }
 }
