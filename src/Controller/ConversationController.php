@@ -156,11 +156,17 @@ class ConversationController extends AbstractController
     
             $em->flush();
             $mailerService->sendMessageReportedEmail(
-                $message->getSender(),
-                $user,                
-                $reason,
-                $message->getContent()
+                $message,
+                $user,
+                $reason
             );
+            
+            $mailerService->sendAdminMessageReportNotification(
+                $message,
+                $user,
+                $reason
+            );
+            
     
             return $this->redirectToRoute('chat_conversation_show', [
                 'id' => $message->getConversation()->getId(),
