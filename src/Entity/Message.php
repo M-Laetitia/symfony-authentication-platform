@@ -27,10 +27,10 @@ class Message
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $report_reason = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true, enumType: MessageType::class)]
-    private ?array $status = null;
+    #[ORM\Column(type: 'string', enumType: MessageType::class)]
+    private MessageType $status ;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(inversedBy: 'messagess')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Conversation $conversation = null;
 
@@ -91,18 +91,15 @@ class Message
         return $this;
     }
 
-    /**
-     * @return MessageType[]|null
-     */
-    public function getStatus(): ?array
+
+    public function getStatus(): Messagetype
     {
         return $this->status;
     }
 
-    public function setStatus(?array $status): static
+    public function setStatus(Messagetype $status): self
     {
         $this->status = $status;
-
         return $this;
     }
 
