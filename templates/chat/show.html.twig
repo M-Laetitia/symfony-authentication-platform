@@ -18,32 +18,37 @@ variant="dark"
 
     <ul>
         {% for msg in messages %}
-            <li>
-                <strong>{{ msg.sender.username }}</strong> :
+        <li>
+            <strong>{{ msg.sender.username }}</strong> :
+            {% if msg.serviceProposal %}
+                {# Include le template de la proposal #}
+                {% include 'chat/_proposal.html.twig' with {'proposal': msg.serviceProposal} %}
+            {% else %}
                 {{ msg.content }}
-                <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
-        
-                {# Bouton signaler uniquement pour photographe, si pas déjà reporté et pas son propre message #}
-                {% if is_granted('ROLE_PHOTOGRAPH') and not msg.isReported and msg.sender.id != app.user.id %}
-                    <button class="btn-report" data-message-id="{{ msg.id }}">Signaler</button>
-                {% endif %}
-        
-                {# Afficher si le message a été reporté #}
-                {% if msg.isReported %}
-                    <div class="reported-message" style="color:red; font-style:italic; margin-top:5px;">
-                        Message signalé{% if msg.reportReason %} : "{{ msg.reportReason }}"{% endif %}
-                    </div>
-                {% endif %}
-            </li>
-        {% else %}
-            <li>Aucun message</li>
-        {% endfor %}
+            {% endif %}
+            <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
+    
+            {# Bouton signaler uniquement pour photographe, si pas déjà reporté et pas son propre message #}
+            {% if is_granted('ROLE_PHOTOGRAPH') and not msg.isReported and msg.sender.id != app.user.id %}
+                <button class="btn-report" data-message-id="{{ msg.id }}">Report</button>
+            {% endif %}
+    
+            {# Afficher si le message a été reporté #}
+            {% if msg.isReported %}
+                <div class="reported-message" style="color:red; font-style:italic; margin-top:5px;">
+                    Message reported{% if msg.reportReason %} : "{{ msg.reportReason }}"{% endif %}
+                </div>
+            {% endif %}
+        </li>
+    {% else %}
+        <li>No messages</li>
+    {% endfor %}
         </ul>
 
         <div id="report-modal" class="modal" style="display:none;">
             <div class="modal-content">
                 <span id="modal-close" style="float:right; cursor:pointer;">&times;</span>
-                <h3>Signaler ce message</h3>
+                <h3>Report a message</h3>
                 {{ form_start(reportForm, {
                     'action': path('chat_message_report'),
                     'method': 'POST',
@@ -51,7 +56,7 @@ variant="dark"
                 }) }}
                     {{ form_widget(reportForm.reason) }}
                     <input type="hidden" name="messageId" id="report-message-id" value="">
-                    <button type="submit">Envoyer</button>
+                    <button type="submit">Send</button>
                 {{ form_end(reportForm) }}
             </div>
         </div>
@@ -59,13 +64,20 @@ variant="dark"
         {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPH') %}
             {{ form_start(form, {'attr': {'id': 'message-form'}}) }}
             {{ form_widget(form.content, {'attr': {'id': 'message-input', 'placeholder': 'Écrire un message...'}}) }}
-            <button type="submit">Envoyer</button>
+            <button type="submit">Send</button>
             {{ form_end(form) }}
         {% else %}
             <div class="alert alert-danger">
-                Votre message a été signalé. Vous ne pouvez plus envoyer de message
-                en attente d'une vérification par l’administrateur.
+                Your message has been reported. You can no longer send messages
+                while it is awaiting verification by the administrator.
             </div>
+        {% endif %}
+
+        {% if app.user and is_granted('ROLE_PHOTOGRAPH') %}
+            <a href="{{ path('proposal_new', {id: conversation.id}) }}"
+            class="">
+                Make a Proposal
+            </a>
         {% endif %}
 </section>
 
