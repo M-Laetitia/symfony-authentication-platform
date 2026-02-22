@@ -10,13 +10,15 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Security\OAuthRegistrationFormHandler;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use App\Security\AppAuthenticator;
+use App\Service\SeoService;
 
 
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, SeoService $seoService): Response
     {
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -26,8 +28,9 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'meta_description' => $seoService->getMetaDescription('login'),
+            'meta_robots' => $seoService->getMetaRobots('login'),
         ]);
-
 
     }
 
