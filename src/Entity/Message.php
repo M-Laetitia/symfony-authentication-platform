@@ -10,12 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
 {
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -30,13 +32,17 @@ class Message
     #[ORM\Column(type: 'string', enumType: MessageType::class)]
     private MessageType $status ;
 
-    #[ORM\ManyToOne(inversedBy: 'messagess')]
+    #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Conversation $conversation = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
+
+    #[ORM\OneToOne(targetEntity: ServiceProposal::class, inversedBy: 'associatedMessage', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ServiceProposal $serviceProposal = null;
 
     public function getId(): ?int
     {
@@ -123,6 +129,18 @@ class Message
     public function setSender(?User $sender): static
     {
         $this->sender = $sender;
+
+        return $this;
+    }
+
+    public function getServiceProposal(): ?ServiceProposal
+    {
+        return $this->serviceProposal;
+    }
+
+    public function setServiceProposal(?ServiceProposal $serviceProposal): static
+    {
+        $this->serviceProposal = $serviceProposal;
 
         return $this;
     }
