@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ServiceProposalRepository::class)]
 class ServiceProposal
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,6 +38,21 @@ class ServiceProposal
     #[ORM\ManyToOne(inversedBy: 'serviceProposals')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
+
+    #[ORM\ManyToOne(inversedBy: 'serviceProposals')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Conversation $conversation = null;
+
+    #[ORM\OneToOne(mappedBy: 'serviceProposal', cascade: ['persist', 'remove'])]
+    private ?Message $associatedMessage = null;
+
+    #[ORM\Column]
+    private ?float $price_exclu_tax = null;
+
+    #[ORM\ManyToOne(inversedBy: 'serviceProposals')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tax $tax = null;
+
 
     public function getId(): ?int
     {
@@ -123,6 +139,62 @@ class ServiceProposal
     public function setClient(?User $client): static
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getConversation(): ?Conversation
+    {
+        return $this->conversation;
+    }
+
+    public function setConversation(?Conversation $conversation): static
+    {
+        $this->conversation = $conversation;
+
+        return $this;
+    }
+
+    public function getAssociatedMessage(): ?Message
+    {
+        return $this->associatedMessage;
+    }
+
+    public function setAssociatedMessage(?Message $associatedMessage): static
+    {
+        if ($associatedMessage === null && $this->associatedMessage !== null) {
+            $this->associatedMessage->setServiceProposal(null);
+        }
+
+        if ($associatedMessage !== null && $associatedMessage->getServiceProposal() !== $this) {
+            $associatedMessage->setServiceProposal($this);
+        }
+
+        $this->associatedMessage = $associatedMessage;
+
+        return $this;
+    }
+
+    public function getpriceExcluTax(): ?float
+    {
+        return $this->price_exclu_tax;
+    }
+
+    public function setpriceExcluTax(float $price_exclu_tax): static
+    {
+        $this->price_exclu_tax = $price_exclu_tax;
+
+        return $this;
+    }
+
+    public function getTax(): ?Tax
+    {
+        return $this->tax;
+    }
+
+    public function setTax(?Tax $tax): static
+    {
+        $this->tax = $tax;
 
         return $this;
     }
