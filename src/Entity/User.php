@@ -73,11 +73,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(cascade: ['persist'], orphanRemoval: true)]
     private ?Media $avatar = null;
 
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
+    private Collection $messages;
+
+    /**
+     * @var Collection<int, Conversation>
+     */
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'participants')]
+    private Collection $conversations;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Photograph $photograph = null;
+
+    /**
+     * @var Collection<int, ServiceProposal>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'client')]
+    private Collection $serviceProposals;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
+        $this->serviceProposals = new ArrayCollection();
     }
 
 
@@ -312,6 +336,110 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?Media $avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function getPhotograph(): ?Photograph
+    {
+        return $this->photograph;
+    }
+
+    public function setPhotograph(Photograph $photograph): static
+    {
+        // set the owning side of the relation if necessary
+        if ($photograph->getUser() !== $this) {
+            $photograph->setUser($this);
+        }
+
+        $this->photograph = $photograph;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceProposal>
+     */
+    public function getServiceProposals(): Collection
+    {
+        return $this->serviceProposals;
+    }
+
+    public function addServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if (!$this->serviceProposals->contains($serviceProposal)) {
+            $this->serviceProposals->add($serviceProposal);
+            $serviceProposal->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if ($this->serviceProposals->removeElement($serviceProposal)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceProposal->getClient() === $this) {
+                $serviceProposal->setClient(null);
+            }
+        }
 
         return $this;
     }

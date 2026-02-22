@@ -8,5 +8,8 @@ import './bootstrap.js';
 import './styles/app.css';
 import './js/global.js';
 
+if (document.querySelector('#conversation-page')) {
+    import('./js/chat-mercure.js');
+}
 
 // console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

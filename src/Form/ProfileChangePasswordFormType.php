@@ -17,7 +17,10 @@ class ProfileChangePasswordFormType extends AbstractType
         $builder->add('currentPassword', PasswordType::class, [
             'mapped' => false,
             'label' => 'Current password',
-            'attr' => ['autocomplete' => 'current-password', 'class' => 'input input--dark'],
+            'attr' => [
+                'autocomplete' => 'current-password',
+                'placeholder' => 'Current password',
+            ],
             'constraints' => [
                 new NotBlank(['message' => 'Please enter your current password']),
             ],
@@ -29,7 +32,10 @@ class ProfileChangePasswordFormType extends AbstractType
             'invalid_message' => 'The password fields must match.',
             'first_options'  => [
                 'label' => 'New password',
-                'attr' => ['autocomplete' => 'new-password', 'class' => 'input input--dark'],
+                'attr' => [
+                    'autocomplete' => 'new-password',
+                    'placeholder' => 'New password',
+                ],
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a new password']),
                     new Length([
@@ -45,7 +51,10 @@ class ProfileChangePasswordFormType extends AbstractType
             ],
             'second_options' => [
                 'label' => 'Confirm new password',
-                'attr' => ['autocomplete' => 'new-password', 'class' => 'input input--dark'],
+                'attr' => [
+                    'autocomplete' => 'new-password',
+                    'placeholder' => 'Confirm new password',
+                ],
             ],
         ]);
     }

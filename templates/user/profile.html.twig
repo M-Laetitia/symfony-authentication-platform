@@ -41,7 +41,7 @@ variant="dark"
                     {# Upload avatar #}
                     <div class="profile-avatar__avatar-form">
                              {{ form_start(formAvatar, {attr: {class: 'profile-avatar__form'}}) }}
-                             {{ form_widget(formAvatar.avatar) }}
+                             {{ form_widget(formAvatar.avatar, {attr: {class: 'input input--dark'}}) }}
                              <div class="field-error register-form-error">
                                {{ form_errors(formAvatar.avatar) }}  
                              </div>
@@ -85,8 +85,6 @@ variant="dark"
                         {{ form_widget(formPassword.currentPassword, {
                             attr: {
                                 class: 'input input--dark',
-                                placeholder: 'Current password',
-                                autocomplete: 'current-password',
                                 id: 'current-password'
                             }
                         }) }}
@@ -100,8 +98,6 @@ variant="dark"
                         {{ form_widget(formPassword.newPassword.first, {
                             attr: {
                                 class: 'input input--dark',
-                                placeholder: 'New password',
-                                autocomplete: 'new-password',
                                 id: 'new-password'
                             }
                         }) }}
@@ -115,7 +111,6 @@ variant="dark"
                         {{ form_widget(formPassword.newPassword.second, {
                             attr: {
                                 class: 'input input--dark',
-                                placeholder: 'Confirm new password',
                                 id: 'confirm-password'
                             }
                         }) }}
@@ -238,7 +233,7 @@ variant="dark"
         <p>Role user </p>
     {% endif %}
 
-    {% if is_granted('ROLE_EMPLOYEE') %}
+    {% if is_granted('ROLE_PHOTOGRAPH') %}
         <p>Role employé</p>
     {% endif %}
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Message Reported - Admin Notification</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
+    
+    <div style="background: #ffffff; padding: 20px; border-radius: 6px;">
+        
+        <h2 style="color: #d9534f;">⚠ A Message Has Been Reported</h2>
+
+        <p>
+            A message has been reported by a user on your platform.
+        </p>
+
+        <hr>
+
+        <h3>Reported User</h3>
+        <p>
+            <strong>Name:</strong> {{ reportedUser.firstname }} {{ reportedUser.lastname }}<br>
+            <strong>Email:</strong> {{ reportedUser.email }}
+        </p>
+
+        <h3>Reported By</h3>
+        <p>
+            <strong>Name:</strong> {{ reporter.firstname }} {{ reporter.lastname }}<br>
+            <strong>Email:</strong> {{ reporter.email }}
+        </p>
+
+        <h3>Message Content</h3>
+        <blockquote style="background: #f5f5f5; padding: 10px; border-left: 4px solid #d9534f;">
+            {{ messageContent }}
+        </blockquote>
+
+        <h3>Reason for Report</h3>
+        <p>
+            <strong>{{ reason }}</strong>
+        </p>
+
+        <hr>
+
+        <h3>Details</h3>
+        <p>
+            <strong>Conversation ID:</strong> {{ conversationId }}<br>
+            <strong>Message ID:</strong> {{ messageId }}
+        </p>
+
+        <p>
+            Please review this report in the administration panel and take appropriate action.
+        </p>
+
+        <p style="color: #777; font-size: 12px;">
+            This is an automated notification.
+        </p>
+
+    </div>
+
+</body>
+</html>

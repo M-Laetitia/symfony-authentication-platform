@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\SeoService;
 
 
 use App\Event\UserRegisteredEvent;
@@ -22,7 +23,7 @@ class RegistrationController extends AbstractController
     ) {}
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request): Response
+    public function register(Request $request, SeoService $seoService): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
@@ -47,7 +48,9 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+            'registrationForm' => $form->createView(),
+            'meta_description' => $seoService->getMetaDescription('register'),
+            'meta_robots' => $seoService->getMetaRobots('register'),
         ]);
     }
 

@@ -1,0 +1,23 @@
+<div class="">
+    <div class="">
+        {# <h4 class="">{{ proposal.service.name }}</h4> #}
+        <span class="">{{ proposal.status.value|capitalize }}</span>
+    </div>
+    <p class="">{{ proposal.message }}</p>
+
+    <p class="">
+        Price (excl. tax): €{{ proposal.priceExcluTax }}<br>
+        Tax ({{ proposal.tax.rate * 100 }}%): €{{ (proposal.priceExcluTax  * proposal.tax.rate)|number_format(2) }}<br>
+        Total: €{{ (proposal.priceExcluTax  * (1 + proposal.tax.rate))|number_format(2) }} <br>
+        Expiration Date: {{ proposal.expirationDate|date('d/m/Y') }}
+    </p>
+
+    {% if proposal.status.value == 'pending' %}
+    {{ form_start(proposalActionForms[proposal.id]) }}
+    {{ form_widget(proposalActionForms[proposal.id].accept) }}
+    {{ form_widget(proposalActionForms[proposal.id].refuse) }}
+    {{ form_end(proposalActionForms[proposal.id]) }}
+    {% else %}
+        <p>Status: {{ proposal.status.value|capitalize }}</p>
+    {% endif %}
+</div>

@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Entity\Message;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -40,6 +41,54 @@ class MailerService
                 'user' => $user,
             ]);
 
+        $this->mailer->send($email);
+    }
+
+    public function sendMessageReportedEmail(
+        Message $message,
+        User $reporter,
+        string $reason
+    ): void
+    {
+        $reportedUser = $message->getSender();
+    
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@domain.com', 'Mosaic'))
+            ->to($reportedUser->getEmail())
+            ->subject('Your message has been reported')
+            ->htmlTemplate('emails/user/message_reported.html.twig')
+            ->context([
+                'reportedUser' => $reportedUser,
+                'reporter' => $reporter,
+                'reason' => $reason,
+                'messageContent' => $message->getContent(),
+            ]);
+    
+        $this->mailer->send($email);
+    }
+
+    public function sendAdminMessageReportNotification(
+        Message $message,
+        User $reporter,
+        string $reason
+    ): void
+    {
+        $reportedUser = $message->getSender();
+    
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@domain.com', 'Mosaic'))
+            ->to('admin@domain.com')
+            ->subject('A message has been reported')
+            ->htmlTemplate('emails/admin/message_report_notification.html.twig')
+            ->context([
+                'reportedUser' => $reportedUser,
+                'reporter' => $reporter,
+                'reason' => $reason,
+                'messageContent' => $message->getContent(),
+                'conversationId' => $message->getConversation()->getId(),
+                'messageId' => $message->getId(),
+            ]);
+    
         $this->mailer->send($email);
     }
 }

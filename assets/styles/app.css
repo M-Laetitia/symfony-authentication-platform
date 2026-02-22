@@ -15,5 +15,6 @@
 /* PAGES */
 @import './pages/home.css';
 @import './pages/account.css';
+@import './pages/conversation.css';
 
 /* COMPONENTS */
