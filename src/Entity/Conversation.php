@@ -38,10 +38,17 @@ class Conversation
     #[ORM\Column]
     private ?bool $isFrozen = null;
 
+    /**
+     * @var Collection<int, ServiceProposal>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'conversation')]
+    private Collection $serviceProposals;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
         $this->participants = new ArrayCollection();
+        $this->serviceProposals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,6 +145,36 @@ class Conversation
     public function setIsFrozen(bool $isFrozen): static
     {
         $this->isFrozen = $isFrozen;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceProposal>
+     */
+    public function getServiceProposals(): Collection
+    {
+        return $this->serviceProposals;
+    }
+
+    public function addServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if (!$this->serviceProposals->contains($serviceProposal)) {
+            $this->serviceProposals->add($serviceProposal);
+            $serviceProposal->setConversation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if ($this->serviceProposals->removeElement($serviceProposal)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceProposal->getConversation() === $this) {
+                $serviceProposal->setConversation(null);
+            }
+        }
 
         return $this;
     }
