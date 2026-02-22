@@ -52,4 +52,16 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findByConversationWithProposals(Conversation $conversation): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.serviceProposal', 'sp')
+            ->addSelect('sp') 
+            ->where('m.conversation = :conv')
+            ->setParameter('conv', $conversation)
+            ->orderBy('m.creation_date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
