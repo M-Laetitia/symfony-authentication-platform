@@ -15,8 +15,8 @@ class ReportMessageFormType extends AbstractType
         $builder
             ->add('reason', TextareaType::class, [
                 'required' => false,
-                'label' => 'Raison (facultative)',
-                'attr' => ['placeholder' => 'Raison du signalement…']
+                'label' => 'Reason (optional)',
+                'attr' => ['placeholder' => 'Reason for reporting…']
             ])
             ->add('messageId', HiddenType::class);
     }

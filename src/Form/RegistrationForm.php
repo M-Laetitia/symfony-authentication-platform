@@ -58,7 +58,6 @@ class RegistrationForm extends HoneyPotType
                 'first_options'  => [
                     'label' => false,
                     'attr' => [
-                        'class' => 'auth-form__input input input--dark input--large',
                         'placeholder' => 'Password*',
                         'autocomplete' => 'new-password*',
                     ],
@@ -66,7 +65,6 @@ class RegistrationForm extends HoneyPotType
                 'second_options' => [
                     'label' => false,
                     'attr' => [
-                        'class' => 'auth-form__input input input--dark input--large',
                         'placeholder' => 'Confirm password*',
                         'autocomplete' => 'new-password*',
                     ],

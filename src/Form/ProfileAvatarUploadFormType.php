@@ -16,9 +16,6 @@ class ProfileAvatarUploadFormType extends AbstractType
             'label' => false,
             'mapped' => false,
             'required' => true,
-            'attr' => [
-                'class' => 'input input--dark',
-            ],
             'constraints' => [
                 new NotBlank([
                     'message' => 'Please select an image',

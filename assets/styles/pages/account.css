@@ -280,6 +280,9 @@
     .reset-password-form__group {
         margin-bottom: 30px;
     }
+    #change_password_form_plainPassword_first {
+        margin-bottom: 21px;
+    }
 }
 
 .account--check-email {

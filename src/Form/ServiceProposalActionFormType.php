@@ -11,7 +11,6 @@ class ServiceProposalActionFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Boutons pour accepter ou refuser
         $builder
             ->add('accept', SubmitType::class, [
                 'label' => 'Accept',

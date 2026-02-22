@@ -63,7 +63,7 @@ variant="dark"
 
         {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPH') %}
             {{ form_start(form, {'attr': {'id': 'message-form'}}) }}
-            {{ form_widget(form.content, {'attr': {'id': 'message-input', 'placeholder': 'Écrire un message...'}}) }}
+            {{ form_widget(form.content, {'attr': {'id': 'message-input'}}) }}
             <button type="submit">Send</button>
             {{ form_end(form) }}
         {% else %}
