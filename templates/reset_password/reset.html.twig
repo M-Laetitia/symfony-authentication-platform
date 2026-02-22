@@ -26,16 +26,12 @@
         
             {{ form_widget(resetForm.plainPassword.first, {
                 attr: {
-                    class: 'reset-password__input input input--dark input--large',
-                    placeholder: 'New password',
-                    autocomplete: 'new-password'
+                    class: 'reset-password__input input input--dark input--large'
                 }
             }) }}
             <div class="field-error register-form-error">
                 {{ form_errors(resetForm.plainPassword.first) }}
             </div>
-      
-        
 
             <label for="{{ resetForm.plainPassword.second.vars.id }}"
                    class="reset-password__label sr-only">
@@ -44,16 +40,13 @@
         
             {{ form_widget(resetForm.plainPassword.second, {
                 attr: {
-                    class: 'reset-password__input input input--dark input--large',
-                    placeholder: 'Repeat password',
-                    autocomplete: 'new-password'
+                    class: 'reset-password__input input input--dark input--large'
                 }
             }) }}
             <div class="field-error register-form-error">
                 {{ form_errors(resetForm.plainPassword.second) }}
             </div>
         </div>
-
 
             <button class="button button--large reset-password__submit button--border-accent">Reset password</button>
         {{ form_end(resetForm) }}

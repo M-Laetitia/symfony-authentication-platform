@@ -185,4 +185,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  
+  // modal repoort message
+  document.querySelectorAll('.btn-report').forEach(button => {
+    button.addEventListener('click', () => {
+        const msgId = button.dataset.messageId;
+        document.getElementById('report-message-id').value = msgId;
+        document.getElementById('report-modal').style.display = 'flex';
+    });
+});

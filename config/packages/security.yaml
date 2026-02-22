@@ -27,6 +27,9 @@ security:
 
                 provider: app_user_provider
                 default_target_path: home
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             oauth:
                 resource_owners:
                     google: "/login/check-google"
@@ -57,7 +60,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }*
     role_hierarchy:
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_ADMIN:       [ROLE_EMPLOYEE]
+        ROLE_ADMIN:       [ROLE_PHOTOGRAPH]
         ROLE_EMPLOYEE:    [ROLE_USER]
         ROLE_USER:        []
 

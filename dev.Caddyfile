@@ -1,0 +1,10 @@
+:80 { 
+    route /healthz {
+        respond "OK" 200
+    }
+
+    route /.well-known/mercure* {
+        # point d'entrée Mercure
+        reverse_proxy localhost:3000
+    }
+}
