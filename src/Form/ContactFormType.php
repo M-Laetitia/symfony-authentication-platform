@@ -2,26 +2,26 @@
 
 namespace App\Form;
 
+use Psr\Log\LoggerInterface;
+use App\Form\FormExtension\HoneyPotType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Bundle\SecurityBundle\Security;
-use Psr\Log\LoggerInterface;
-use App\Form\FormExtension\HoneyPotType;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ContactFormType extends HoneyPotType
 {
-    private Security $security;
 
-    public function __construct(Security $security,LoggerInterface $honeyPotLogger,RequestStack $requestStack)
+    public function __construct(LoggerInterface $honeyPotLogger,RequestStack $requestStack)
      {
-        $this->security = $security;
         parent::__construct($honeyPotLogger, $requestStack);
     }
 
@@ -30,11 +30,40 @@ class ContactFormType extends HoneyPotType
         parent::buildForm($builder, $options); 
 
         $builder
-            ->add('name', TextType::class, ['label' => 'Your name'])
-            ->add('emailFrom', EmailType::class, ['label' => 'Your email'])
-            ->add('subject', TextType::class, ['label' => 'Subject'])
-            ->add('message', TextareaType::class, ['label' => 'Message'])
-            ->add('send', SubmitType::class, ['label' => 'Send'])
+            ->add('name', TextType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Name',
+                    'autocomplete' => 'name',
+                ],
+            ])
+            ->add('emailFrom', EmailType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Email address',
+                    'autocomplete' => 'email',
+                ],
+            ])
+            ->add('subject', TextType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Subject',
+                ],
+            ])
+            ->add('message', TextareaType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Message',
+                ],
+            ])
+            ->add('agreeTerms', CheckboxType::class, [
+                'mapped' => false,
+                'label' => 'I agree with <a href="/terms">terms</a> and <a href="/privacy">privacy policy</a>.',
+                'label_html' => true,
+                'constraints' => [
+                    new IsTrue(message: 'You should agree to our terms.'),
+                ],
+            ])
             ->add('submittedAt', HiddenType::class, [
                 'mapped' => false,
                 'data' => time(),
