@@ -20,78 +20,86 @@
                 </h5>
             </header>
 
-            <form class="contact__form" action="#" method="post" novalidate>
-                <div class="contact__fields">
+            {{ form_start(contactForm, {'attr': {'class': 'contact__form'}}) }}
 
-                    <div class="contact__field">
-                        <label for="contact-name" class="contact__label sr-only ">Name</label>
-                        <input
-                            type="text"
-                            id="contact-name"
-                            placeholder="Name"
-                            name="name"
-                            class="contact__input input input--line"
-                            autocomplete="name"
-                            required
-                        >
+            <div class="contact__fields">
+            
+                <div class="contact__field">
+                    {{ form_label(contactForm.name, 'Name', {'label_attr': {'class': 'contact__label sr-only'}}) }}
+                    {{ form_widget(contactForm.name, {
+                        'attr': {
+                            'id': 'contact-name',
+                            'class': 'contact__input input input--line',
+                        }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(contactForm.name) }}
                     </div>
-
-                    <div class="contact__field">
-                        <label for="contact-email" class="contact__label sr-only">Email address</label>
-                        <input
-                            type="email"
-                            id="contact-email"
-                            placeholder="Email address"
-                            name="email"
-                            class="contact__input input input--line"
-                            autocomplete="email"
-                            required
-                        >
-                    </div>
-
-                    <div class="contact__field">
-                        <label for="contact-subject" class="contact__label sr-only">Subject</label>
-                        <input
-                            type="text"
-                            id="contact-subject"
-                            placeholder="Subject"
-                            name="subject"
-                            class="contact__input input input--line"
-                            required
-                        >
-                    </div>
-
-                    <div class="contact__field">
-                        <label for="contact-message" class="contact__label sr-only">Message</label>
-                        <textarea
-                            id="contact-message"
-                            placeholder="Message"
-                            name="message"
-                            class="contact__textarea input input--textarea input--line"
-                            rows="6"
-                            required
-                        ></textarea>
-                    </div>
-
                 </div>
-
-                <div class="contact__consent terms--checkbox">
-                    <input
-                        type="checkbox"
-                        id="contact-terms"
-                        name="terms"
-                        class="contact__checkbox"
-                        required
-                    >
-                    <label for="contact-terms " class="contact__checkbox-label">
-                        <p> I agree to the collection and use of my personal data in accordance with the <a href="#">Privacy Policy</a>. </p> 
-                    </label>
+            
+                <div class="contact__field">
+                    {{ form_label(contactForm.emailFrom, 'Email address', {'label_attr': {'class': 'contact__label sr-only'}}) }}
+                    {{ form_widget(contactForm.emailFrom, {
+                        'attr': {
+                            'id': 'contact-email',
+                            'class': 'contact__input input input--line',
+                        }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(contactForm.emailFrom) }}
+                    </div>
                 </div>
-
-                <button type="submit" class="contact__submit button button--large button--accent">
-                    Send
-                </button>
-            </form>
+            
+                <div class="contact__field">
+                    {{ form_label(contactForm.subject, 'Subject', {'label_attr': {'class': 'contact__label sr-only'}}) }}
+                    {{ form_widget(contactForm.subject, {
+                        'attr': {
+                            'id': 'contact-subject',
+                            'class': 'contact__input input input--line',
+                        }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(contactForm.subject) }}
+                    </div>
+                </div>
+            
+                <div class="contact__field">
+                    {{ form_label(contactForm.message, 'Message', {'label_attr': {'class': 'contact__label sr-only'}}) }}
+                    {{ form_widget(contactForm.message, {
+                        'attr': {
+                            'id': 'contact-message',
+                            'class': 'contact__textarea input input--textarea input--line',
+                            'rows': 6
+                        }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(contactForm.message) }}
+                    </div>
+                </div>
+            
+            </div>
+            
+            <div class="contact__consent terms--checkbox">
+                {{ form_widget(contactForm.agreeTerms, {
+                    'attr': {
+                        'id': 'contact-terms',
+                        'class': 'contact__checkbox'
+                    }
+                }) }}
+                {{ form_label(contactForm.agreeTerms, '<p>I agree to the collection and use of my personal data in accordance with the <a href="#">Privacy Policy</a>.</p>', {
+                    'label_html': true,
+                    'label_attr': {'class': 'contact__checkbox-label'}
+                }) }}
+                <div class="field-error register-form-error">
+                    {{ form_errors(contactForm.agreeTerms) }}
+                </div>
+            </div>
+            
+            <button type="submit" class="contact__submit button button--large button--accent">
+                Send
+            </button>
+            
+            {{ form_end(contactForm) }}
         </div>
 
         <!-- RIGHT : CONTACT DETAILS -->
