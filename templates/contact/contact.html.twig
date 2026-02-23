@@ -2,7 +2,7 @@
 
 {% block title %}My profile{% endblock %}
 
-{% block body_class %}page--profile{% endblock %}
+{# {% block body_class %}page--profile{% endblock %} #}
 
 {% block body %}
 
@@ -11,10 +11,17 @@ title="Contact"
 subtitle="Something to say?"
 />
 
-<section>
-    {{ form_start(contactForm) }}
-    {{ form_widget(contactForm) }}
-    {{ form_end(contactForm) }}
+<section
+    class="contact u-display-center"
+    aria-labelledby="contact-title"
+>
+
+    <div class="contact__container">
+        {% include 'layout/contact.html.twig' %}
+    </div>
+
 </section>
+
+
 
 {% endblock %}
