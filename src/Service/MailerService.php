@@ -96,7 +96,7 @@ class MailerService
     {
         $email = (new TemplatedEmail())
             ->from(new Address($emailFrom, $name))
-            ->to('admin@domain.com')
+            ->to('admin@mosaic.com')
             ->subject('New contact form message')
             ->htmlTemplate('emails/admin/contact.html.twig')
             ->context([
