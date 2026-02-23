@@ -91,4 +91,21 @@ class MailerService
     
         $this->mailer->send($email);
     }
+
+    public function sendContactEmail(string $name, string $emailFrom, string $message, string $subject): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address($emailFrom, $name))
+            ->to('admin@mosaic.com')
+            ->subject('New contact form message')
+            ->htmlTemplate('emails/admin/contact.html.twig')
+            ->context([
+                'name' => $name,
+                'subject' => $subject,
+                'emailFrom' => $emailFrom,
+                'messageContent' => $message,
+            ]);
+
+        $this->mailer->send($email);
+    }
 }

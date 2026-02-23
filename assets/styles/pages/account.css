@@ -5,8 +5,6 @@
     width: 100%;
     /* min-height: 100vh; */
     padding-top: var(--height-navbar );
-    margin-top: 120px;
-    margin-bottom: 100px;
     /* height: calc(100vh - var(--height-navbar )); */
 
     .account__container {

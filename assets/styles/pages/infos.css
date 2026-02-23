@@ -1,0 +1,21 @@
+/* &------------ CONTACT ------------ */
+/* &--------------------------------- */
+
+.contact {
+    .bg-text--contact {
+        display: none;
+    }
+    .contact__container {
+        width : 100%;
+        justify-content: center;
+    }
+    .contact__info {
+        width: auto;
+    }
+    .contact__form-wrapper {
+        width: 885px;
+    }
+    .contact__title {
+        font-size: 65px;
+    }
+}
