@@ -96,7 +96,7 @@ class CommentSecurityService
      * Vérifie le temps de soumission du formulaire.
      * Retourne un tableau avec le statut et le temps restant.
      */
-    public function checkSubmissionTime(int $submittedAt, Request $request,int $minSeconds = 60): array
+    public function checkSubmissionTime(int $submittedAt, Request $request,int $minSeconds = 3): array
     {
 
         // Valeur par défaut pour éviter soumission frauduleuse
