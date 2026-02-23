@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\PhotographRepository;
+use App\Repository\PhotographerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PhotographRepository::class)]
-class Photograph
+#[ORM\Entity(repositoryClass: PhotographerRepository::class)]
+class Photographer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,14 +21,14 @@ class Photograph
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $lastName = null;
 
-    #[ORM\OneToOne(inversedBy: 'photograph', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'photographer', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     /**
      * @var Collection<int, ServiceProposal>
      */
-    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'photograph')]
+    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'photographer')]
     private Collection $serviceProposals;
 
     public function __construct()
@@ -89,7 +89,7 @@ class Photograph
     {
         if (!$this->serviceProposals->contains($serviceProposal)) {
             $this->serviceProposals->add($serviceProposal);
-            $serviceProposal->setPhotograph($this);
+            $serviceProposal->setPhotographer($this);
         }
 
         return $this;
@@ -99,8 +99,8 @@ class Photograph
     {
         if ($this->serviceProposals->removeElement($serviceProposal)) {
             // set the owning side to null (unless already changed)
-            if ($serviceProposal->getPhotograph() === $this) {
-                $serviceProposal->setPhotograph(null);
+            if ($serviceProposal->getPhotographer() === $this) {
+                $serviceProposal->setPhotographer(null);
             }
         }
 

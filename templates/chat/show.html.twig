@@ -29,7 +29,7 @@ variant="dark"
             <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
     
             {# Bouton signaler uniquement pour photographe, si pas déjà reporté et pas son propre message #}
-            {% if is_granted('ROLE_PHOTOGRAPH') and not msg.isReported and msg.sender.id != app.user.id %}
+            {% if is_granted('ROLE_PHOTOGRAPHER') and not msg.isReported and msg.sender.id != app.user.id %}
                 <button class="btn-report" data-message-id="{{ msg.id }}">Report</button>
             {% endif %}
     
@@ -61,7 +61,7 @@ variant="dark"
             </div>
         </div>
 
-        {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPH') %}
+        {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPHER') %}
             {{ form_start(form, {'attr': {'id': 'message-form'}}) }}
             {{ form_widget(form.content, {'attr': {'id': 'message-input'}}) }}
             <button type="submit">Send</button>
@@ -73,7 +73,7 @@ variant="dark"
             </div>
         {% endif %}
 
-        {% if app.user and is_granted('ROLE_PHOTOGRAPH') %}
+        {% if app.user and is_granted('ROLE_PHOTOGRAPHER') %}
             <a href="{{ path('proposal_new', {id: conversation.id}) }}"
             class="">
                 Make a Proposal

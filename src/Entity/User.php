@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $conversations;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Photograph $photograph = null;
+    private ?Photographer $photographer = null;
 
     /**
      * @var Collection<int, ServiceProposal>
@@ -397,19 +397,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhotograph(): ?Photograph
+    public function getPhotographer(): ?Photographer
     {
-        return $this->photograph;
+        return $this->photographer;
     }
 
-    public function setPhotograph(Photograph $photograph): static
+    public function setPhotographer(Photographer $photographer): static
     {
         // set the owning side of the relation if necessary
-        if ($photograph->getUser() !== $this) {
-            $photograph->setUser($this);
+        if ($photographer->getUser() !== $this) {
+            $photographer->setUser($this);
         }
 
-        $this->photograph = $photograph;
+        $this->photographer = $photographer;
 
         return $this;
     }

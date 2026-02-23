@@ -27,7 +27,7 @@ use App\Form\ServiceProposalFormType;
 
 use App\Repository\ConversationRepository;
 use App\Repository\MessageRepository;
-use App\Repository\PhotographRepository;
+use App\Repository\PhotographerRepository;
 use App\Repository\TaxRepository;
 
 use App\Service\MailerService;
@@ -185,7 +185,7 @@ class ConversationController extends AbstractController
     }
 
     #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
-    #[IsGranted('ROLE_PHOTOGRAPH')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function report(
         Request $request,
         EntityManagerInterface $em,
@@ -234,17 +234,17 @@ class ConversationController extends AbstractController
 
 
     #[Route('/conversation/{id}/proposal/new', name: 'proposal_new')]
-    #[IsGranted('ROLE_PHOTOGRAPH')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function createProposal(
         Conversation $conversation,
         ConversationRepository $conversationRepo,
-        PhotographRepository $photographRepo ,
+        PhotographerRepository $photographerRepo ,
         Request $request, 
         EntityManagerInterface $em,
         TaxRepository $taxRepository,
     ): Response {
 
-        $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPH');
+        $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPHER');
     
         $proposal = new ServiceProposal();
         $proposal->setConversation($conversation);
@@ -259,11 +259,11 @@ class ConversationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $photographUser = $this->getUser();
-            $photograph = $photographRepo->findOneBy(['user' => $photographUser]);
-            $client = $conversationRepo->findOtherParticipant($conversation, $photographUser);
+            $photographerUser = $this->getUser();
+            $photographer = $photographerRepo->findOneBy(['user' => $photographerUser]);
+            $client = $conversationRepo->findOtherParticipant($conversation, $photographerUser);
 
-            $proposal->setPhotograph($photograph);
+            $proposal->setPhotographer($photographer);
             $proposal->setClient($client);
             $proposal->setCreatedAt(new \DateTimeImmutable());
             $proposal->setStatus(ServiceProposalType::PENDING);
@@ -271,7 +271,7 @@ class ConversationController extends AbstractController
             // Création du message lié
             $message = new Message();
             $message->setConversation($conversation);
-            $message->setSender($photographUser);
+            $message->setSender($photographerUser);
             $message->setServiceProposal($proposal);
             $message->setStatus(MessageType::UNREAD);
             $message->setCreationDate(new \DateTimeImmutable());

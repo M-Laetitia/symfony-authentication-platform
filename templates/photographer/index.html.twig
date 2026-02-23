@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our Photographers{% endblock %}
+
+{% block body %}
+<div class="photographer-page">
+    <h1 class="photographer-page__title">Our Photographers</h1>
+
+    {% if photographers is empty %}
+        <p>No photographers found yet.</p>
+    {% else %}
+        <div class="photographer-list">
+            {% for photographer in photographers %}
+                <div class="photographer-card">
+                    <p>{{ photographer.firstname }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
