@@ -3,36 +3,39 @@
 namespace App\Controller;
 
 // Vendors
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-// App
-use App\Entity\Conversation;
 use App\Entity\Message;
+use App\Enum\MessageType;
+use App\Entity\Conversation;
 use App\Entity\Photographer;
+use App\Form\MessageFormType;
+use App\Enum\ConversationType;
+use App\Service\MailerService;
 use App\Entity\ServiceProposal;
 
-use App\Enum\MessageType;
-use App\Enum\ConversationType;
+// App
 use App\Enum\ServiceProposalType;
-
-use App\Form\MessageFormType;
+use App\Repository\TaxRepository;
 use App\Form\ReportMessageFormType;
-use App\Form\ServiceProposalActionFormType;
 use App\Form\ServiceProposalFormType;
 
-use App\Repository\ConversationRepository;
 use App\Repository\MessageRepository;
-use App\Repository\PhotographerRepository;
-use App\Repository\TaxRepository;
+use Symfony\Component\Mercure\Update;
+use Doctrine\ORM\EntityManagerInterface;
 
-use App\Service\MailerService;
+use App\Repository\ConversationRepository;
+use App\Repository\PhotographerRepository;
+use App\Form\ServiceProposalActionFormType;
+use Symfony\Component\Mercure\HubInterface;
+
+use Symfony\Component\Mercure\Authorization;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
 
 class ConversationController extends AbstractController
 {
@@ -73,23 +76,19 @@ class ConversationController extends AbstractController
         ]);
     }
 
-    #[Route('/chat/conversation/{id}', name: 'chat_conversation_show')]
+    #[Route('/chat/conversation/{id}', name: 'chat_conversation_show', methods: ['GET'])]
     public function show(
         Conversation $conversation,
-        Message $message, 
         MessageRepository $messageRepo,
-        EntityManagerInterface $em,
-        HubInterface $hub, 
-        Request $request, 
+        TokenFactoryInterface $defaultTokenFactory,
+        Request $request,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-
-
+    
         $isClient = $conversation->getClient()->getId() === $user->getId();
-
         $isPhotographer = $conversation->getPhotographer()
             && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
     
@@ -97,16 +96,14 @@ class ConversationController extends AbstractController
             throw $this->createAccessDeniedException();
         }
     
-        // Déterminer l'autre participant
         if ($isClient) {
             $otherParticipant = $conversation->getPhotographer()->getUser();
         } else {
             $otherParticipant = $conversation->getClient();
         }
-
+    
         $messages = $messageRepo->findByConversationWithProposals($conversation);
-        
-        // display accept/refuse form
+    
         $proposalActionForms = [];
         foreach ($messages as $msg) {
             if ($msg->getServiceProposal()) {
@@ -115,25 +112,75 @@ class ConversationController extends AbstractController
                     ServiceProposalActionFormType::class,
                     null,
                     [
-                        'action' => $this->generateUrl('proposal_action', [
-                            'id' => $proposal->getId()
-                        ]),
+                        'action' => $this->generateUrl('proposal_action', ['id' => $proposal->getId()]),
                         'method' => 'POST'
                     ]
                 )->createView();
             }
         }
-
-        // report message 
+    
         $reportForm = $this->createForm(ReportMessageFormType::class);
+        $form = $this->createForm(MessageFormType::class, new Message(), [
+            'action' => $this->generateUrl('chat_message_send', ['id' => $conversation->getId()]),
+        ]);
 
-        // add a message
+        $token = $defaultTokenFactory->create([
+            '/conversation/' . $conversation->getId()
+        ]);
+    
+        $response = $this->render('chat/show.html.twig', [
+            'conversation' => $conversation,
+            'messages' => $messages,
+            'otherParticipant' => $otherParticipant,
+            'form' => $form->createView(),
+            'reportForm' => $reportForm->createView(),
+            'proposalActionForms' => $proposalActionForms,
+        ]);
+
+        $response->headers->setCookie(
+            new \Symfony\Component\HttpFoundation\Cookie(
+                'mercureAuthorization',
+                $token,
+                0,
+                '/',  // ← était /.well-known/mercure
+                null,
+                false,
+                true,
+                false,
+                'strict'
+            )
+        );
+        
+        // dump($response->headers->getCookies()); die;
+
+        return $response;
+    }
+    
+    #[Route('/chat/conversation/{id}/message', name: 'chat_message_send', methods: ['POST'])]
+    public function sendMessage(
+        Conversation $conversation,
+        EntityManagerInterface $em,
+        HubInterface $hub,
+        Request $request,
+    ): Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+    
+        $isClient = $conversation->getClient()->getId() === $user->getId();
+        $isPhotographer = $conversation->getPhotographer()
+            && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
+    
+        if (!$isClient && !$isPhotographer) {
+            throw $this->createAccessDeniedException();
+        }
+    
         $message = new Message();
         $form = $this->createForm(MessageFormType::class, $message);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-    
             $message->setSender($user);
             $message->setConversation($conversation);
             $message->setStatus(MessageType::UNREAD);
@@ -141,38 +188,23 @@ class ConversationController extends AbstractController
             $em->persist($message);
             $em->flush();
     
-            //  Mercure - topic = /conversation/{id} > chaque conversation a son propre topic
             $update = new Update(
-                '/conversation/'.$conversation->getId(),
+                '/conversation/' . $conversation->getId(),
                 json_encode([
                     'author' => $user->getUserIdentifier(),
                     'content' => $message->getContent(),
                     'date' => $message->getCreationDate()->format('H:i'),
                 ])
             );
-            // envoie le message à tous les clients abonnés à ce topic, en temps réel.
-            $hub->publish($update); 
-
-            // Réponse AJAX : $request->isXmlHttpRequest() > sinon redirect
-            // Si la requête vient d’un AJAX fetch : pas besoin de recharger la page > renvoie un 204 No Content.
-            if ($request->isXmlHttpRequest()) {
-                return new Response(null, 204);
-            }
+            $hub->publish($update);
     
-            return $this->redirectToRoute('chat_conversation_show', [
-                'id' => $conversation->getId()
-            ]);
+            return new JsonResponse(['status' => 'ok']);
         }
-
-        return $this->render('chat/show.html.twig', [
-            'conversation' => $conversation,
-            'messages' => $messages,
-            'otherParticipant' => $otherParticipant,
-            'form'=> $form->createView(),
-            'reportForm' => $reportForm->createView(),
-            'proposalActionForms' => $proposalActionForms,
-        ]);
+    
+        return new JsonResponse(['status' => 'error', 'errors' => (string) $form->getErrors(true)], 400);
     }
+
+
 
     #[Route('/proposal/{id}/action', name: 'proposal_action', methods: ['POST'])]
     public function proposalAction(
