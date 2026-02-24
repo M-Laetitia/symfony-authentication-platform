@@ -15,9 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // App
 use App\Entity\Conversation;
 use App\Entity\Message;
+use App\Entity\Photographer;
 use App\Entity\ServiceProposal;
 
 use App\Enum\MessageType;
+use App\Enum\ConversationType;
 use App\Enum\ServiceProposalType;
 
 use App\Form\MessageFormType;
@@ -35,33 +37,38 @@ use App\Service\MailerService;
 class ConversationController extends AbstractController
 {
     #[Route('/chat', name: 'chat')]
-    public function index(ConversationRepository $conversationRepo, MessageRepository $messageRepo): Response
-    {
-        $user = $this->getUser();
-        // check if the user is connected
+    public function index(
+        ConversationRepository $conversationRepo,
+        MessageRepository $messageRepo
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $conversations = $conversationRepo->findByUser($user);
-        $otherParticipants = [];
+        $user = $this->getUser();
+
+        $conversations = $conversationRepo->findByAuthenticatedUser($user);
+
         $conversationData = [];
+
         foreach ($conversations as $conv) {
-            $other = $conversationRepo->findOtherParticipant($conv, $user);
-            $otherParticipants[$conv->getId()] = $other ? $other->getUsername() : 'Aucun';
+
+            if ($conv->getClient() === $user) {
+                $otherUser = $conv->getPhotographer()->getUser();
+            } else {
+                $otherUser = $conv->getClient();
+            }
+
             $lastMessage = $messageRepo->findLastMessageForConversation($conv);
 
             $conversationData[] = [
                 'id' => $conv->getId(),
-                'otherParticipant' => $other ? $other->getUsername() : 'Aucun',
-                'lastMessage' => $lastMessage ? $lastMessage->getContent() : 'Aucun message',
+                'otherParticipant' => $otherUser->getUsername(),
+                'lastMessage' => $lastMessage ? $lastMessage->getContent() : 'no message',
                 'lastMessageDate' => $lastMessage ? $lastMessage->getCreationDate() : null,
             ];
         }
 
-        
         return $this->render('chat/index.html.twig', [
-            'user' => $this->getUser(),
             'conversations' => $conversations,
-            'otherParticipants' => $otherParticipants, 
             'conversationData' => $conversationData,
         ]);
     }
@@ -70,22 +77,34 @@ class ConversationController extends AbstractController
     public function show(
         Conversation $conversation,
         Message $message, 
-        ConversationRepository $conversationRepo,
         MessageRepository $messageRepo,
         EntityManagerInterface $em,
         HubInterface $hub, 
         Request $request, 
     ): Response {
-        $user = $this->getUser();
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
 
-        if (!$conversationRepo->isUserParticipant($conversation, $user)) {
+
+        $isClient = $conversation->getClient()->getId() === $user->getId();
+
+        $isPhotographer = $conversation->getPhotographer()
+            && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
+    
+        if (!$isClient && !$isPhotographer) {
             throw $this->createAccessDeniedException();
         }
+    
+        // Déterminer l'autre participant
+        if ($isClient) {
+            $otherParticipant = $conversation->getPhotographer()->getUser();
+        } else {
+            $otherParticipant = $conversation->getClient();
+        }
 
-        // $messages = $messageRepo->findByConversation($conversation);
         $messages = $messageRepo->findByConversationWithProposals($conversation);
-        $otherParticipant = $conversationRepo->findOtherParticipant($conversation, $user);
         
         // display accept/refuse form
         $proposalActionForms = [];
@@ -321,6 +340,40 @@ class ConversationController extends AbstractController
 
         // redirection vers la page de paiement
         // return $this->redirectToRoute('proposal_payment', ['id' => $proposal->getId()]);
+    }
+
+    #[Route('/chat/start/{id}', name: 'chat_start')]
+    public function startChat(
+        Photographer $photographer, 
+        EntityManagerInterface $em,
+        ConversationRepository $conversationRepository
+    ): Response {
+        $client = $this->getUser();
+        if (!$client) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $conversation = $conversationRepository->findOneBy([
+            'client' => $client,
+            'photographer' => $photographer
+        ]);
+
+        if (!$conversation) {
+            $conversation = new Conversation();
+            $conversation->setClient($client);
+            $conversation->setPhotographer($photographer);
+            $conversation->setStatus([ConversationType::ACTIVE]);
+            $conversation->setIsFrozen(false);
+            $conversation->setCreationDate(new \DateTimeImmutable());
+
+            $em->persist($conversation);
+            $em->flush();
+        }
+
+
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $conversation->getId()
+        ]);
     }
 } 
 
