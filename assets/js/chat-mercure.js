@@ -30,7 +30,9 @@ if (form && input && conversationId && chatContainer) {
     const url = new URL('http://localhost:3000/.well-known/mercure');
     url.searchParams.append('topic', '/conversation/' + conversationId);
 
-    const eventSource = new EventSource(url);
+    const eventSource = new EventSource(url, {
+        withCredentials: true
+    });
     eventSource.onopen = () => console.log('Connected to Mercure');
     eventSource.onerror = (e) => console.error('Mercure error', e);
 
