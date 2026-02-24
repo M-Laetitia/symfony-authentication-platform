@@ -79,11 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
     private Collection $messages;
 
-    /**
-     * @var Collection<int, Conversation>
-     */
-    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'participants')]
-    private Collection $conversations;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Photographer $photographer = null;
@@ -94,14 +89,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'client')]
     private Collection $serviceProposals;
 
+    /**
+     * @var Collection<int, Conversation>
+     */
+    #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'client')]
+    private Collection $conversations;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
         $this->messages = new ArrayCollection();
-        $this->conversations = new ArrayCollection();
         $this->serviceProposals = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
 
@@ -370,33 +371,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Conversation>
-     */
-    public function getConversations(): Collection
-    {
-        return $this->conversations;
-    }
-
-    public function addConversation(Conversation $conversation): static
-    {
-        if (!$this->conversations->contains($conversation)) {
-            $this->conversations->add($conversation);
-            $conversation->addParticipant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeConversation(Conversation $conversation): static
-    {
-        if ($this->conversations->removeElement($conversation)) {
-            $conversation->removeParticipant($this);
-        }
-
-        return $this;
-    }
-
+   
     public function getPhotographer(): ?Photographer
     {
         return $this->photographer;
@@ -438,6 +413,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($serviceProposal->getClient() === $this) {
                 $serviceProposal->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            // set the owning side to null (unless already changed)
+            if ($conversation->getClient() === $this) {
+                $conversation->setClient(null);
             }
         }
 
