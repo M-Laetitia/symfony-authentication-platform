@@ -81,5 +81,18 @@ class ConversationRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByAuthenticatedUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.photographer', 'p')
+            ->leftJoin('p.user', 'pc')
+            ->where('c.client = :user')
+            ->orWhere('pc = :user')
+            ->setParameter('user', $user)
+            ->orderBy('c.creation_date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 }
