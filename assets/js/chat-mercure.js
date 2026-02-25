@@ -46,6 +46,12 @@ async function sendMessage(form, input) {
         if (response.ok || response.type === 'opaqueredirect') {
             form.reset();
             input.value = '';
+        } else if (response.status === 400) {
+            const data = await response.json();
+            showFormError(form, data.message || 'Invalid content');
+        } else if (response.status === 429) {
+            const data = await response.json();
+            showFormError(form, data.message || 'Too many messages, please slow down');
         } else {
             console.error('Error when sending message:', response.status);
         }
@@ -54,6 +60,18 @@ async function sendMessage(form, input) {
         // les erreurs HTTP (4xx, 5xx) sont gérées par le bloc if/else ci-dessus
         console.error('Network error:', error);
     }
+}
+
+function showFormError(form, message) { 
+    let errorEl = document.getElementById('chat-error');
+    if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.id = 'chat-error';
+        errorEl.className = 'chat-error';
+        form.insertAdjacentElement('afterend', errorEl);
+    }
+    errorEl.textContent = message;
+    setTimeout(() => errorEl.remove(), 10000);
 }
 
 function setupMercure(conversationId, chatContainer) {
@@ -76,7 +94,7 @@ function appendMessage(data, chatContainer) {
 
     const strong = document.createElement('strong');
     strong.textContent = data.author; // textContent échappe automatiquement le HTML
-    const text = document.createTextNode(': ' + data.content); // idem
+    const text = document.createTextNode(': ' + data.content); 
     
     messageEl.appendChild(strong);
     messageEl.appendChild(text);
@@ -85,6 +103,5 @@ function appendMessage(data, chatContainer) {
     // scrollTop = scrollHeight : force le scroll vers le dernier message
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
-
 
 initConversationChat();
