@@ -139,15 +139,15 @@ class ConversationController extends AbstractController
 
         $response->headers->setCookie(
             new \Symfony\Component\HttpFoundation\Cookie(
-                'mercureAuthorization',
-                $token,
-                0,
-                '/',  
-                null,
-                false,
-                true,
-                false,
-                'strict'
+                'mercureAuthorization',  // nom du cookie — Mercure cherche spécifiquement ce nom
+                $token,                  // valeur = le JWT généré par Symfony
+                0,                       // expiration = 0 signifie "cookie de session" (supprimé à la fermeture du navigateur)
+                '/',                     // path = accessible sur toute l'application (pas seulement /.well-known/mercure)
+                null,                    // domain = null = domaine actuel (localhost)
+                false,                   // secure = false en dev (true en prod = cookie envoyé uniquement en HTTPS)
+                true,                    // httpOnly = true = le cookie n'est PAS accessible via JavaScript (document.cookie) → protège contre le vol de token via XSS
+                false,                   // raw = false = le nom/valeur du cookie sont encodés normalement
+                'strict'                 // sameSite = strict = le cookie n'est envoyé que si la requête vient du même site → protège contre les attaques CSRF
             )
         );
         
