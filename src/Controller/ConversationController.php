@@ -27,6 +27,7 @@ use App\Repository\PhotographerRepository;
 use App\Form\ServiceProposalActionFormType;
 use Symfony\Component\Mercure\HubInterface;
 
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 use Symfony\Component\Mercure\Authorization;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -162,6 +163,7 @@ class ConversationController extends AbstractController
         EntityManagerInterface $em,
         HubInterface $hub,
         Request $request,
+        HtmlSanitizerInterface $htmlSanitizer
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
     
@@ -181,6 +183,7 @@ class ConversationController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            $message->setContent($htmlSanitizer->sanitize($message->getContent()));
             $message->setSender($user);
             $message->setConversation($conversation);
             $message->setStatus(MessageType::UNREAD);
