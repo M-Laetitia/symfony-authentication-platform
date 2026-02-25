@@ -93,6 +93,15 @@ class ConversationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    public function findConversationsForUser(int $userId)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.client', 'client')
+            ->leftJoin('c.photographer', 'photographer')
+            ->where('client.id = :userId OR photographer.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 
 }
