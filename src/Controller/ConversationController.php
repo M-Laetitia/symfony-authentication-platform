@@ -7,39 +7,47 @@ use App\Entity\Message;
 use App\Enum\MessageType;
 use App\Entity\Conversation;
 use App\Entity\Photographer;
+use Psr\Log\LoggerInterface;
 use App\Form\MessageFormType;
 use App\Enum\ConversationType;
 use App\Service\MailerService;
-use App\Entity\ServiceProposal;
 
 // App
+use App\Entity\ServiceProposal;
 use App\Enum\ServiceProposalType;
 use App\Repository\TaxRepository;
 use App\Form\ReportMessageFormType;
-use App\Form\ServiceProposalFormType;
 
+use App\Form\ServiceProposalFormType;
 use App\Repository\MessageRepository;
 use Symfony\Component\Mercure\Update;
-use Doctrine\ORM\EntityManagerInterface;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use App\Repository\PhotographerRepository;
 use App\Form\ServiceProposalActionFormType;
-use Symfony\Component\Mercure\HubInterface;
 
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
+use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Authorization;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 class ConversationController extends AbstractController
 {
+    public function __construct(
+        private LoggerInterface $messagesLogger,
+        private RateLimiterFactoryInterface $messageSendingLimiter
+    ) {}
+
     #[Route('/chat', name: 'chat')]
     public function index(
         ConversationRepository $conversationRepo,
@@ -163,13 +171,13 @@ class ConversationController extends AbstractController
         EntityManagerInterface $em,
         HubInterface $hub,
         Request $request,
-        HtmlSanitizerInterface $htmlSanitizer
+        HtmlSanitizerInterface $htmlSanitizer,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
     
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-    
+
         $isClient = $conversation->getClient()->getId() === $user->getId();
         $isPhotographer = $conversation->getPhotographer()
             && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
@@ -183,7 +191,38 @@ class ConversationController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            $message->setContent($htmlSanitizer->sanitize($message->getContent()));
+            // $message->setContent($htmlSanitizer->sanitize($message->getContent()));
+            $rawContent = $message->getContent();
+            $sanitized = $htmlSanitizer->sanitize($rawContent);
+
+            // Si le contenu a changé après sanitization → tentative suspecte
+            if ($rawContent !== $sanitized) {
+                $this->messagesLogger->warning('[Chat] XSS attempt detected in message content', [
+                    'user'            => $user->getUserIdentifier(),
+                    'conversation_id' => $conversation->getId(),
+                    'ip'              => $request->getClientIp(),
+                    'route'           => $request->attributes->get('_route'),
+                    'raw_content'     => $rawContent,
+                ]);
+            }
+            // Message vide si tout le contenu était malveillant
+            if (empty(trim($sanitized))) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Invalid content'], 400);
+            }
+
+            $limit = $this->messageSendingLimiter->create($request->getClientIp())->consume(1);
+    
+            if (!$limit->isAccepted()) {
+                $this->messagesLogger->warning('[Chat] Rate limit reached', [
+                    'user' => $user->getUserIdentifier(),
+                    'ip'   => $request->getClientIp(),
+                    'conversation_id' => $conversation->getId(),
+                    'route'           => $request->attributes->get('_route')
+                ]);
+                return new JsonResponse(['status' => 'error', 'message' => 'Too many messages, please slow down'], 429);
+            }
+
+            $message->setContent($sanitized);
             $message->setSender($user);
             $message->setConversation($conversation);
             $message->setStatus(MessageType::UNREAD);
