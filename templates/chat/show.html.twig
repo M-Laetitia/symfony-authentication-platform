@@ -13,7 +13,10 @@ subtitle="Aut fuga culpa ab quibusdam"
 variant="dark"
 /> #}
 
-<section id="conversation-page">
+<section id="conversation-page"
+    data-page="conversation"
+    data-conversation-id="{{ conversation.id }}"
+>
     <h1>Conversation avec {{ otherParticipant.firstName }}</h1>
 
     <ul id="chat-messages">
