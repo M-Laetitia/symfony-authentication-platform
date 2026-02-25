@@ -64,4 +64,37 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findUnreadByConversations(array $conversationIds)
+    {
+        if (empty($conversationIds)) {
+            return [];
+        }
+    
+        return $this->createQueryBuilder('m')
+            ->where('m.conversation IN (:ids)')
+            ->andWhere('m.status = :status')
+            ->setParameter('ids', $conversationIds)
+            ->setParameter('status', 'unread')
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+    public function countUnreadForUser(int $userId): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->join('m.conversation', 'c')
+            ->leftJoin('c.client', 'client')
+            ->leftJoin('c.photographer', 'photographer')
+            ->where('(client.id = :userId OR photographer.id = :userId)') 
+            ->andWhere('m.status = :status')                             
+            ->andWhere('m.sender != :userId')                           
+            ->setParameter('userId', $userId)
+            ->setParameter('status', 'unread')
+            ->select('COUNT(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 }
