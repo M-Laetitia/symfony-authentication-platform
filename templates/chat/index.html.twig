@@ -16,6 +16,9 @@ variant="dark"
 <section class="conversation">
     <h1>CHats: </h1>
 
+    <p>Tous les msg non lus: {{unreadMessages}} </p>
+    <br>
+    <br>
     <ul>
         {% for conv in conversationData %}
         <li>
@@ -24,6 +27,11 @@ variant="dark"
                 Dernier message : {{ conv.lastMessage }}
                 {% if conv.lastMessageDate %}
                     - {{ conv.lastMessageDate|date('H:i d/m/Y') }}
+                {% endif %}
+                {% if conv.unreadCount > 0 %}
+                    <span class="chat-badge">
+                      <p>Message non lus: {{ conv.unreadCount }}</p> 
+                    </span>
                 {% endif %}
             </a>
         </li>
