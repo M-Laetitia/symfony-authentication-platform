@@ -3,91 +3,116 @@
 namespace App\Controller;
 
 // Vendors
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Message;
+use App\Enum\MessageType;
+use App\Entity\Conversation;
+use App\Entity\Photographer;
+use Psr\Log\LoggerInterface;
+use App\Form\MessageFormType;
+use App\Enum\ConversationType;
+use App\Service\MailerService;
 
 // App
-use App\Entity\Conversation;
-use App\Entity\Message;
 use App\Entity\ServiceProposal;
-
-use App\Enum\MessageType;
 use App\Enum\ServiceProposalType;
-
-use App\Form\MessageFormType;
-use App\Form\ReportMessageFormType;
-use App\Form\ServiceProposalActionFormType;
-use App\Form\ServiceProposalFormType;
-
-use App\Repository\ConversationRepository;
-use App\Repository\MessageRepository;
-use App\Repository\PhotographRepository;
 use App\Repository\TaxRepository;
+use App\Form\ReportMessageFormType;
 
-use App\Service\MailerService;
+use App\Form\ServiceProposalFormType;
+use App\Repository\MessageRepository;
+use Symfony\Component\Mercure\Update;
+
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ConversationRepository;
+use App\Repository\PhotographerRepository;
+use App\Form\ServiceProposalActionFormType;
+
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Authorization;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 class ConversationController extends AbstractController
 {
+    public function __construct(
+        private LoggerInterface $messagesLogger,
+        private RateLimiterFactoryInterface $messageSendingLimiter
+    ) {}
+
     #[Route('/chat', name: 'chat')]
-    public function index(ConversationRepository $conversationRepo, MessageRepository $messageRepo): Response
-    {
-        $user = $this->getUser();
-        // check if the user is connected
+    public function index(
+        ConversationRepository $conversationRepo,
+        MessageRepository $messageRepo
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $conversations = $conversationRepo->findByUser($user);
-        $otherParticipants = [];
+        $user = $this->getUser();
+
+        $conversations = $conversationRepo->findByAuthenticatedUser($user);
+
         $conversationData = [];
+
         foreach ($conversations as $conv) {
-            $other = $conversationRepo->findOtherParticipant($conv, $user);
-            $otherParticipants[$conv->getId()] = $other ? $other->getUsername() : 'Aucun';
+
+            if ($conv->getClient() === $user) {
+                $otherUser = $conv->getPhotographer()->getUser();
+            } else {
+                $otherUser = $conv->getClient();
+            }
+
             $lastMessage = $messageRepo->findLastMessageForConversation($conv);
 
             $conversationData[] = [
                 'id' => $conv->getId(),
-                'otherParticipant' => $other ? $other->getUsername() : 'Aucun',
-                'lastMessage' => $lastMessage ? $lastMessage->getContent() : 'Aucun message',
+                'otherParticipant' => $otherUser->getUsername(),
+                'lastMessage' => $lastMessage ? $lastMessage->getContent() : 'no message',
                 'lastMessageDate' => $lastMessage ? $lastMessage->getCreationDate() : null,
             ];
         }
 
-        
         return $this->render('chat/index.html.twig', [
-            'user' => $this->getUser(),
             'conversations' => $conversations,
-            'otherParticipants' => $otherParticipants, 
             'conversationData' => $conversationData,
         ]);
     }
 
-    #[Route('/chat/conversation/{id}', name: 'chat_conversation_show')]
+    #[Route('/chat/conversation/{id}', name: 'chat_conversation_show', methods: ['GET'])]
     public function show(
         Conversation $conversation,
-        Message $message, 
-        ConversationRepository $conversationRepo,
         MessageRepository $messageRepo,
-        EntityManagerInterface $em,
-        HubInterface $hub, 
-        Request $request, 
+        TokenFactoryInterface $defaultTokenFactory,
+        Request $request,
     ): Response {
-        $user = $this->getUser();
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        if (!$conversationRepo->isUserParticipant($conversation, $user)) {
+        
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+    
+        $isClient = $conversation->getClient()->getId() === $user->getId();
+        $isPhotographer = $conversation->getPhotographer()
+            && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
+    
+        if (!$isClient && !$isPhotographer) {
             throw $this->createAccessDeniedException();
         }
-
-        // $messages = $messageRepo->findByConversation($conversation);
+    
+        if ($isClient) {
+            $otherParticipant = $conversation->getPhotographer()->getUser();
+        } else {
+            $otherParticipant = $conversation->getClient();
+        }
+    
         $messages = $messageRepo->findByConversationWithProposals($conversation);
-        $otherParticipant = $conversationRepo->findOtherParticipant($conversation, $user);
-        
-        // display accept/refuse form
+    
         $proposalActionForms = [];
         foreach ($messages as $msg) {
             if ($msg->getServiceProposal()) {
@@ -96,25 +121,108 @@ class ConversationController extends AbstractController
                     ServiceProposalActionFormType::class,
                     null,
                     [
-                        'action' => $this->generateUrl('proposal_action', [
-                            'id' => $proposal->getId()
-                        ]),
+                        'action' => $this->generateUrl('proposal_action', ['id' => $proposal->getId()]),
                         'method' => 'POST'
                     ]
                 )->createView();
             }
         }
-
-        // report message 
+    
         $reportForm = $this->createForm(ReportMessageFormType::class);
+        $form = $this->createForm(MessageFormType::class, new Message(), [
+            'action' => $this->generateUrl('chat_message_send', ['id' => $conversation->getId()]),
+        ]);
 
-        // add a message
+        $token = $defaultTokenFactory->create([
+            '/conversation/' . $conversation->getId()
+        ]);
+    
+        $response = $this->render('chat/show.html.twig', [
+            'conversation' => $conversation,
+            'messages' => $messages,
+            'otherParticipant' => $otherParticipant,
+            'form' => $form->createView(),
+            'reportForm' => $reportForm->createView(),
+            'proposalActionForms' => $proposalActionForms,
+        ]);
+
+        $response->headers->setCookie(
+            new \Symfony\Component\HttpFoundation\Cookie(
+                'mercureAuthorization',  // nom du cookie — Mercure cherche spécifiquement ce nom
+                $token,                  // valeur = le JWT généré par Symfony
+                0,                       // expiration = 0 signifie "cookie de session" (supprimé à la fermeture du navigateur)
+                '/',                     // path = accessible sur toute l'application (pas seulement /.well-known/mercure)
+                null,                    // domain = null = domaine actuel (localhost)
+                false,                   // secure = false en dev (true en prod = cookie envoyé uniquement en HTTPS)
+                true,                    // httpOnly = true = le cookie n'est PAS accessible via JavaScript (document.cookie) → protège contre le vol de token via XSS
+                false,                   // raw = false = le nom/valeur du cookie sont encodés normalement
+                'strict'                 // sameSite = strict = le cookie n'est envoyé que si la requête vient du même site → protège contre les attaques CSRF
+            )
+        );
+        
+        // dump($response->headers->getCookies()); die;
+
+        return $response;
+    }
+    
+    #[Route('/chat/conversation/{id}/message', name: 'chat_message_send', methods: ['POST'])]
+    public function sendMessage(
+        Conversation $conversation,
+        EntityManagerInterface $em,
+        HubInterface $hub,
+        Request $request,
+        HtmlSanitizerInterface $htmlSanitizer,
+    ): Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        $isClient = $conversation->getClient()->getId() === $user->getId();
+        $isPhotographer = $conversation->getPhotographer()
+            && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
+    
+        if (!$isClient && !$isPhotographer) {
+            throw $this->createAccessDeniedException();
+        }
+    
         $message = new Message();
         $form = $this->createForm(MessageFormType::class, $message);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            // $message->setContent($htmlSanitizer->sanitize($message->getContent()));
+            $rawContent = $message->getContent();
+            $sanitized = $htmlSanitizer->sanitize($rawContent);
+
+            // Si le contenu a changé après sanitization → tentative suspecte
+            if ($rawContent !== $sanitized) {
+                $this->messagesLogger->warning('[Chat] XSS attempt detected in message content', [
+                    'user'            => $user->getUserIdentifier(),
+                    'conversation_id' => $conversation->getId(),
+                    'ip'              => $request->getClientIp(),
+                    'route'           => $request->attributes->get('_route'),
+                    'raw_content'     => $rawContent,
+                ]);
+            }
+            // Message vide si tout le contenu était malveillant
+            if (empty(trim($sanitized))) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Invalid content'], 400);
+            }
+
+            $limit = $this->messageSendingLimiter->create($request->getClientIp())->consume(1);
     
+            if (!$limit->isAccepted()) {
+                $this->messagesLogger->warning('[Chat] Rate limit reached', [
+                    'user' => $user->getUserIdentifier(),
+                    'ip'   => $request->getClientIp(),
+                    'conversation_id' => $conversation->getId(),
+                    'route'           => $request->attributes->get('_route')
+                ]);
+                return new JsonResponse(['status' => 'error', 'message' => 'Too many messages, please slow down'], 429);
+            }
+
+            $message->setContent($sanitized);
             $message->setSender($user);
             $message->setConversation($conversation);
             $message->setStatus(MessageType::UNREAD);
@@ -122,38 +230,23 @@ class ConversationController extends AbstractController
             $em->persist($message);
             $em->flush();
     
-            //  Mercure - topic = /conversation/{id} > chaque conversation a son propre topic
             $update = new Update(
-                '/conversation/'.$conversation->getId(),
+                '/conversation/' . $conversation->getId(),
                 json_encode([
                     'author' => $user->getUserIdentifier(),
                     'content' => $message->getContent(),
                     'date' => $message->getCreationDate()->format('H:i'),
                 ])
             );
-            // envoie le message à tous les clients abonnés à ce topic, en temps réel.
-            $hub->publish($update); 
-
-            // Réponse AJAX : $request->isXmlHttpRequest() > sinon redirect
-            // Si la requête vient d’un AJAX fetch : pas besoin de recharger la page > renvoie un 204 No Content.
-            if ($request->isXmlHttpRequest()) {
-                return new Response(null, 204);
-            }
+            $hub->publish($update);
     
-            return $this->redirectToRoute('chat_conversation_show', [
-                'id' => $conversation->getId()
-            ]);
+            return new JsonResponse(['status' => 'ok']);
         }
-
-        return $this->render('chat/show.html.twig', [
-            'conversation' => $conversation,
-            'messages' => $messages,
-            'otherParticipant' => $otherParticipant,
-            'form'=> $form->createView(),
-            'reportForm' => $reportForm->createView(),
-            'proposalActionForms' => $proposalActionForms,
-        ]);
+    
+        return new JsonResponse(['status' => 'error', 'errors' => (string) $form->getErrors(true)], 400);
     }
+
+
 
     #[Route('/proposal/{id}/action', name: 'proposal_action', methods: ['POST'])]
     public function proposalAction(
@@ -185,7 +278,7 @@ class ConversationController extends AbstractController
     }
 
     #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
-    #[IsGranted('ROLE_PHOTOGRAPH')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function report(
         Request $request,
         EntityManagerInterface $em,
@@ -234,17 +327,17 @@ class ConversationController extends AbstractController
 
 
     #[Route('/conversation/{id}/proposal/new', name: 'proposal_new')]
-    #[IsGranted('ROLE_PHOTOGRAPH')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function createProposal(
         Conversation $conversation,
         ConversationRepository $conversationRepo,
-        PhotographRepository $photographRepo ,
+        PhotographerRepository $photographerRepo ,
         Request $request, 
         EntityManagerInterface $em,
         TaxRepository $taxRepository,
     ): Response {
 
-        $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPH');
+        $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPHER');
     
         $proposal = new ServiceProposal();
         $proposal->setConversation($conversation);
@@ -259,11 +352,11 @@ class ConversationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $photographUser = $this->getUser();
-            $photograph = $photographRepo->findOneBy(['user' => $photographUser]);
-            $client = $conversationRepo->findOtherParticipant($conversation, $photographUser);
+            $photographerUser = $this->getUser();
+            $photographer = $photographerRepo->findOneBy(['user' => $photographerUser]);
+            $client = $conversationRepo->findOtherParticipant($conversation, $photographerUser);
 
-            $proposal->setPhotograph($photograph);
+            $proposal->setPhotographer($photographer);
             $proposal->setClient($client);
             $proposal->setCreatedAt(new \DateTimeImmutable());
             $proposal->setStatus(ServiceProposalType::PENDING);
@@ -271,7 +364,7 @@ class ConversationController extends AbstractController
             // Création du message lié
             $message = new Message();
             $message->setConversation($conversation);
-            $message->setSender($photographUser);
+            $message->setSender($photographerUser);
             $message->setServiceProposal($proposal);
             $message->setStatus(MessageType::UNREAD);
             $message->setCreationDate(new \DateTimeImmutable());
@@ -321,6 +414,40 @@ class ConversationController extends AbstractController
 
         // redirection vers la page de paiement
         // return $this->redirectToRoute('proposal_payment', ['id' => $proposal->getId()]);
+    }
+
+    #[Route('/chat/start/{id}', name: 'chat_start')]
+    public function startChat(
+        Photographer $photographer, 
+        EntityManagerInterface $em,
+        ConversationRepository $conversationRepository
+    ): Response {
+        $client = $this->getUser();
+        if (!$client) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $conversation = $conversationRepository->findOneBy([
+            'client' => $client,
+            'photographer' => $photographer
+        ]);
+
+        if (!$conversation) {
+            $conversation = new Conversation();
+            $conversation->setClient($client);
+            $conversation->setPhotographer($photographer);
+            $conversation->setStatus([ConversationType::ACTIVE]);
+            $conversation->setIsFrozen(false);
+            $conversation->setCreationDate(new \DateTimeImmutable());
+
+            $em->persist($conversation);
+            $em->flush();
+        }
+
+
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $conversation->getId()
+        ]);
     }
 } 
 

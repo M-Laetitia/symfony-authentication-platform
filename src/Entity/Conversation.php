@@ -29,11 +29,6 @@ class Conversation
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', orphanRemoval: true)]
     private Collection $messages;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'conversations')]
-    private Collection $participants;
 
     #[ORM\Column]
     private ?bool $isFrozen = null;
@@ -44,10 +39,15 @@ class Conversation
     #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'conversation')]
     private Collection $serviceProposals;
 
+    #[ORM\ManyToOne(inversedBy: 'conversations')]
+    private ?User $client = null;
+
+    #[ORM\ManyToOne(inversedBy: 'conversations')]
+    private ?Photographer $photographer = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
-        $this->participants = new ArrayCollection();
         $this->serviceProposals = new ArrayCollection();
     }
 
@@ -113,29 +113,7 @@ class Conversation
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getParticipants(): Collection
-    {
-        return $this->participants;
-    }
 
-    public function addParticipant(User $participant): static
-    {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipant(User $participant): static
-    {
-        $this->participants->removeElement($participant);
-
-        return $this;
-    }
 
     public function isFrozen(): ?bool
     {
@@ -175,6 +153,30 @@ class Conversation
                 $serviceProposal->setConversation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): static
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    public function getPhotographer(): ?Photographer
+    {
+        return $this->photographer;
+    }
+
+    public function setPhotographer(?Photographer $photographer): static
+    {
+        $this->photographer = $photographer;
 
         return $this;
     }
