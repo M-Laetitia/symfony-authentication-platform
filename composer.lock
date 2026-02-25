@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd8ee501c8cae51590b098c6a6f2a60d",
+    "content-hash": "efab4629f4a522c261b795a91885190d",
     "packages": [
         {
             "name": "composer/semver",
@@ -7176,16 +7176,16 @@
         },
         {
             "name": "symfony/security-core",
-            "version": "v7.3.5",
+            "version": "v7.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "772a7c1eddd8bf8a977a67e6e8adc59650c604eb"
+                "reference": "993e1cc5ae5a40eb4e27e3097aa7f242da14f3ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/772a7c1eddd8bf8a977a67e6e8adc59650c604eb",
-                "reference": "772a7c1eddd8bf8a977a67e6e8adc59650c604eb",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/993e1cc5ae5a40eb4e27e3097aa7f242da14f3ec",
+                "reference": "993e1cc5ae5a40eb4e27e3097aa7f242da14f3ec",
                 "shasum": ""
             },
             "require": {
@@ -7243,7 +7243,7 @@
             "description": "Symfony Security Component - Core Library",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-core/tree/v7.3.5"
+                "source": "https://github.com/symfony/security-core/tree/v7.3.10"
             },
             "funding": [
                 {
@@ -7263,7 +7263,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-24T14:27:20+00:00"
+            "time": "2026-01-14T09:00:21+00:00"
         },
         {
             "name": "symfony/security-csrf",
@@ -11362,5 +11362,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

@@ -16,30 +16,31 @@ use App\Service\MailerService;
 use App\Entity\ServiceProposal;
 use App\Enum\ServiceProposalType;
 use App\Repository\TaxRepository;
-use App\Form\ReportMessageFormType;
+use App\Service\MessagingService;
 
+use App\Form\ReportMessageFormType;
 use App\Form\ServiceProposalFormType;
 use App\Repository\MessageRepository;
-use Symfony\Component\Mercure\Update;
 
+use Symfony\Component\Mercure\Update;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use App\Repository\PhotographerRepository;
-use App\Form\ServiceProposalActionFormType;
 
+use App\Form\ServiceProposalActionFormType;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Authorization;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ConversationController extends AbstractController
 {
@@ -55,11 +56,31 @@ class ConversationController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
+        $userId = $user->getId();
+
 
         $conversations = $conversationRepo->findByAuthenticatedUser($user);
+        $conversationIds = array_map(
+            fn($conv) => $conv->getId(),
+            $conversations
+        );
 
-        $conversationData = [];
+        $unreadByConversationRaw = $messageRepo
+            ->countUnreadByConversations($conversationIds, $userId);
+
+        $unreadByConversation = [];
+        foreach ($unreadByConversationRaw as $row) {
+            $unreadByConversation[$row['conversationId']] = $row['unreadCount'];
+        }
+
+        $lastMessages = $messageRepo->findLastMessagesForConversations($conversations);
+
+        $lastMessagesByConversation = [];
+        foreach ($lastMessages as $msg) {
+            $lastMessagesByConversation[$msg->getConversation()->getId()] = $msg;
+        }
 
         foreach ($conversations as $conv) {
 
@@ -68,20 +89,25 @@ class ConversationController extends AbstractController
             } else {
                 $otherUser = $conv->getClient();
             }
-
-            $lastMessage = $messageRepo->findLastMessageForConversation($conv);
-
+        
+            $lastMessage = $lastMessagesByConversation[$conv->getId()] ?? null;
+        
             $conversationData[] = [
                 'id' => $conv->getId(),
                 'otherParticipant' => $otherUser->getUsername(),
-                'lastMessage' => $lastMessage ? $lastMessage->getContent() : 'no message',
-                'lastMessageDate' => $lastMessage ? $lastMessage->getCreationDate() : null,
+                'lastMessage' => $lastMessage?->getContent() ?? 'no message',
+                'lastMessageDate' => $lastMessage?->getCreationDate(),
+                'authorLastMessage' => $lastMessage?->getSender()?->getUsername(),
+                'unreadCount' => $unreadByConversation[$conv->getId()] ?? 0,
             ];
         }
+
+        $unreadMessages = $messageRepo->countUnreadForUser($userId);
 
         return $this->render('chat/index.html.twig', [
             'conversations' => $conversations,
             'conversationData' => $conversationData,
+            'unreadMessages' => $unreadMessages,
         ]);
     }
 
@@ -91,6 +117,7 @@ class ConversationController extends AbstractController
         MessageRepository $messageRepo,
         TokenFactoryInterface $defaultTokenFactory,
         Request $request,
+        MessagingService $messagingService,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
@@ -104,6 +131,8 @@ class ConversationController extends AbstractController
         if (!$isClient && !$isPhotographer) {
             throw $this->createAccessDeniedException();
         }
+
+        $messagingService->openConversation($conversation, $user);
     
         if ($isClient) {
             $otherParticipant = $conversation->getPhotographer()->getUser();

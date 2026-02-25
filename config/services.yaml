@@ -59,3 +59,8 @@ services:
         arguments:
             $messagesLogger: '@monolog.logger.messages'    
             $messageSendingLimiter: '@limiter.message_sending' 
+    App\Twig\AppExtension:
+        arguments:
+            $messageRepository: '@App\Repository\MessageRepository'
+            $security: '@security.helper' 
+        tags: ['twig.extension']
