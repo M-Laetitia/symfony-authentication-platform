@@ -39,7 +39,7 @@ class Conversation
     #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'conversation')]
     private Collection $serviceProposals;
 
-    #[ORM\ManyToOne(inversedBy: 'conversationNews')]
+    #[ORM\ManyToOne(inversedBy: 'conversations')]
     private ?User $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'conversations')]
