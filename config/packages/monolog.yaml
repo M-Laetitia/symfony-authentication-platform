@@ -5,7 +5,7 @@ monolog:
 
 when@dev:
     monolog:
-        channels: ['app', 'honey_pot', 'security', 'comments']
+        channels: ['app', 'honey_pot', 'security', 'comments', 'messages']
         handlers:
             comments:
                 type: rotating_file
@@ -13,6 +13,12 @@ when@dev:
                 level: warning
                 max_files: 10
                 channels: ['comments']
+            messages:
+                type: rotating_file
+                path: "%kernel.logs_dir%/security/messages/messages.%kernel.environment%.log"
+                level: warning
+                max_files: 10
+                channels: ['messages']
             honeypot: 
                 level: warning
                 type: rotating_file
