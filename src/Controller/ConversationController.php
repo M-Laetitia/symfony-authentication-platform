@@ -142,7 +142,7 @@ class ConversationController extends AbstractController
                 'mercureAuthorization',
                 $token,
                 0,
-                '/',  // ← était /.well-known/mercure
+                '/',  
                 null,
                 false,
                 true,
