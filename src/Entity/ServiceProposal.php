@@ -33,7 +33,7 @@ class ServiceProposal
 
     #[ORM\ManyToOne(inversedBy: 'serviceProposals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Photograph $photograph = null;
+    private ?Photographer $photographer = null;
 
     #[ORM\ManyToOne(inversedBy: 'serviceProposals')]
     #[ORM\JoinColumn(nullable: false)]
@@ -119,14 +119,14 @@ class ServiceProposal
         return $this;
     }
 
-    public function getPhotograph(): ?Photograph
+    public function getPhotographer(): ?Photographer
     {
-        return $this->photograph;
+        return $this->photographer;
     }
 
-    public function setPhotograph(?Photograph $photograph): static
+    public function setPhotographer(?Photographer $photographer): static
     {
-        $this->photograph = $photograph;
+        $this->photographer = $photographer;
 
         return $this;
     }

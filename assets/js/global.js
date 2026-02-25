@@ -163,6 +163,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const uppercaseReq = document.getElementById('uppercase');
     const numberReq = document.getElementById('number');
     const specialReq = document.getElementById('special');
+
+    if (!passwordInput) {
+        return
+    };
   
     passwordInput.addEventListener('input', () => {
       const value = passwordInput.value;

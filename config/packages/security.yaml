@@ -60,7 +60,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }*
     role_hierarchy:
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_ADMIN:       [ROLE_PHOTOGRAPH]
+        ROLE_ADMIN:       [ROLE_PHOTOGRAPHER]
         ROLE_EMPLOYEE:    [ROLE_USER]
         ROLE_USER:        []
 
