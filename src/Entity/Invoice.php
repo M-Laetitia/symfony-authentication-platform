@@ -46,8 +46,7 @@ class Invoice
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderProposal = null;
 
-    #[ORM\OneToOne(mappedBy: 'invoice', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(mappedBy: 'invoice', targetEntity: Cancellation::class)]
     private ?Cancellation $cancellation = null;
 
     public function getId(): ?int
