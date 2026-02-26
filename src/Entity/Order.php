@@ -42,6 +42,9 @@ class Order
     #[ORM\OneToOne(mappedBy: 'orderProposal', cascade: ['persist', 'remove'])]
     private ?Cancellation $cancellation = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $note = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +158,18 @@ class Order
         }
 
         $this->cancellation = $cancellation;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): static
+    {
+        $this->note = $note;
 
         return $this;
     }
