@@ -48,7 +48,7 @@ class PaymentController extends AbstractController
 
         // If form submitted and valid
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $user = $security->getUser();
             // Create Order
             $order = new Order();
             $order->setCreatedAt(new \DateTimeImmutable());
@@ -106,18 +106,68 @@ class PaymentController extends AbstractController
             //     $canProceedToPayment = true;
             // }
 
-            return $this->redirectToRoute('payment_new', [
-                'id' => $order->getId()
+            return $this->redirectToRoute('payment_page', [
+                'orderId' => $order->getId()
             ]);
+     
         }
 
 
-
         return $this->render('payment/order/new.html.twig', [
-            // 'order' => $order,
             'proposal' => $proposal,
             'user_id' => $userId,
-            'form' => $form, 
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    // #[Route('/order/{orderId}/proceed-to-payment', name: 'payment_redirect', methods: ['POST'])]
+    // public function redirectToPayment(Order $order, Security $security,): Response
+    // {
+
+    //     /** @var \App\Entity\User $user */
+    //     $user = $security->getUser();
+    
+    //     if ($order->getServiceProposal()->getClient() !== $user) {
+    //         throw $this->createAccessDeniedException();
+    //     }
+    
+    //     if ($order->getServiceProposal()->getStatus()->value !== 'awaiting_payment') {
+    //         $this->addFlash('error', 'Payment is not allowed for this order.');
+    //         return $this->redirectToRoute('order_show', ['id' => $order->getId()]);
+    //     }
+    
+      
+    // }
+
+
+    #[Route('/payment/{orderId}', name: 'payment_page', methods: ['GET'])]
+    public function showPaymentPage(
+        int $orderId,
+        Request $request,
+        Security $security,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $security->getUser();
+
+        $order = $em->getRepository(Order::class)->find($orderId);
+        if (!$order) {
+            throw $this->createNotFoundException('Order not found.');
+        }
+
+        if ($order->getServiceProposal()->getClient() !== $user) {
+            throw $this->createAccessDeniedException('You are not allowed to pay this order.');
+        }
+
+        if ($order->getServiceProposal()->getStatus()->value !== 'awaiting_payment') {
+            $this->addFlash('error', 'This order is not ready for payment.');
+            return $this->redirectToRoute('order_show', ['id' => $order->getId()]);
+        }
+
+        return $this->render('payment/payment.html.twig', [
+            'order' => $order,
+            'proposal' => $order->getServiceProposal(),
+            'user' => $user,
         ]);
     }
 }
