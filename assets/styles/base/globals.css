@@ -43,6 +43,11 @@ body.page--account .page-wrapper {
     margin-top: var(--height-navbar);
 }
 
+.main-section-page {
+    margin-top: 170px ;
+    margin-bottom: 280px;
+}
+
 .content {
     flex: 1; 
 }
@@ -359,6 +364,8 @@ h6 {
 
 .input--textarea {
     height: auto;
+    resize: vertical;
+    overflow: auto;  
 }
 
 .input--line {
@@ -410,6 +417,8 @@ h6 {
     border: 0;
 }
 
+
+
 /* ?------------- LARGE ------------- */
 
 @media (max-width: 1500px) {
@@ -419,7 +428,10 @@ h6 {
 }
 
 @media (max-width: 1280px) {
-
+    .main-section-page {
+        margin-top: 160px ;
+        margin-bottom: 220px;
+    }
 }
 
 /* ?------------- MEDIUM ------------ */
@@ -446,6 +458,11 @@ h6 {
     h4 { font-size: 20px; }
     h5 { font-size: 18px; }
     h6 { font-size: 18px; }
+
+    .main-section-page {
+        margin-top: 100px ;
+        margin-bottom: 120px;
+    }
 }
 
 @media (max-width: 900px ) {

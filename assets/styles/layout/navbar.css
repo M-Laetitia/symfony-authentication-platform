@@ -272,6 +272,9 @@ header.site-header {
     width: 24px!important;
 }
 
+.navbar__right-menu .navbar_icon-btn {
+    padding: 10px 0;
+}
 .navbar_icon {
     display: block;
     width: 24px;
