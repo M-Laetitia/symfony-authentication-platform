@@ -13,7 +13,7 @@
     </p>
 
     {% if proposal.status.value == 'pending' %}
-    {{ form_start(proposalActionForms[proposal.id]) }}
+    {{ form_start(proposalActionForms[proposal.id], {'attr': {'id': 'form-proposal-' ~ proposal.id}}) }}
     {{ form_widget(proposalActionForms[proposal.id].accept) }}
     {{ form_widget(proposalActionForms[proposal.id].refuse) }}
     {{ form_end(proposalActionForms[proposal.id]) }}
@@ -21,3 +21,4 @@
         <p>Status: {{ proposal.status.value|capitalize }}</p>
     {% endif %}
 </div>
+
