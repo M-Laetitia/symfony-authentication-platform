@@ -44,7 +44,11 @@
                         <a href="/blog" class="navbar__link">Blog</a>
                     </li>
                     <li class="navbar__item">
-                        <a href="/contact" class="navbar__link">About Us</a>
+                        <a href="{{ path('contact') }}"
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'contact' %}navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'contact' %}aria-current="page"{% endif %}>
+                        Contact
+                        </a>
                     </li>
                     <li class="navbar__item">
                         <a href="/contact" class="navbar__link">Contact</a>
