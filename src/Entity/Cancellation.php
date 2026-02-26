@@ -28,10 +28,9 @@ class Cancellation
     private ?string $cancellation_number = null;
 
     #[ORM\OneToOne(inversedBy: 'cancellation', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderProposal = null;
 
-    #[ORM\OneToOne(inversedBy: 'cancellation', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'cancellation', targetEntity: Invoice::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Invoice $invoice = null;
 
