@@ -1,6 +1,6 @@
 twig:
     file_name_pattern: '*.twig'
-
+    exception_controller: 'App\Controller\ErrorController::show'
 when@test:
     twig:
         strict_variables: true

@@ -64,3 +64,8 @@ services:
             $messageRepository: '@App\Repository\MessageRepository'
             $security: '@security.helper' 
         tags: ['twig.extension']
+    App\Controller\ErrorController:
+        arguments:
+            $errorManager: '@App\Service\ErrorManager'
+
+    App\Service\ErrorManager: ~
