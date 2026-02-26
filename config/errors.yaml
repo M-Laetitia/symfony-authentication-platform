@@ -1,0 +1,16 @@
+errors:
+  403:
+    name: "Access Denied"
+    type: "Forbidden"
+    message: "You do not have permission to access this page."
+    redirect: "app_register"
+  404:
+    name: "Page Not Found"
+    type: "Not Found"
+    message: "The page you are looking for does not exist."
+    redirect: "app_home"
+  500:
+    name: "Server Error"
+    type: "Internal Server Error"
+    message: "Oops! Something went wrong on our side."
+    redirect: "app_home"

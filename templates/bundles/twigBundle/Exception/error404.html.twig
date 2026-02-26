@@ -1,0 +1,11 @@
+{% extends '@Twig/layout.html.twig' %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block body %}
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Error 404 – Page Not Found</h1>
+        <p>{{ exception.message|default('You do not have permission to access this page.') }}</p>
+        <a href="{{ path('app_register') }}">Back to Registration</a>
+    </div>
+{% endblock %}
