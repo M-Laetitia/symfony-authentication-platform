@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment - Order #{{ order.orderNumber }}{% endblock %}
+
+{% block body %}
+<h1>Payment for Order #{{ order.orderNumber }}</h1>
+
+<h2>ORDER Details</h2>
+{# <p><strong>Service:</strong> {{ proposal.service.name }}</p>
+<p><strong>Photographer:</strong> {{ proposal.photographer.firstName }} {{ proposal.photographer.lastName }}</p>
+<p><strong>Message:</strong> {{ proposal.message }}</p>
+<p><strong>Price (excl. tax):</strong> €{{ proposal.priceExcluTax|number_format(2) }}</p>
+<p><strong>Tax:</strong> €{{ (proposal.priceExcluTax * proposal.tax.rate)|number_format(2) }}</p>
+<p><strong>Total (TTC):</strong> €{{ (proposal.priceExcluTax * (1 + proposal.tax.rate))|number_format(2) }}</p> #}
+
+<hr>
+
+
+{% endblock %}
