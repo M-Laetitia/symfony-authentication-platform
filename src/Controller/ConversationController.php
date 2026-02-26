@@ -294,7 +294,9 @@ class ConversationController extends AbstractController
             $refuseButton = $form->get('refuse');
         
             if ($acceptButton->isClicked()) {
-                $proposal->setStatus(ServiceProposalType::ACCEPTED);
+                 return $this->redirectToRoute('create_order', [
+                'id' => $proposal->getId()
+            ]);
             } elseif ($refuseButton->isClicked()) {
                 $proposal->setStatus(ServiceProposalType::REJECTED);
             }
@@ -415,35 +417,35 @@ class ConversationController extends AbstractController
     }
 
 
-    #[Route('/proposal/{id}/accept', name: 'proposal_accept', methods: ['POST'])]
-    public function accept(
-        ServiceProposal $proposal,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    // #[Route('/proposal/{id}/accept', name: 'proposal_accept', methods: ['POST'])]
+    // public function accept(
+    //     ServiceProposal $proposal,
+    //     Request $request,
+    //     EntityManagerInterface $em
+    // ): Response {
 
-        $form = $this->createForm(ServiceProposalActionFormType::class);
-        $form->handleRequest($request);
+    //     $form = $this->createForm(ServiceProposalActionFormType::class);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    //     if ($form->isSubmitted() && $form->isValid()) {
 
-            $proposal->setStatus(ServiceProposalType::ACCEPTED);
-            $em->flush();
+    //         $proposal->setStatus(ServiceProposalType::ACCEPTED);
+    //         $em->flush();
 
-            $this->addFlash('success', 'Proposal accepted successfully.');
+    //         $this->addFlash('success', 'Proposal accepted successfully.');
 
-            return $this->redirectToRoute('chat_conversation_show', [
-                'id' => $proposal->getConversation()->getId(),
-            ]);
-        }
+    //         return $this->redirectToRoute('chat_conversation_show', [
+    //             'id' => $proposal->getConversation()->getId(),
+    //         ]);
+    //     }
 
-        return $this->redirectToRoute('chat_conversation_show', [
-            'id' => $proposal->getConversation()->getId(),
-        ]);
+    //     return $this->redirectToRoute('chat_conversation_show', [
+    //         'id' => $proposal->getConversation()->getId(),
+    //     ]);
 
-        // redirection vers la page de paiement
-        // return $this->redirectToRoute('proposal_payment', ['id' => $proposal->getId()]);
-    }
+    //     // redirection vers la page de paiement
+    //     // return $this->redirectToRoute('proposal_payment', ['id' => $proposal->getId()]);
+    // }
 
     #[Route('/chat/start/{id}', name: 'chat_start')]
     public function startChat(
