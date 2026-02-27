@@ -79,20 +79,25 @@ class PaymentController extends AbstractController
             $proposal->setStatus(ServiceProposalType::AWAITING_PAYMENT);
             
             // $idOrder = $order->getId();
-            $proposalId = $proposal->getId();
-            do {
-                $orderNumber = sprintf('ORD-%s-%04d', date('Y'), $proposalId);
+            // $proposalId = $proposal->getId();
+            // do {
+            //     $orderNumber = sprintf('ORD-%s-%04d', date('Y'), $proposalId);
 
-                $existing = $em->getRepository(Order::class)->findOneBy([
-                    'order_number' => $orderNumber,
-                ]);
+            //     $existing = $em->getRepository(Order::class)->findOneBy([
+            //         'order_number' => $orderNumber,
+            //     ]);
 
-                if ($existing) {
-                    $proposalId++;
-                }
-            } while ($existing);
+            //     if ($existing) {
+            //         $proposalId++;
+            //     }
+            // } while ($existing);
 
-            $order->setOrderNumber($orderNumber);
+            $order->setOrderNumber(
+                sprintf('ORD-%s-%05d', (new \DateTimeImmutable())->format('Y'), $proposal->getId())
+            );
+    
+
+            // $order->setOrderNumber($orderNumber);
             $em->persist($order);
             $em->flush();
 
@@ -219,4 +224,6 @@ class PaymentController extends AbstractController
     {
         return $this->render('payment/cancel.html.twig', ['orderId' => $id]);
     }
+
+
 }
