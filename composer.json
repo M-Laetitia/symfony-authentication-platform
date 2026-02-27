@@ -15,6 +15,7 @@
         "donatj/phpuseragentparser": "^1.11",
         "hwi/oauth-bundle": "^2.4",
         "liip/imagine-bundle": "^2.15",
+        "mpdf/mpdf": "^8.2",
         "phpdocumentor/reflection-docblock": "^5.6.3",
         "phpstan/phpdoc-parser": "^2.3",
         "stripe/stripe-php": "^19.4",
