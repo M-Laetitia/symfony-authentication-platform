@@ -45,6 +45,9 @@ class Order
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
+    #[ORM\Column]
+    private ?int $totalAmount = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -173,4 +176,17 @@ class Order
 
         return $this;
     }
+
+    public function getTotalAmount(): ?int
+    {
+        return $this->totalAmount;
+    }
+
+    public function setTotalAmount(int $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
+
 }
