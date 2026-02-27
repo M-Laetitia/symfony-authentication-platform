@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Enum\InvoiceType;
 use App\Repository\InvoiceRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
@@ -48,6 +47,9 @@ class Invoice
 
     #[ORM\OneToOne(mappedBy: 'invoice', targetEntity: Cancellation::class)]
     private ?Cancellation $cancellation = null;
+
+    #[ORM\Column]
+    private array $order_snapshot = [];
 
     public function getId(): ?int
     {
@@ -138,12 +140,12 @@ class Invoice
         return $this;
     }
 
-    public function isArchived(): ?bool
+    public function getIsArchived(): ?bool
     {
         return $this->isArchived;
     }
 
-    public function setArchived(?bool $isArchived): static
+    public function setIsArchived(?bool $isArchived): static
     {
         $this->isArchived = $isArchived;
 
@@ -187,6 +189,18 @@ class Invoice
         }
 
         $this->cancellation = $cancellation;
+
+        return $this;
+    }
+
+    public function getOrderSnapshot(): array
+    {
+        return $this->order_snapshot;
+    }
+
+    public function setOrderSnapshot(array $order_snapshot): static
+    {
+        $this->order_snapshot = $order_snapshot;
 
         return $this;
     }
