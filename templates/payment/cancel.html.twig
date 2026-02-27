@@ -1,0 +1,5 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Paiement annulé</h1>
+    <p><a href="{{ path('payment_checkout', { id: orderId }) }}">Réessayer</a></p>
+{% endblock %}
