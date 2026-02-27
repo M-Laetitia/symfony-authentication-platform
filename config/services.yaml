@@ -6,6 +6,8 @@
 parameters:
     bad_words_yaml_path: '%kernel.project_dir%/config/bad_words.yaml'
     uploads_directory: '%kernel.project_dir%/public/uploads'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
 
 services:
     # default configuration for services in *this* file
@@ -64,8 +66,7 @@ services:
             $messageRepository: '@App\Repository\MessageRepository'
             $security: '@security.helper' 
         tags: ['twig.extension']
-    App\Controller\ErrorController:
+    App\Service\StripeService:
         arguments:
-            $errorManager: '@App\Service\ErrorManager'
-
-    App\Service\ErrorManager: ~
+            $secretKey: '%stripe_secret_key%'
+            $webhookSecret: '%stripe_webhook_secret%'
