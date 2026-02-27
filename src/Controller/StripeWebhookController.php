@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Enum\OrderType;
 use App\Service\StripeService;
 use App\Enum\PaymentStatusType;
+use App\Service\InvoiceService;
 use App\Enum\PaymentProviderType;
 use App\Enum\ServiceProposalType;
 use App\Repository\OrderRepository;
@@ -25,6 +26,7 @@ class StripeWebhookController extends AbstractController
         StripeService          $stripeService,
         OrderRepository        $orderRepository,
         EntityManagerInterface $em,
+        InvoiceService         $invoiceService,
     ): Response {
         $payload   = $request->getContent();
         $sigHeader = $request->headers->get('Stripe-Signature');
@@ -90,7 +92,9 @@ class StripeWebhookController extends AbstractController
             $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
 
             $em->persist($payment);
+            $invoiceService->createFromOrder($order, $payment); 
             $em->flush();
+
         }
 
         return new Response('OK', Response::HTTP_OK);
