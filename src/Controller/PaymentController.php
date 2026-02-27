@@ -1,16 +1,19 @@
 <?php
 namespace App\Controller;
 
+use App\Service\StripeService;
 use App\Entity\Order;
 use App\Enum\OrderType;
 use App\Entity\ServiceProposal;
 use App\Enum\ServiceProposalType;
+use App\Repository\OrderRepository;
 use App\Form\OrderConfirmationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PaymentController extends AbstractController
@@ -55,6 +58,7 @@ class PaymentController extends AbstractController
             $order->setStatus(OrderType::PENDING); 
             $order->setServiceProposal($proposal);
             $priceTtc = $proposal->getPriceExcluTax() * (1 + $proposal->getTax()->getRate());
+            $order->setTotalAmount((int) round($priceTtc * 100));
 
             $snapshot = [
                 'title' => $proposal->getTitle(),
@@ -169,5 +173,50 @@ class PaymentController extends AbstractController
             'proposal' => $order->getServiceProposal(),
             'user' => $user,
         ]);
+    }
+
+    #[Route('/order/{id}/checkout', name: 'payment_checkout', methods: ['POST'])]
+    public function checkout(
+        int               $id,
+        OrderRepository   $orderRepository,
+        StripeService     $stripeService,
+    ): Response {
+        $order = $orderRepository->find($id);
+
+        if (!$order) {
+            throw $this->createNotFoundException('Commande introuvable');
+        }
+
+        // Sécurité : vérifier que la commande appartient à l'utilisateur connecté
+        if ($order->getServiceProposal()->getClient() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        
+        $session = $stripeService->createCheckoutSession(
+            amount:      $order->getTotalAmount(),         
+            currency:    'eur',
+            description: 'Commande #' . $order->getId(),
+            successUrl:  $this->generateUrl('payment_success', ['id' => $order->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            cancelUrl:   $this->generateUrl('payment_cancel',  ['id' => $order->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            orderId:     $order->getId(),
+        );
+        
+        // code 303 est requis par Stripe pour les redirections POST
+        return $this->redirect($session->url, 303);
+    }
+
+    #[Route('/order/{id}/payment/success', name: 'payment_success')]
+    public function success(int $id): Response
+    {
+        // Page affichée après paiement réussi
+        // Ne pas mettre à jour la BDD ici ! C'est le webhook qui fait foi
+        return $this->render('payment/success.html.twig', ['orderId' => $id]);
+    }
+
+    #[Route('/order/{id}/payment/cancel', name: 'payment_cancel')]
+    public function cancel(int $id): Response
+    {
+        return $this->render('payment/cancel.html.twig', ['orderId' => $id]);
     }
 }
