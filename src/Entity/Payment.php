@@ -38,6 +38,9 @@ class Payment
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderProposal = null;
 
+    #[ORM\Column]
+    private array $billingAddress = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +127,18 @@ class Payment
     public function setOrderProposal(Order $orderProposal): static
     {
         $this->orderProposal = $orderProposal;
+
+        return $this;
+    }
+
+    public function getBillingAddress(): array
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(array $billingAddress): static
+    {
+        $this->billingAddress = $billingAddress;
 
         return $this;
     }
