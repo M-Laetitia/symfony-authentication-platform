@@ -29,9 +29,6 @@ class Invoice
     #[ORM\Column]
     private ?int $totalAmount = null;
 
-    #[ORM\Column]
-    private array $BillingAddress = [];
-
     #[ORM\Column(length: 255)]
     private ?string $PdfPath = null;
 
@@ -50,6 +47,9 @@ class Invoice
 
     #[ORM\Column]
     private array $order_snapshot = [];
+
+    #[ORM\Column]
+    private array $payment_snapshot = [];
 
     public function getId(): ?int
     {
@@ -112,18 +112,6 @@ class Invoice
     public function setTotalAmount(int $totalAmount): static
     {
         $this->totalAmount = $totalAmount;
-
-        return $this;
-    }
-
-    public function getBillingAddress(): array
-    {
-        return $this->BillingAddress;
-    }
-
-    public function setBillingAddress(array $BillingAddress): static
-    {
-        $this->BillingAddress = $BillingAddress;
 
         return $this;
     }
@@ -201,6 +189,18 @@ class Invoice
     public function setOrderSnapshot(array $order_snapshot): static
     {
         $this->order_snapshot = $order_snapshot;
+
+        return $this;
+    }
+
+    public function getPaymentSnapshot(): array
+    {
+        return $this->payment_snapshot;
+    }
+
+    public function setPaymentSnapshot(array $payment_snapshot): static
+    {
+        $this->payment_snapshot = $payment_snapshot;
 
         return $this;
     }
