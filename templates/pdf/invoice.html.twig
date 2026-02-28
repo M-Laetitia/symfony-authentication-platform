@@ -163,7 +163,7 @@
         <div class="header-left">
             <div class="invoice-title">Facture</div>
             <div class="invoice-number">N° {{ invoice_number }}</div>
-            {# <div class="invoice-date">Émise le {{ issued_at }}</div> #}
+            <div class="invoice-date">Émise le {{ issued_at }}</div>
             <div class="badge-paid">✓ Payée</div>
         </div>
         <div class="header-right">
@@ -171,6 +171,89 @@
         </div>
     </div>
 
+    {# ── VENDEUR / ACHETEUR ── #}
+    <table class="parties-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="party">
+                <div class="party-label">Prestataire</div>
+                <div class="party-name">{{ seller.firstName }} {{ seller.lastName }}</div>
+                <p>
+                {{ seller.address }}<br>
+                {{ seller.postal_code }} {{ seller.city }}<br>
+                SIRET : {{ seller.siret }}<br>
+                {# {% if seller.vat_number is defined and seller.vat_number %}
+                    TVA : {{ seller.vat_number }}
+                {% else %}
+                    TVA non applicable, art. 293B du CGI
+                {% endif %} #}
+            </p>
+        </td>
+        <td class="party-spacer"></td>
+        <td class="party">
+            <div class="party-label">Client</div>
+            <div class="party-name">{{ buyer.name }}</div>
+            <p>
+                {{ buyer.line1 }}<br>
+                {% if buyer.line2 %}{{ buyer.line2 }}<br>{% endif %}
+                {{ buyer.postal_code }} {{ buyer.city }}<br>
+                {{ buyer.country }}<br>
+                {{ buyer.email }}
+            </p>
+        </td>
+    </tr>
+</table>
+
+    {# ── PRESTATION ── #}
+    <table class="items">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Date de prestation</th>
+                <th class="text-right">Montant HT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ description }}</td>
+                {# <td>{{ service_date }}</td> #}
+                <td class="text-right">{{ amount_ht }} €</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {# ── TOTAL ── #}
+    <div class="total-block">
+        <div class="total-row">
+            <span class="total-label">Sous-total HT</span>
+            <span class="total-value">{{ amount_ht }} €</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">TVA : {{ tax }} </span>
+            <span class="total-value">{{ amount_tax }}</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label total-final">Total TTC</span>
+            <span class="total-value total-final">{{ amount_ttc }} €</span>
+        </div>
+        {# <p class="tva-mention">TVA non applicable, art. 293B du CGI</p> #}
+    </div>
+
+    {# ── PAIEMENT ── #}
+    <div class="payment-block">
+        <div class="payment-title">Paiement reçu</div>
+        <p>
+            Mode de paiement : {{ payment_method }}<br>
+            Date de paiement : {{ paid_at }}<br>
+            Montant réglé : {{ amount_ttc }} €
+        </p>
+        {# <p class="transaction-id">Référence transaction : {{ transaction_id }}</p> #}
+    </div>
+
+    {# ── FOOTER ── #}
+    <div class="footer">
+        <p>{{ seller.firstName }} {{ seller.lastName }} — SIRET {{ seller.siret }}</p>
+        <p>Cette facture tient lieu de reçu. Paiement effectué et confirmé.</p>
+    </div>
 
 </body>
 </html>
