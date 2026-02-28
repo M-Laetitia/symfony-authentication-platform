@@ -48,6 +48,13 @@ class Order
     #[ORM\Column]
     private ?int $totalAmount = null;
 
+    #[ORM\OneToOne(mappedBy: 'orderProposal', targetEntity: Invoice::class)]
+    private ?Invoice $invoice = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $client = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -185,6 +192,23 @@ class Order
     public function setTotalAmount(int $totalAmount): static
     {
         $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
+
+    public function getInvoice(): ?Invoice
+    {
+        return $this->invoice;
+    }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): static
+    {
+        $this->client = $client;
 
         return $this;
     }
