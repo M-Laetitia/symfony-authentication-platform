@@ -1,8 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-{# La page success n'enregistre rien en BDD —  on ne fait confiance qu'au webhook pour ça. Un utilisateur pourrait très bien accéder à cette URL sans avoir payé. #}
-
-    <h1>Paiement réussi </h1>
+    <h1>Paiement réussi 🎉</h1>
     <p>Merci ! Votre commande #{{ orderId }} est confirmée.</p>
+
+    {% if invoice %}
+        <a href="{{ path('invoice_download', { id: invoice.id }) }}" target="_blank">
+            Télécharger ma facture
+        </a>
+    {% endif %}
+
 {% endblock %}
