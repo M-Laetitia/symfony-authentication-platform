@@ -1,12 +1,13 @@
 <?php
 namespace App\Controller;
 
-use App\Service\StripeService;
 use App\Entity\Order;
 use App\Enum\OrderType;
+use App\Service\StripeService;
 use App\Entity\ServiceProposal;
 use App\Enum\ServiceProposalType;
 use App\Repository\OrderRepository;
+use App\Repository\InvoiceRepository;
 use App\Form\OrderConfirmationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -57,6 +58,7 @@ class PaymentController extends AbstractController
             $order->setCreatedAt(new \DateTimeImmutable());
             $order->setStatus(OrderType::PENDING); 
             $order->setServiceProposal($proposal);
+            $order->setClient($user);
             $priceTtc = $proposal->getPriceExcluTax() * (1 + $proposal->getTax()->getRate());
             $order->setTotalAmount((int) round($priceTtc * 100));
 
@@ -212,11 +214,25 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/order/{id}/payment/success', name: 'payment_success')]
-    public function success(int $id): Response
+    public function success(int $id, OrderRepository $orderRepository): Response
     {
+
+        $order   = $orderRepository->find($id);
+        if (!$order) {
+            throw $this->createNotFoundException();
+        }
+            // Vérifier que la commande appartient à l'utilisateur connecté
+        if ($order->getServiceProposal()->getClient() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $invoice = $order->getInvoice();
         // Page affichée après paiement réussi
-        // Ne pas mettre à jour la BDD ici ! C'est le webhook qui fait foi
-        return $this->render('payment/success.html.twig', ['orderId' => $id]);
+        // Ne pas mettre à jour la BDD ici - cest le webhook qui fait foi
+        return $this->render('payment/success.html.twig', [
+        'orderId' => $id,
+        'invoice' => $invoice,
+    ]);
     }
 
     #[Route('/order/{id}/payment/cancel', name: 'payment_cancel')]
@@ -225,5 +241,35 @@ class PaymentController extends AbstractController
         return $this->render('payment/cancel.html.twig', ['orderId' => $id]);
     }
 
-
+    #[Route('/invoice/{id}/download', name: 'invoice_download')]
+    public function downloadInvoice(
+        int                $id,
+        InvoiceRepository  $invoiceRepository
+    ): Response {
+        $invoice = $invoiceRepository->find($id);
+    
+        if (!$invoice) {
+            throw $this->createNotFoundException();
+        }
+    
+        // Sécurité : vérifier que la facture appartient à l'utilisateur connecté
+        if ($invoice->getOrderProposal()->getServiceProposal()->getClient()!== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+    
+        $path = dirname(__DIR__, 2) . '/' . $invoice->getPdfPath();
+    
+        if (!file_exists($path)) {
+            throw $this->createNotFoundException('PDF introuvable');
+        }
+    
+        return new Response(
+            file_get_contents($path),
+            200,
+            [
+                'Content-Type'        => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
+            ]
+        );
+    }
 }
