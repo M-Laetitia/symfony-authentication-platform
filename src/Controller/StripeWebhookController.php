@@ -49,11 +49,6 @@ class StripeWebhookController extends AbstractController
             if (!$orderId) {
                 return new Response('order_id manquant', Response::HTTP_BAD_REQUEST);
             }
-            // if (!$orderId) {
-            //     // Change le 400 en 200 temporairement pour ne pas bloquer
-            //     return new Response('order_id manquant mais on continue', Response::HTTP_OK);
-            // }
-            
 
             $order = $orderRepository->find($orderId);
 
@@ -89,7 +84,7 @@ class StripeWebhookController extends AbstractController
 
             $order->setStatus(OrderType::PAID);
             $serviceProposal = $order->getServiceProposal();
-            $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
+            // $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
 
             $em->persist($payment);
             $invoiceService->createFromOrder($order, $payment); 
