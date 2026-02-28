@@ -100,18 +100,45 @@ class InvoiceService
 
         $path     = $dir . '/' . $filename;
 
+        $tax = $invoice->getOrderproposal()->getServiceProposal()->getTax();
+        $taxRate = $tax->getRate(); 
+        $priceHT = $invoice->getOrderSnapshot()['price_ht'];
+        $amountTax = $priceHT * $taxRate;
+
         $html = $this->twig->render('pdf/invoice.html.twig', [
             'invoice_number' => $invoice->getInvoiceNumber(),
-            // 'issued_at'      => $invoice->getIssuedAt()->format('d/m/Y'),
-            // 'seller'         => $invoice->getSellerSnapshot(),
-            // 'buyer'          => $invoice->getBuyerSnapshot(),
-            // 'description'    => $invoice->getOrderSnapshot()['title'],
-            // 'service_date'   => $invoice->getOrderSnapshot()['created_at'],
-            // 'amount_ht'      => number_format($invoice->getOrderSnapshot()['price_ht'], 2, ',', ' '),
-            // 'amount_ttc'     => number_format($invoice->getOrderSnapshot()['price_ttc'], 2, ',', ' '),
-            // 'payment_method' => $invoice->getPaymentSnapshot()['provider'],
-            // 'paid_at'        => $invoice->getPaymentSnapshot()['paidAt'],
-            // 'transaction_id' => $invoice->getPaymentSnapshot()['transactionId'],
+            'issued_at'      => $invoice->getIssuedAt()->format('d/m/Y'),
+            'seller'         => [
+                'firstName'   => $invoice->getSellerSnapshot()['firstName'],
+                'lastName'    => $invoice->getSellerSnapshot()['lastName'],
+                // 'address'     => $photographer->getAddress(),
+                // 'postal_code' => $photographer->getPostalCode(),
+                // 'city'        => $photographer->getCity(),
+                // 'siret'       => $photographer->getSiret(),
+                'address'     => '11 rue principale',
+                'postal_code' => '67000',
+                'city'        => 'Strasbourg',
+                'siret'       => '362 521 879 00034',
+            ],
+            'buyer'          => [
+                'name'        => $invoice->getBuyerSnapshot()['firstName'] . ' ' . $invoice->getBuyerSnapshot()['lastName'],
+                'line1'       => $invoice->getBuyerSnapshot()['line1'] ?? '',
+                'line2'       => $invoice->getBuyerSnapshot()['line2'] ?? '',
+                'postal_code' => $invoice->getBuyerSnapshot()['postal_code'] ?? '',
+                'city'        => $invoice->getBuyerSnapshot()['city'] ?? '',
+                'country'     => $invoice->getBuyerSnapshot()['country'] ?? '',
+                'email'       => $invoice->getBuyerSnapshot()['email'],
+            ],
+            'description'    => $invoice->getOrderSnapshot()['title'],
+            'service_date'   => $invoice->getOrderSnapshot()['created_at'],
+            'amount_ht'      => number_format($invoice->getOrderSnapshot()['price_ht'], 2, ',', ' '),
+            'amount_ttc'     => number_format($invoice->getOrderSnapshot()['price_ttc'], 2, ',', ' '),
+            'payment_method' => $invoice->getPaymentSnapshot()['provider'],
+            'paid_at'        => $invoice->getPaymentSnapshot()['paidAt'],
+            'transaction_id' => $invoice->getPaymentSnapshot()['transactionId'],
+            'tax'            => $taxRate *100 . '%',
+            'amount_tax'     => number_format($amountTax, 2, ',', ' '),
+
         ]);
 
         $mpdf = new Mpdf(['tempDir' => dirname(__DIR__, 2) . '/var/mpdf']);
