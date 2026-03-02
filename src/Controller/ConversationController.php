@@ -477,6 +477,8 @@ class ConversationController extends AbstractController
             $proposal->setStatus(ServiceProposalType::REJECTED);
             $em->flush();
 
+            $this->addFlash('success', 'The proposal has been declined successfully.');
+
             // AJAX request, return JSON response
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse([
