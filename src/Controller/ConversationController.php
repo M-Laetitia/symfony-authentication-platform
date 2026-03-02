@@ -2,45 +2,35 @@
 
 namespace App\Controller;
 
-// Vendors
-use App\Entity\Message;
-use App\Enum\MessageType;
 use App\Entity\Conversation;
+use App\Entity\Message;
 use App\Entity\Photographer;
-use Psr\Log\LoggerInterface;
-use App\Form\MessageFormType;
-use App\Enum\ConversationType;
-use App\Service\MailerService;
-
-// App
 use App\Entity\ServiceProposal;
+use App\Enum\ConversationType;
+use App\Enum\MessageType;
 use App\Enum\ServiceProposalType;
-use App\Repository\TaxRepository;
-use App\Service\MessagingService;
-
+use App\Form\MessageFormType;
 use App\Form\ReportMessageFormType;
 use App\Form\ServiceProposalFormType;
-use App\Repository\MessageRepository;
-
-use Symfony\Component\Mercure\Update;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
+use App\Repository\MessageRepository;
 use App\Repository\PhotographerRepository;
-
-use App\Form\ServiceProposalActionFormType;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Authorization;
+use App\Repository\TaxRepository;
+use App\Service\MailerService;
+use App\Service\MessagingService;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ConversationController extends AbstractController
 {
