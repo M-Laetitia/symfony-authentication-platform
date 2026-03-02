@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Controller;
 
@@ -21,10 +21,10 @@ use App\Service\MessagingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
 use Symfony\Component\Mercure\Update;
@@ -32,17 +32,55 @@ use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
+
 class ConversationController extends AbstractController
 {
     public function __construct(
         private LoggerInterface $messagesLogger,
-        private RateLimiterFactoryInterface $messageSendingLimiter
-    ) {}
+        private RateLimiterFactoryInterface $messageSendingLimiter,
+    ) {
+    }
+    
+    // ^ NEW CONVERSATION (START CHAT)
+    #[Route('/chat/start/{id}', name: 'chat_start')]
+    public function startChat(
+        Photographer $photographer,
+        EntityManagerInterface $em,
+        ConversationRepository $conversationRepository,
+    ): Response {
+        $client = $this->getUser();
+        if (!$client) {
+            throw $this->createAccessDeniedException();
+        }
 
+        $conversation = $conversationRepository->findOneBy([
+            'client' => $client,
+            'photographer' => $photographer,
+        ]);
+
+        if (!$conversation) {
+            $conversation = new Conversation();
+            $conversation->setClient($client);
+            $conversation->setPhotographer($photographer);
+            $conversation->setStatus([ConversationType::ACTIVE]);
+            $conversation->setIsFrozen(false);
+            $conversation->setCreationDate(new \DateTimeImmutable());
+
+            $em->persist($conversation);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $conversation->getId(),
+        ]);
+    }
+
+    // ^ CONVERSATION LIST 
     #[Route('/chat', name: 'chat')]
     public function index(
         ConversationRepository $conversationRepo,
-        MessageRepository $messageRepo
+        MessageRepository $messageRepo,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -50,10 +88,9 @@ class ConversationController extends AbstractController
         $user = $this->getUser();
         $userId = $user->getId();
 
-
         $conversations = $conversationRepo->findByAuthenticatedUser($user);
         $conversationIds = array_map(
-            fn($conv) => $conv->getId(),
+            fn ($conv) => $conv->getId(),
             $conversations
         );
 
@@ -73,15 +110,14 @@ class ConversationController extends AbstractController
         }
 
         foreach ($conversations as $conv) {
-
             if ($conv->getClient() === $user) {
                 $otherUser = $conv->getPhotographer()->getUser();
             } else {
                 $otherUser = $conv->getClient();
             }
-        
+
             $lastMessage = $lastMessagesByConversation[$conv->getId()] ?? null;
-        
+
             $conversationData[] = [
                 'id' => $conv->getId(),
                 'otherParticipant' => $otherUser->getUsername(),
@@ -101,6 +137,7 @@ class ConversationController extends AbstractController
         ]);
     }
 
+    // ^ SHOW CONVERSATION + MESSAGES
     #[Route('/chat/conversation/{id}', name: 'chat_conversation_show', methods: ['GET'])]
     public function show(
         Conversation $conversation,
@@ -110,199 +147,64 @@ class ConversationController extends AbstractController
         MessagingService $messagingService,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        
+
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-    
+
         $isClient = $conversation->getClient()->getId() === $user->getId();
         $isPhotographer = $conversation->getPhotographer()
             && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
-    
+
         if (!$isClient && !$isPhotographer) {
             throw $this->createAccessDeniedException();
         }
 
         $messagingService->openConversation($conversation, $user);
-    
+
         if ($isClient) {
             $otherParticipant = $conversation->getPhotographer()->getUser();
         } else {
             $otherParticipant = $conversation->getClient();
         }
-    
+
         $messages = $messageRepo->findByConversationWithProposals($conversation);
-    
-        // $proposalActionForms = [];
-        // foreach ($messages as $msg) {
-        //     if ($msg->getServiceProposal()) {
-        //         $proposal = $msg->getServiceProposal();
-        //         $proposalActionForms[$proposal->getId()] = $this->createForm(
-        //             ServiceProposalActionFormType::class,
-        //             null,
-        //             [
-        //                 'action' => $this->generateUrl('proposal_action', ['id' => $proposal->getId()]),
-        //                 'method' => 'POST'
-        //             ]
-        //         )->createView();
-        //     }
-        // }
 
 
-    
         $reportForm = $this->createForm(ReportMessageFormType::class);
         $form = $this->createForm(MessageFormType::class, new Message(), [
             'action' => $this->generateUrl('chat_message_send', ['id' => $conversation->getId()]),
         ]);
 
         $token = $defaultTokenFactory->create([
-            '/conversation/' . $conversation->getId()
+            '/conversation/'.$conversation->getId(),
         ]);
-    
+
         $response = $this->render('chat/show.html.twig', [
             'conversation' => $conversation,
             'messages' => $messages,
             'otherParticipant' => $otherParticipant,
             'form' => $form->createView(),
             'reportForm' => $reportForm->createView(),
-            // 'proposalActionForms' => $proposalActionForms,
         ]);
 
         $response->headers->setCookie(
             new \Symfony\Component\HttpFoundation\Cookie(
-                'mercureAuthorization',  // nom du cookie — Mercure cherche spécifiquement ce nom
-                $token,                  // valeur = le JWT généré par Symfony
-                0,                       // expiration = 0 signifie "cookie de session" (supprimé à la fermeture du navigateur)
-                '/',                     // path = accessible sur toute l'application (pas seulement /.well-known/mercure)
-                null,                    // domain = null = domaine actuel (localhost)
-                false,                   // secure = false en dev (true en prod = cookie envoyé uniquement en HTTPS)
-                true,                    // httpOnly = true = le cookie n'est PAS accessible via JavaScript (document.cookie) → protège contre le vol de token via XSS
-                false,                   // raw = false = le nom/valeur du cookie sont encodés normalement
-                'strict'                 // sameSite = strict = le cookie n'est envoyé que si la requête vient du même site → protège contre les attaques CSRF
+                'mercureAuthorization',  // Cookie name — Mercure specifically looks for this name to authenticate the user for real-time updates
+                $token,                  //  value = JWT generated by the Mercure TokenFactory, containing the user's permissions for subscribing to Mercure updates
+                0,                       // expiration = 0 = meaning the cookie will expire at the end of the session (when the browser is closed)
+                '/',                     // path = '/' = the cookie is sent for all paths on the domain, ensuring Mercure updates are received regardless of the current page (important if Mercure endpoint is on a different path)
+                null,                    // domain = null = the cookie is valid for the current domain (e.g., localhost in dev, or your actual domain in prod)
+                false,                   // secure = false = the cookie is sent over both HTTP and HTTPS (in development, since we often use HTTP; in production, this should be set to true to ensure the cookie is only sent over secure HTTPS connections) --->
+                true,                    // httpOnly = true = the cookie is NOT accessible via JavaScript (document.cookie) → protects against token theft via XSS
+                false,                   // raw = false = the cookie name and value are encoded normally (not URL-encoded) --> Mercure expects the token to be sent as-is, so we set raw to false to avoid double encoding
+                'strict'                 // sameSite = 'strict' = the cookie is not sent with cross-site requests → protects against CSRF attacks by ensuring the cookie is only sent when the request originates from the same site (important for security, especially since this cookie contains an authentication token) --->
             )
         );
-        
-        // dump($response->headers->getCookies()); die;
 
         return $response;
     }
 
-
-    #[Route('/chat/proposal/accept/{id}', name: 'proposal_accept', methods: ['POST'])]
-    public function acceptProposal(
-        ServiceProposal $proposal,
-        Request $request,
-    ): Response {
-        // Ask for confirmation
-        if ($request->request->get('action') === 'request_confirmation') {
-
-            if (!$this->isCsrfTokenValid('accept_proposal_' . $proposal->getId(), $request->request->get('_token'))) {
-                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
-            }
-            
-
-            if (!$this->canAcceptProposal($proposal)) {
-                throw $this->createAccessDeniedException('You cannot accept this proposal.');
-            }
-
-            return $this->render('chat/_confirmation_modal.html.twig', [
-                'proposal' => $proposal,
-            ]);
-        }
-
-        // Final confirmation from modal
-        if ($request->request->get('action') === 'confirm') {
-
-            if (!$this->isCsrfTokenValid('confirm_proposal_' . $proposal->getId(), $request->request->get('_confirm_token'))) {
-                $this->addFlash('error', 'An error occurred. Please try again.');
-                return $this->redirectToRoute('chat_conversation_show', [
-                    'id' => $proposal->getConversation()->getId(),
-                ]);
-            }
-
-
-            if (!$this->canAcceptProposal($proposal)) {
-                throw $this->createAccessDeniedException('You cannot accept this proposal.');
-            }
-
-            return $this->redirectToRoute('create_order', ['id' => $proposal->getId()]);
-        }
-
-        // Fallback
-        return $this->redirectToRoute('chat_conversation_show', [
-            'id' => $proposal->getConversation()->getId(),
-        ]);
-    }
-
-    #[Route('/chat/proposal/refuse/{id}', name: 'proposal_refuse', methods: ['POST'])]
-    public function refuseProposal(
-        ServiceProposal $proposal,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        // 1er POST => on demande la confirmation
-        if ($request->request->get('action') === 'request_confirmation') {
-            // ! OK ----
-            if (!$this->isCsrfTokenValid('refuse_proposal_' . $proposal->getId(), $request->request->get('_token'))) {
-                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
-            }
-                    
-
-            if (!$this->canAcceptProposal($proposal)) {
-                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
-            }
-
-            return $this->render('chat/_refuse_modal.html.twig', [
-                'proposal' => $proposal,
-            ]);
-        }
-
-        // 2e POST => confirmation finale depuis la modale
-        if ($request->request->get('action') === 'confirm') {
-
-        // ! OK ----
-            if (!$this->isCsrfTokenValid('confirm_refuse_' . $proposal->getId(), $request->request->get('_confirm_token'))) {
-                $this->addFlash('error', 'An error occurred. Please try again.');
-                return $this->redirectToRoute('chat_conversation_show', [
-                    'id' => $proposal->getConversation()->getId(),
-                ]);
-            }
-
-            
-            if (!$this->canAcceptProposal($proposal)) {
-                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
-            }
-
-            $proposal->setStatus(\App\Enum\ServiceProposalType::REJECTED);
-            $em->flush();
-
-            // Si c'est une requête AJAX, renvoyer du JSON
-            if ($request->isXmlHttpRequest()) {
-                return new JsonResponse([
-                    'status' => 'success',
-                    'redirect_url' => $this->generateUrl('chat_conversation_show', ['id' => $proposal->getConversation()->getId()])
-                ]);
-            }
-
-            // Fallback pour les requêtes non-AJAX
-            return $this->redirectToRoute('chat_conversation_show', [
-                'id' => $proposal->getConversation()->getId(),
-            ]);
-        }
-
-        // Fallback
-        return $this->redirectToRoute('chat_conversation_show', [
-            'id' => $proposal->getConversation()->getId(),
-        ]);
-    }
-
-    private function canAcceptProposal(ServiceProposal $proposal): bool
-    {
-        return $proposal->getConversation()->getClient() === $this->getUser() 
-            && $proposal->getStatus() === ServiceProposalType::PENDING;
-    }
-
-
-        
+    // ^ SEND MESSAGE
     #[Route('/chat/conversation/{id}/message', name: 'chat_message_send', methods: ['POST'])]
     public function sendMessage(
         Conversation $conversation,
@@ -312,51 +214,51 @@ class ConversationController extends AbstractController
         HtmlSanitizerInterface $htmlSanitizer,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-    
+
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         $isClient = $conversation->getClient()->getId() === $user->getId();
         $isPhotographer = $conversation->getPhotographer()
             && $conversation->getPhotographer()->getUser()->getId() === $user->getId();
-    
+
         if (!$isClient && !$isPhotographer) {
             throw $this->createAccessDeniedException();
         }
-    
+
         $message = new Message();
         $form = $this->createForm(MessageFormType::class, $message);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // $message->setContent($htmlSanitizer->sanitize($message->getContent()));
             $rawContent = $message->getContent();
             $sanitized = $htmlSanitizer->sanitize($rawContent);
 
-            // Si le contenu a changé après sanitization → tentative suspecte
+            // If the content was changed after sanitization → suspicious attempt
             if ($rawContent !== $sanitized) {
                 $this->messagesLogger->warning('[Chat] XSS attempt detected in message content', [
-                    'user'            => $user->getUserIdentifier(),
+                    'user' => $user->getUserIdentifier(),
                     'conversation_id' => $conversation->getId(),
-                    'ip'              => $request->getClientIp(),
-                    'route'           => $request->attributes->get('_route'),
-                    'raw_content'     => $rawContent,
+                    'ip' => $request->getClientIp(),
+                    'route' => $request->attributes->get('_route'),
+                    'raw_content' => $rawContent,
                 ]);
             }
-            // Message vide si tout le contenu était malveillant
+            // If the sanitized content is empty but the original content was not → likely an attempt to send malicious content
             if (empty(trim($sanitized))) {
                 return new JsonResponse(['status' => 'error', 'message' => 'Invalid content'], 400);
             }
 
             $limit = $this->messageSendingLimiter->create($request->getClientIp())->consume(1);
-    
+
             if (!$limit->isAccepted()) {
                 $this->messagesLogger->warning('[Chat] Rate limit reached', [
                     'user' => $user->getUserIdentifier(),
-                    'ip'   => $request->getClientIp(),
+                    'ip' => $request->getClientIp(),
                     'conversation_id' => $conversation->getId(),
-                    'route'           => $request->attributes->get('_route')
+                    'route' => $request->attributes->get('_route'),
                 ]);
+
                 return new JsonResponse(['status' => 'error', 'message' => 'Too many messages, please slow down'], 429);
             }
 
@@ -367,9 +269,9 @@ class ConversationController extends AbstractController
             $message->setCreationDate(new \DateTimeImmutable());
             $em->persist($message);
             $em->flush();
-    
+
             $update = new Update(
-                '/conversation/' . $conversation->getId(),
+                '/conversation/'.$conversation->getId(),
                 json_encode([
                     'author' => $user->getUserIdentifier(),
                     'content' => $message->getContent(),
@@ -377,90 +279,87 @@ class ConversationController extends AbstractController
                 ])
             );
             $hub->publish($update);
-    
+
             return new JsonResponse(['status' => 'ok']);
         }
-    
+
         return new JsonResponse(['status' => 'error', 'errors' => (string) $form->getErrors(true)], 400);
     }
 
-
-
+    // ^ REPORT MESSAGE
     #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function report(
         Request $request,
         EntityManagerInterface $em,
         MailerService $mailerService,
-        MessageRepository $messageRepo
+        MessageRepository $messageRepo,
     ): Response {
         $user = $this->getUser();
         $form = $this->createForm(ReportMessageFormType::class);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $reason = $data['reason'];
-    
+
             $messageId = $request->request->get('messageId');
             $message = $messageRepo->find($messageId);
-    
+
             if (!$message) {
-                throw $this->createNotFoundException('Message non trouvé.');
+                throw $this->createNotFoundException('Message none found.');
             }
-    
+
             if ($message->getSender() === $user) {
-                throw $this->createAccessDeniedException('Impossible de signaler son propre message.');
+                throw $this->createAccessDeniedException('You cannot report your own message.');
             }
-    
+
             $message->setIsReported(true);
             $message->setReportReason($reason);
             $message->getConversation()->setIsFrozen(true);
-    
+
             $em->flush();
 
-            // Envoi des mails
+            // Send emails to both the user and the admin
             $mailerService->sendMessageReportedEmail($message, $user, $reason);
             $mailerService->sendAdminMessageReportNotification($message, $user, $reason);
 
             $this->addFlash('success', 'The message has been successfully reported. Emails have been sent to the user and the admin.');
-    
+
             return $this->redirectToRoute('chat_conversation_show', [
                 'id' => $message->getConversation()->getId(),
             ]);
         }
-    
-        // Si le formulaire pas valide, retourne une erreur
-        return new Response('Formulaire invalide', 400);
+
+        // If the form is not valid, redirect back with an error message
+        return new Response('Invalid form', 400);
     }
 
-
+    // ^ CREATE PROPOSAL
     #[Route('/conversation/{id}/proposal/new', name: 'proposal_new')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function createProposal(
         Conversation $conversation,
         ConversationRepository $conversationRepo,
-        PhotographerRepository $photographerRepo ,
-        Request $request, 
+        PhotographerRepository $photographerRepo,
+        Request $request,
         EntityManagerInterface $em,
         TaxRepository $taxRepository,
     ): Response {
-
         $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPHER');
-    
+
         $proposal = new ServiceProposal();
         $proposal->setConversation($conversation);
 
         $activeTaxes = $taxRepository->findBy(['active' => 1]);
 
         $form = $this->createForm(ServiceProposalFormType::class, $proposal, [
-            'active_taxes' => $activeTaxes, 
+            'active_taxes' => $activeTaxes,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $photographerUser = $this->getUser();
             $photographer = $photographerRepo->findOneBy(['user' => $photographerUser]);
             $client = $conversationRepo->findOtherParticipant($conversation, $photographerUser);
@@ -470,7 +369,7 @@ class ConversationController extends AbstractController
             $proposal->setCreatedAt(new \DateTimeImmutable());
             $proposal->setStatus(ServiceProposalType::PENDING);
 
-            // Création du message lié
+            // Create a new message in the conversation with the proposal details
             $message = new Message();
             $message->setConversation($conversation);
             $message->setSender($photographerUser);
@@ -494,40 +393,115 @@ class ConversationController extends AbstractController
         ]);
     }
 
-
-
-    #[Route('/chat/start/{id}', name: 'chat_start')]
-    public function startChat(
-        Photographer $photographer, 
-        EntityManagerInterface $em,
-        ConversationRepository $conversationRepository
+    // ^ ACCEPT PROPOSAL
+    #[Route('/chat/proposal/accept/{id}', name: 'proposal_accept', methods: ['POST'])]
+    public function acceptProposal(
+        ServiceProposal $proposal,
+        Request $request,
     ): Response {
-        $client = $this->getUser();
-        if (!$client) {
-            throw $this->createAccessDeniedException();
+        // Ask for confirmation
+        if ('request_confirmation' === $request->request->get('action')) {
+            if (!$this->isCsrfTokenValid('accept_proposal_'.$proposal->getId(), $request->request->get('_token'))) {
+                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
+            }
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot accept this proposal.');
+            }
+
+            return $this->render('chat/_confirmation_modal.html.twig', [
+                'proposal' => $proposal,
+            ]);
         }
 
-        $conversation = $conversationRepository->findOneBy([
-            'client' => $client,
-            'photographer' => $photographer
-        ]);
+        // Final confirmation from modal
+        if ('confirm' === $request->request->get('action')) {
+            if (!$this->isCsrfTokenValid('confirm_proposal_'.$proposal->getId(), $request->request->get('_confirm_token'))) {
+                $this->addFlash('error', 'An error occurred. Please try again.');
 
-        if (!$conversation) {
-            $conversation = new Conversation();
-            $conversation->setClient($client);
-            $conversation->setPhotographer($photographer);
-            $conversation->setStatus([ConversationType::ACTIVE]);
-            $conversation->setIsFrozen(false);
-            $conversation->setCreationDate(new \DateTimeImmutable());
+                return $this->redirectToRoute('chat_conversation_show', [
+                    'id' => $proposal->getConversation()->getId(),
+                ]);
+            }
 
-            $em->persist($conversation);
-            $em->flush();
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot accept this proposal.');
+            }
+
+            return $this->redirectToRoute('create_order', ['id' => $proposal->getId()]);
         }
 
-
+        // Fallback
         return $this->redirectToRoute('chat_conversation_show', [
-            'id' => $conversation->getId()
+            'id' => $proposal->getConversation()->getId(),
         ]);
     }
-} 
 
+    // ^ REFUSE PROPOSAL
+    #[Route('/chat/proposal/refuse/{id}', name: 'proposal_refuse', methods: ['POST'])]
+    public function refuseProposal(
+        ServiceProposal $proposal,
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response {
+        // 1st POST => ask for confirmation
+        if ('request_confirmation' === $request->request->get('action')) {
+            if (!$this->isCsrfTokenValid('refuse_proposal_'.$proposal->getId(), $request->request->get('_token'))) {
+                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
+            }
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
+            }
+
+            return $this->render('chat/_refuse_modal.html.twig', [
+                'proposal' => $proposal,
+            ]);
+        }
+
+        // 2nd POST => final refusal after confirmation
+        if ('confirm' === $request->request->get('action')) {
+            
+            if (!$this->isCsrfTokenValid('confirm_refuse_'.$proposal->getId(), $request->request->get('_confirm_token'))) {
+                $this->addFlash('error', 'An error occurred. Please try again.');
+
+                return $this->redirectToRoute('chat_conversation_show', [
+                    'id' => $proposal->getConversation()->getId(),
+                ]);
+            }
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
+            }
+
+            $proposal->setStatus(ServiceProposalType::REJECTED);
+            $em->flush();
+
+            // AJAX request, return JSON response
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse([
+                    'status' => 'success',
+                    'redirect_url' => $this->generateUrl('chat_conversation_show', ['id' => $proposal->getConversation()->getId()]),
+                ]);
+            }
+
+            // Fallback for non-AJAX request
+            return $this->redirectToRoute('chat_conversation_show', [
+                'id' => $proposal->getConversation()->getId(),
+            ]);
+        }
+
+        // Fallback
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $proposal->getConversation()->getId(),
+        ]);
+    }
+
+    // ^ HELPER METHOD TO CHECK IF PROPOSAL CAN BE ACCEPTED/REFUSED
+    private function canAcceptProposal(ServiceProposal $proposal): bool
+    {
+        return $proposal->getConversation()->getClient() === $this->getUser()
+            && ServiceProposalType::PENDING === $proposal->getStatus();
+    }
+
+}
