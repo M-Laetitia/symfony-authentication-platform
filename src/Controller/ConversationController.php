@@ -142,20 +142,22 @@ class ConversationController extends AbstractController
     
         $messages = $messageRepo->findByConversationWithProposals($conversation);
     
-        $proposalActionForms = [];
-        foreach ($messages as $msg) {
-            if ($msg->getServiceProposal()) {
-                $proposal = $msg->getServiceProposal();
-                $proposalActionForms[$proposal->getId()] = $this->createForm(
-                    ServiceProposalActionFormType::class,
-                    null,
-                    [
-                        'action' => $this->generateUrl('proposal_action', ['id' => $proposal->getId()]),
-                        'method' => 'POST'
-                    ]
-                )->createView();
-            }
-        }
+        // $proposalActionForms = [];
+        // foreach ($messages as $msg) {
+        //     if ($msg->getServiceProposal()) {
+        //         $proposal = $msg->getServiceProposal();
+        //         $proposalActionForms[$proposal->getId()] = $this->createForm(
+        //             ServiceProposalActionFormType::class,
+        //             null,
+        //             [
+        //                 'action' => $this->generateUrl('proposal_action', ['id' => $proposal->getId()]),
+        //                 'method' => 'POST'
+        //             ]
+        //         )->createView();
+        //     }
+        // }
+
+
     
         $reportForm = $this->createForm(ReportMessageFormType::class);
         $form = $this->createForm(MessageFormType::class, new Message(), [
@@ -172,7 +174,7 @@ class ConversationController extends AbstractController
             'otherParticipant' => $otherParticipant,
             'form' => $form->createView(),
             'reportForm' => $reportForm->createView(),
-            'proposalActionForms' => $proposalActionForms,
+            // 'proposalActionForms' => $proposalActionForms,
         ]);
 
         $response->headers->setCookie(
@@ -193,7 +195,124 @@ class ConversationController extends AbstractController
 
         return $response;
     }
-    
+
+
+    #[Route('/chat/proposal/accept/{id}', name: 'proposal_accept', methods: ['POST'])]
+    public function acceptProposal(
+        ServiceProposal $proposal,
+        Request $request,
+    ): Response {
+        // Ask for confirmation
+        if ($request->request->get('action') === 'request_confirmation') {
+
+            if (!$this->isCsrfTokenValid('accept_proposal_' . $proposal->getId(), $request->request->get('_token'))) {
+                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
+            }
+            
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot accept this proposal.');
+            }
+
+            return $this->render('chat/_confirmation_modal.html.twig', [
+                'proposal' => $proposal,
+            ]);
+        }
+
+        // Final confirmation from modal
+        if ($request->request->get('action') === 'confirm') {
+
+            if (!$this->isCsrfTokenValid('confirm_proposal_' . $proposal->getId(), $request->request->get('_confirm_token'))) {
+                $this->addFlash('error', 'An error occurred. Please try again.');
+                return $this->redirectToRoute('chat_conversation_show', [
+                    'id' => $proposal->getConversation()->getId(),
+                ]);
+            }
+
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot accept this proposal.');
+            }
+
+            return $this->redirectToRoute('create_order', ['id' => $proposal->getId()]);
+        }
+
+        // Fallback
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $proposal->getConversation()->getId(),
+        ]);
+    }
+
+    #[Route('/chat/proposal/refuse/{id}', name: 'proposal_refuse', methods: ['POST'])]
+    public function refuseProposal(
+        ServiceProposal $proposal,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        // 1er POST => on demande la confirmation
+        if ($request->request->get('action') === 'request_confirmation') {
+            // ! OK ----
+            if (!$this->isCsrfTokenValid('refuse_proposal_' . $proposal->getId(), $request->request->get('_token'))) {
+                return new JsonResponse(['error' => 'An error occurred. Please try again.'], 400);
+            }
+                    
+
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
+            }
+
+            return $this->render('chat/_refuse_modal.html.twig', [
+                'proposal' => $proposal,
+            ]);
+        }
+
+        // 2e POST => confirmation finale depuis la modale
+        if ($request->request->get('action') === 'confirm') {
+
+        // ! OK ----
+            if (!$this->isCsrfTokenValid('confirm_refuse_' . $proposal->getId(), $request->request->get('_confirm_token'))) {
+                $this->addFlash('error', 'An error occurred. Please try again.');
+                return $this->redirectToRoute('chat_conversation_show', [
+                    'id' => $proposal->getConversation()->getId(),
+                ]);
+            }
+
+            
+            if (!$this->canAcceptProposal($proposal)) {
+                throw $this->createAccessDeniedException('You cannot refuse this proposal.');
+            }
+
+            $proposal->setStatus(\App\Enum\ServiceProposalType::REJECTED);
+            $em->flush();
+
+            // Si c'est une requête AJAX, renvoyer du JSON
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse([
+                    'status' => 'success',
+                    'redirect_url' => $this->generateUrl('chat_conversation_show', ['id' => $proposal->getConversation()->getId()])
+                ]);
+            }
+
+            // Fallback pour les requêtes non-AJAX
+            return $this->redirectToRoute('chat_conversation_show', [
+                'id' => $proposal->getConversation()->getId(),
+            ]);
+        }
+
+        // Fallback
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $proposal->getConversation()->getId(),
+        ]);
+    }
+
+    private function canAcceptProposal(ServiceProposal $proposal): bool
+    {
+        return $proposal->getConversation()->getClient() === $this->getUser() 
+            && $proposal->getStatus() === ServiceProposalType::PENDING;
+    }
+
+
+        
     #[Route('/chat/conversation/{id}/message', name: 'chat_message_send', methods: ['POST'])]
     public function sendMessage(
         Conversation $conversation,
@@ -276,37 +395,6 @@ class ConversationController extends AbstractController
     }
 
 
-
-    #[Route('/proposal/{id}/action', name: 'proposal_action', methods: ['POST'])]
-    public function proposalAction(
-        ServiceProposal $proposal,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response
-    {
-        $form = $this->createForm(ServiceProposalActionFormType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ClickableInterface $acceptButton */
-            $acceptButton = $form->get('accept');
-            /** @var ClickableInterface $refuseButton */
-            $refuseButton = $form->get('refuse');
-        
-            if ($acceptButton->isClicked()) {
-                 return $this->redirectToRoute('create_order', [
-                'id' => $proposal->getId()
-            ]);
-            } elseif ($refuseButton->isClicked()) {
-                $proposal->setStatus(ServiceProposalType::REJECTED);
-            }
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('chat_conversation_show', [
-            'id' => $proposal->getConversation()->getId(),
-        ]);
-    }
 
     #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
@@ -417,35 +505,6 @@ class ConversationController extends AbstractController
     }
 
 
-    // #[Route('/proposal/{id}/accept', name: 'proposal_accept', methods: ['POST'])]
-    // public function accept(
-    //     ServiceProposal $proposal,
-    //     Request $request,
-    //     EntityManagerInterface $em
-    // ): Response {
-
-    //     $form = $this->createForm(ServiceProposalActionFormType::class);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         $proposal->setStatus(ServiceProposalType::ACCEPTED);
-    //         $em->flush();
-
-    //         $this->addFlash('success', 'Proposal accepted successfully.');
-
-    //         return $this->redirectToRoute('chat_conversation_show', [
-    //             'id' => $proposal->getConversation()->getId(),
-    //         ]);
-    //     }
-
-    //     return $this->redirectToRoute('chat_conversation_show', [
-    //         'id' => $proposal->getConversation()->getId(),
-    //     ]);
-
-    //     // redirection vers la page de paiement
-    //     // return $this->redirectToRoute('proposal_payment', ['id' => $proposal->getId()]);
-    // }
 
     #[Route('/chat/start/{id}', name: 'chat_start')]
     public function startChat(
