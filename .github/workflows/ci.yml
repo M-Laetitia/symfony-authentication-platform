@@ -1,0 +1,90 @@
+name: CI Symfony MySQL
+
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: write 
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: . 
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4.2
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Create .env file
+        run: |
+          echo "APP_ENV=test" > .env
+
+      - name: ⚙️ Create .env.test
+        run: |
+          echo "APP_ENV=test" > .env.test
+          echo "DATABASE_URL=mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_DATABASE }}?serverVersion=8.0" >> .env.test
+
+      - name: 💾 Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.composer/cache
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php-
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: 🛠 Run Doctrine migrations
+        run: |
+          APP_ENV=test php bin/console doctrine:database:create --if-not-exists
+          APP_ENV=test php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name:  Lint YAML, Twig and Container
+        run: |
+          php bin/console lint:yaml config
+          php bin/console lint:twig templates
+          php bin/console lint:container
+
+      - name: ✅ Run Tests
+        run: APP_ENV=test php bin/phpunit
+
+      - name: ⬆️ Merge dev into test if tests pass
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch --all
+          git checkout test
+          git merge origin/dev --no-ff -m "CI: merge dev into test"
+          git push origin test
