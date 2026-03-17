@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
+use App\Enum\PhotographerStatusType;
+use App\Enum\PhotographerVisibilityType;
 use App\Repository\PhotographerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PhotographerRepository::class)]
@@ -36,6 +39,24 @@ class Photographer
      */
     #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'photographer')]
     private Collection $conversations;
+
+    #[ORM\Column(length: 150)]
+    private ?string $slug = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $profile = null;
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: PhotographerStatusType::class)]
+    private array $status = [];
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: PhotographerVisibilityType::class)]
+    private array $visibility = [];
 
     public function __construct()
     {
@@ -140,6 +161,84 @@ class Photographer
                 $conversation->setPhotographer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getProfile(): ?array
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?array $profile): static
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return PhotographerStatusType[]
+     */
+    public function getStatus(): array
+    {
+        return $this->status;
+    }
+
+    public function setStatus(array $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return PhotographerVisibilityType[]
+     */
+    public function getVisibility(): array
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(array $visibility): static
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }
