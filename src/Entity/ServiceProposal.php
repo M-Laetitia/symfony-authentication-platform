@@ -202,6 +202,24 @@ class ServiceProposal
         return $this;
     }
 
+    public function getPriceTtc(): ?float
+    {
+        if ($this->price_exclu_tax === null || $this->tax === null) {
+            return null;
+        }
+
+        return $this->price_exclu_tax * (1 + $this->tax->getRate());
+    }
+
+    public function getTaxAmount(): ?float
+    {
+        if ($this->price_exclu_tax === null || $this->tax === null) {
+            return null;
+        }
+
+        return $this->price_exclu_tax * $this->tax->getRate();
+    }
+
     public function getOrderProposal(): ?Order
     {
         return $this->orderProposal;
