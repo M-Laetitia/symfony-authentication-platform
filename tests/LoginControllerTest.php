@@ -54,7 +54,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Ensure we do not reveal if the user exists or not.
-        self::assertSelectorTextContains('.alert-danger', 'Invalid credentials.');
+        self::assertSelectorTextContains('.field-error', 'Invalid credentials.');
 
         // Denied - Can't login with invalid password.
         $this->client->request('GET', '/login');
