@@ -1,0 +1,37 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Order Page{% endblock %}
+
+{% block body %}
+    <h1>Order Page</h1>
+
+    {# <p><strong>Order ID:</strong> {{ order.id }}</p> #}
+    <p><strong>Proposal ID:</strong> {{ proposal.id }}</p>
+    <p><strong>User ID:</strong> {{ user_id }}</p>
+    <p><strong>Status:</strong> {{ proposal.status.value|capitalize }}</p>
+
+    <h4>Détail de la proposition</h4>
+
+    <p>Création date: {{ proposal.createdAt|date('d/m/Y') }}</p>
+    <p>titre: {{ proposal.title }}</p>
+    <p>description: {{ proposal.message }}</p>
+    <p class="">
+        Price (excl. tax): €{{ proposal.priceExcluTax }}<br>
+        Tax ({{ proposal.tax.rate * 100 }}%): €{{ (proposal.priceExcluTax  * proposal.tax.rate)|number_format(2) }}<br>
+        Total: €{{ (proposal.priceExcluTax  * (1 + proposal.tax.rate))|number_format(2) }} <br>
+        
+    </p>
+    <p>Nom du photographe {{ proposal.photographer.firstName }} - {{ proposal.photographer.lastName }}</p>
+
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.acceptTerms) }}
+        {{ form_row(form.note) }}
+        {{ form_row(form.confirm) }}
+
+    {{ form_end(form) }}
+
+
+{% endblock %}

@@ -12,12 +12,28 @@
         Expiration Date: {{ proposal.expirationDate|date('d/m/Y') }}
     </p>
 
-    {% if proposal.status.value == 'pending' %}
-    {{ form_start(proposalActionForms[proposal.id]) }}
-    {{ form_widget(proposalActionForms[proposal.id].accept) }}
-    {{ form_widget(proposalActionForms[proposal.id].refuse) }}
-    {{ form_end(proposalActionForms[proposal.id]) }}
-    {% else %}
+    {% if proposal.status.value == 'pending' and app.user and app.user.id == proposal.conversation.client.id %}
+    <form
+        class="proposal-accept-form"
+        method="post"
+        action="{{ path('proposal_accept', {'id': proposal.id}) }}"
+    >
+        <input type="hidden" name="_token" value="{{ csrf_token('accept_proposal_' ~ proposal.id) }}">
+        <input type="hidden" name="action" value="request_confirmation">
+        <button type="submit" class="btn btn-success">Accept offer</button>
+    </form>
+
+    <form
+        method="post"
+        action="{{ path('proposal_refuse', {'id': proposal.id}) }}"
+        style="display:inline;"
+        class="proposal-refuse-form"
+    >
+        <input type="hidden" name="_token" value="{{ csrf_token('refuse_proposal_' ~ proposal.id) }}">
+        <input type="hidden" name="action" value="request_confirmation">
+        <button type="submit" class="btn btn-outline-danger">Decline offer</button>
+    </form>
         <p>Status: {{ proposal.status.value|capitalize }}</p>
     {% endif %}
 </div>
+
