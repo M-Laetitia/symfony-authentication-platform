@@ -59,6 +59,7 @@ jobs:
       - name: ⚙️ Create .env.test
         run: |
           echo "APP_ENV=test" > .env.test
+          echo "APP_SECRET=testsecretfortesting123456789abc" >> .env.test
           echo "DATABASE_URL=mysql://root:${{ secrets.DB_ROOT_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_DATABASE }}?serverVersion=8.0" >> .env.test
           echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env.test
           echo "MAILER_DSN=null://null" >> .env.test
