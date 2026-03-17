@@ -73,8 +73,11 @@ jobs:
       - name: Wait a bit for MySQL
         run: sleep 15
 
-      - name: Show MySQL logs
-        run: docker logs <mysql_container_id>
+      - name: Get MySQL container ID
+        run: |
+          MYSQL_CONTAINER_ID=$(docker ps -q -f "name=mysql")
+          echo "MySQL container ID: $MYSQL_CONTAINER_ID"
+          docker logs $MYSQL_CONTAINER_ID
 
       - name: 🛠 Run Doctrine migrations
         run: |
