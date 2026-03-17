@@ -70,14 +70,9 @@ jobs:
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Wait for MySQL to be ready
-        run: |
-          apt-get install -y netcat
-          until nc -z -v -w30 127.0.0.1 3306; do
-            echo "Waiting for MySQL..."
-            sleep 5
-          done
-          
+      - name: Wait a bit for MySQL
+        run: sleep 15
+
       - name: Show MySQL logs
         run: docker logs <mysql_container_id>
 
