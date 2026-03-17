@@ -60,21 +60,19 @@ jobs:
         run: |
           echo "APP_ENV=test" > .env.test
           echo "DATABASE_URL=mysql://root:${{ secrets.DB_ROOT_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_DATABASE }}?serverVersion=8.0" >> .env.test
-          echo "MESSENGER_TRANSPORT_DSN=sync://" >> .env.test
-          MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
-          MAILER_DSN=null://null
-          LOG_ENCRYPTION_KEY=${{ secrets.LOG_ENCRYPTION_KEY }}
-          MERCURE_URL: ${{ secrets.MERCURE_URL }}
-          MERCURE_PUBLIC_URL: ${{ secrets.MERCURE_PUBLIC_URL }}
-          MERCURE_JWT_TOKEN: ${{ secrets.MERCURE_JWT_TOKEN }}
-          MERCURE_PUBLISHER_JWT_KEY=${{ secrets.MERCURE_JWT_TOKEN }}
-          MERCURE_SUBSCRIBER_JWT_KEY=${{ secrets.MERCURE_JWT_TOKEN }}
-          STRIPE_SECRET_KEY: "sk_test_fake"
-          STRIPE_PUBLIC_KEY: "pk_test_fake"
-          STRIPE_WEBHOOK_SECRET: "whsec_fake"
-          GOOGLE_ID="fake-google-id"
-          GOOGLE_SECRET= "fake-google-secret"
-          EOF
+          echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env.test
+          echo "MAILER_DSN=null://null" >> .env.test
+          echo "LOG_ENCRYPTION_KEY=${{ secrets.LOG_ENCRYPTION_KEY }}" >> .env.test
+          echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> .env.test
+          echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> .env.test
+          echo "MERCURE_JWT_TOKEN=${{ secrets.MERCURE_JWT_TOKEN }}" >> .env.test
+          echo "MERCURE_PUBLISHER_JWT_KEY=${{ secrets.MERCURE_JWT_TOKEN }}" >> .env.test
+          echo "MERCURE_SUBSCRIBER_JWT_KEY=${{ secrets.MERCURE_JWT_TOKEN }}" >> .env.test
+          echo "STRIPE_SECRET_KEY=sk_test_fake" >> .env.test
+          echo "STRIPE_PUBLIC_KEY=pk_test_fake" >> .env.test
+          echo "STRIPE_WEBHOOK_SECRET=whsec_fake" >> .env.test
+          echo "GOOGLE_ID=fake-google-id" >> .env.test
+          echo "GOOGLE_SECRET=fake-google-secret" >> .env.test
 
       - name: 💾 Cache Composer
         uses: actions/cache@v3
