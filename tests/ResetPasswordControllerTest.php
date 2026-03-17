@@ -40,6 +40,7 @@ class ResetPasswordControllerTest extends WebTestCase
         // Create a test user
         $user = (new User())
             ->setEmail('me@example.com')
+            ->setUsername('me')
             ->setPassword('a-test-password-that-will-be-changed-later')
         ;
         $this->em->persist($user);
