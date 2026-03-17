@@ -39,10 +39,10 @@ class RegistrationControllerTest extends WebTestCase
         self::assertPageTitleContains('Register');
 
         $this->client->submitForm('Register', [
-            'registration_form[email]' => 'me@example.com',
-            'regsitration_form[username]' => 'me',
-            'registration_form[plainPassword]' => 'password',
-            'registration_form[agreeTerms]' => true,
+            'registrationForm[email]' => 'me@example.com',
+            'regsitrationForm[username]' => 'me',
+            'registrationForm[plainPassword]' => 'password',
+            'registrationForm[agreeTerms]' => true,
         ]);
 
         // Ensure the response redirects after submitting the form, the user exists, and is not verified
