@@ -54,9 +54,9 @@ class RegistrationControllerTest extends WebTestCase
         // Ensure the verification email was sent
         // Use either assertQueuedEmailCount() || assertEmailCount() depending on your mailer setup
         // self::assertQueuedEmailCount(1);
-        self::assertEmailCount(2);
+        self::assertEmailCount(3);
 
-        self::assertCount(2, $messages = $this->getMailerMessages());
+        self::assertCount(3, $messages = $this->getMailerMessages());
         self::assertEmailAddressContains($messages[0], 'from', 'mailer@your-domain.com');
         self::assertEmailAddressContains($messages[0], 'to', 'me@example.com');
         self::assertEmailTextBodyContains($messages[0], 'This link will expire in 1 hour.');
