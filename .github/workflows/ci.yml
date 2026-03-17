@@ -59,6 +59,7 @@ jobs:
       - name: ⚙️ Create .env.test
         run: |
           echo "APP_ENV=test" > .env.test
+          echo "APP_SECRET=testsecretfortesting123456789abc" >> .env.test
           echo "DATABASE_URL=mysql://root:${{ secrets.DB_ROOT_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_DATABASE }}?serverVersion=8.0" >> .env.test
           echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env.test
           echo "MAILER_DSN=null://null" >> .env.test
@@ -105,8 +106,23 @@ jobs:
           php bin/console lint:twig templates
           php bin/console lint:container
 
-      # - name: ✅ Run Tests
-      #   run: APP_ENV=test php bin/phpunit
+      - name: 🎨 Create fake Webpack build
+        run: |
+          mkdir -p public/build
+          cat > public/build/entrypoints.json << 'EOF'
+          {
+            "entrypoints": {
+              "app": {
+                "js": [],
+                "css": []
+              }
+            }
+          }
+          EOF
+          echo '{}' > public/build/manifest.json
+
+      - name: ✅ Run Tests
+        run: APP_ENV=test php bin/phpunit
 
       - name: ⬆️ Merge dev into test if tests pass
         if: success()

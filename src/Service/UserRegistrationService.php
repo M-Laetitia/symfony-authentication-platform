@@ -25,7 +25,7 @@ final class UserRegistrationService
     {
         // 1. Hacher le mot de passe
         // $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
-
+        //  dump('register called for ' . $user->getEmail());
         try {
             $user->setPassword(
                 $this->passwordHasher->hashPassword($user, $plainPassword)
