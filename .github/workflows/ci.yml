@@ -11,6 +11,8 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      LOG_ENCRYPTION_KEY: ${{ secrets.LOG_ENCRYPTION_KEY }}
     defaults:
       run:
         working-directory: . 
