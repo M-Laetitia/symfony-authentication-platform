@@ -105,8 +105,8 @@ jobs:
           php bin/console lint:twig templates
           php bin/console lint:container
 
-      # - name: ✅ Run Tests
-      #   run: APP_ENV=test php bin/phpunit
+      - name: ✅ Run Tests
+        run: APP_ENV=test php bin/phpunit
 
       - name: ⬆️ Merge dev into test if tests pass
         if: success()
