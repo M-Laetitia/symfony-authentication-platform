@@ -69,7 +69,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Ensure we do not reveal the user exists but the password is wrong.
-        self::assertSelectorTextContains('.alert-danger', 'Invalid credentials.');
+        self::assertSelectorTextContains('.field-error', 'Invalid credentials.');
 
         // Success - Login with valid credentials is allowed.
         $this->client->submitForm('Log in', [
@@ -80,7 +80,7 @@ class LoginControllerTest extends WebTestCase
         self::assertResponseRedirects('/home');
         $this->client->followRedirect();
 
-        self::assertSelectorNotExists('.alert-danger');
+        self::assertSelectorNotExists('.field-error');
         self::assertResponseIsSuccessful();
     }
 }
