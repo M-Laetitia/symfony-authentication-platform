@@ -45,7 +45,6 @@ class PaymentController extends AbstractController
         }
 
 
-
         // Create the form
         $form = $this->createForm(OrderConfirmationFormType::class);
         $form->handleRequest($request);
