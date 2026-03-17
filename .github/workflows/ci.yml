@@ -31,8 +31,8 @@ jobs:
           MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
         #   MYSQL_USER: ${{ secrets.DB_USER }}           
         #   MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}   
-        # ports:
-        #   - 3306:3306 
+        ports:
+          - 3306:3306 
         options: >-
           --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
@@ -71,14 +71,6 @@ jobs:
 
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
-
-      - name: Wait for MySQL
-        run: |
-          for i in {1..30}; do
-            mysqladmin ping -h 127.0.0.1 -u root -p${{ secrets.DB_ROOT_PASSWORD }} --silent && break
-            echo "Waiting for MySQL... ($i)"
-            sleep 2
-          done
 
       - name: Get MySQL container ID
         run: |
