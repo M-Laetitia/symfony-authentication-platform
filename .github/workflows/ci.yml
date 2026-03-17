@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LOG_ENCRYPTION_KEY: ${{ secrets.LOG_ENCRYPTION_KEY }}
+      MERCURE_URL: ${{ secrets.MERCURE_URL }}
+      MERCURE_PUBLIC_URL: ${{ secrets.MERCURE_PUBLIC_URL }}
+      MERCURE_JWT_TOKEN: ${{ secrets.MERCURE_JWT_TOKEN }}
+      STRIPE_SECRET_KEY: "sk_test_fake"
+      STRIPE_PUBLIC_KEY: "pk_test_fake"
+      STRIPE_WEBHOOK_SECRET: "whsec_fake"
     defaults:
       run:
         working-directory: . 
