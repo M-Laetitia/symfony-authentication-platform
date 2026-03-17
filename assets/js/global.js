@@ -189,11 +189,129 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // modal repoort message
+  // modal report message
   document.querySelectorAll('.btn-report').forEach(button => {
     button.addEventListener('click', () => {
         const msgId = button.dataset.messageId;
         document.getElementById('report-message-id').value = msgId;
         document.getElementById('report-modal').style.display = 'flex';
     });
+});
+
+// Modale de confirmation d'acceptation de proposition
+console.log('JavaScript chargé !');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé, recherche des formulaires...');
+    
+    // Intercepter les formulaires d'acceptation
+    const acceptForms = document.querySelectorAll('.proposal-accept-form');
+    console.log('Formulaires acceptation trouvés:', acceptForms.length);
+    
+    acceptForms.forEach(function(form) {
+        console.log('Formulaire trouvé:', form);
+        console.log('Action du formulaire:', form.getAttribute('action')); // Utilise getAttribute au lieu de .action
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Submit intercepté !');
+            
+            // Forcer la récupération avec getAttribute
+            const actionUrl = this.getAttribute('action');
+            console.log('URL récupérée:', actionUrl);
+            
+            if (!actionUrl || actionUrl.includes('[object')) {
+                console.error('URL invalide:', actionUrl);
+                return;
+            }
+            
+            fetch(actionUrl, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('Status:', response.status);
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        alert(data.error);
+                        throw new Error(data.error);
+                    });
+                }
+                return response.text();
+            })
+            .then(html => {
+                console.log('Modale reçue, taille:', html.length);
+                
+                // Supprimer toute modale existante
+                const existingModal = document.querySelector('#confirmationModal, #refuseModal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+                
+                // Injecter la modale
+                document.body.insertAdjacentHTML('beforeend', html);
+            })
+            .catch(err => {
+                console.error('Erreur fetch:', err);
+            });
+        });
+    });
+    
+    // Même chose pour les formulaires de refus
+    const refuseForms = document.querySelectorAll('.proposal-refuse-form');
+    console.log('Formulaires refus trouvés:', refuseForms.length);
+    
+    refuseForms.forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Submit refus intercepté !');
+            
+            const actionUrl = this.getAttribute('action');
+            console.log('URL refus récupérée:', actionUrl);
+            
+            fetch(actionUrl, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        alert(data.error);
+                        throw new Error(data.error);
+                    });
+                }
+                return response.text();
+            })
+            .then(html => {
+                console.log('Modale refus reçue');
+                
+                const existingModal = document.querySelector('#confirmationModal, #refuseModal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+                
+                document.body.insertAdjacentHTML('beforeend', html);
+            })
+            .catch(err => {
+                console.error('Erreur fetch refus:', err);
+            });
+        });
+    });
+});
+
+// Fermer les modales
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('cancel-modal-btn') || e.target.textContent === 'Annuler') {
+        console.log('Fermeture modale');
+        const modal = e.target.closest('.modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
 });
