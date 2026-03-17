@@ -31,7 +31,8 @@ class LoginControllerTest extends WebTestCase
 
         $user = (new User())
             ->setEmail('email@example.com')
-            ->setUsername('testuser');
+            ->setUsername('testuser')
+            ->setIsVerified(true); 
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $em->persist($user);
