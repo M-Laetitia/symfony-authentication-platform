@@ -29,10 +29,12 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
-          # MYSQL_USER: ${{ secrets.DB_USER }}
-          # MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_USER: ${{ secrets.DB_USER }}           
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}   
+        ports:
+          - 3306:3306 
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -69,9 +71,6 @@ jobs:
 
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
-
-      # - name: Wait a bit for MySQL
-      #   run: sleep 15
 
       - name: Get MySQL container ID
         run: |
