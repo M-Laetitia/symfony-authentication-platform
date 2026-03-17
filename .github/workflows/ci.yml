@@ -105,6 +105,12 @@ jobs:
           php bin/console lint:twig templates
           php bin/console lint:container
 
+      - name: 🎨 Create fake Webpack build
+        run: |
+          mkdir -p public/build
+          echo '{"entrypoints":{}}' > public/build/entrypoints.json
+          echo '{}' > public/build/manifest.json
+
       - name: ✅ Run Tests
         run: APP_ENV=test php bin/phpunit
 
