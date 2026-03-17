@@ -52,9 +52,9 @@ jobs:
           extensions: pdo_mysql
           coverage: none
 
-      # - name: Create .env file
-      #   run: |
-      #     echo "APP_ENV=test" > .env
+      - name: Create .env file
+        run: |
+          echo "APP_ENV=test" > .env
 
       - name: ⚙️ Create .env.test
         run: |
