@@ -86,9 +86,9 @@ class ResetPasswordControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Test we can set a new password
-        $this->client->submitForm('Reset password', [
-            'change_password_form[plainPassword][first]' => 'newStrongPassword',
-            'change_password_form[plainPassword][second]' => 'newStrongPassword',
+       $this->client->submitForm('Reset password', [
+            'change_password_form[plainPassword][first]' => 'NewStr0ng!Password2',
+            'change_password_form[plainPassword][second]' => 'NewStr0ng!Password2',
         ]);
 
         self::assertResponseRedirects('/login');
