@@ -52,6 +52,7 @@ when@dev:
 
 when@test:
     monolog:
+        channels: ['app', 'honey_pot', 'security', 'comments', 'messages']
         handlers:
             comments:
                 type: rotating_file
