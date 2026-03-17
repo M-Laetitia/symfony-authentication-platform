@@ -53,6 +53,9 @@ class ServiceProposal
     #[ORM\JoinColumn(nullable: false)]
     private ?Tax $tax = null;
 
+    #[ORM\OneToOne(mappedBy: 'serviceProposal', cascade: ['persist', 'remove'])]
+    private ?Order $orderProposal = null;
+
 
     public function getId(): ?int
     {
@@ -195,6 +198,41 @@ class ServiceProposal
     public function setTax(?Tax $tax): static
     {
         $this->tax = $tax;
+
+        return $this;
+    }
+
+    public function getPriceTtc(): ?float
+    {
+        if ($this->price_exclu_tax === null || $this->tax === null) {
+            return null;
+        }
+
+        return $this->price_exclu_tax * (1 + $this->tax->getRate());
+    }
+
+    public function getTaxAmount(): ?float
+    {
+        if ($this->price_exclu_tax === null || $this->tax === null) {
+            return null;
+        }
+
+        return $this->price_exclu_tax * $this->tax->getRate();
+    }
+
+    public function getOrderProposal(): ?Order
+    {
+        return $this->orderProposal;
+    }
+
+    public function setOrderProposal(Order $orderProposal): static
+    {
+        // set the owning side of the relation if necessary
+        if ($orderProposal->getServiceProposal() !== $this) {
+            $orderProposal->setServiceProposal($this);
+        }
+
+        $this->orderProposal = $orderProposal;
 
         return $this;
     }

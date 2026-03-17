@@ -13,7 +13,7 @@ class ServiceProposalActionFormType extends AbstractType
     {
         $builder
             ->add('accept', SubmitType::class, [
-                'label' => 'Accept',
+                'label' => 'Accept4444',
                 'attr' => ['class' => 'btn btn-success'],
             ])
             ->add('refuse', SubmitType::class, [
@@ -25,14 +25,11 @@ class ServiceProposalActionFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'service_proposal_action_form',
         ]);
     }
 }
 
-// class ProposalActionType extends AbstractType
-// {
-//     public function buildForm(FormBuilderInterface $builder, array $options): void
-//     {
-//     }
-// }
+
