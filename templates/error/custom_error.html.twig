@@ -1,0 +1,11 @@
+{% extends '@Twig/layout.html.twig' %}
+
+{% block title %}{{ error.name }}{% endblock %}
+
+{% block body %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1>Error {{ error.type }}</h1>
+    <p>{{ error.message }}</p>
+    <a href="{{ path(error.redirect) }}">Go back</a>
+</div>
+{% endblock %}

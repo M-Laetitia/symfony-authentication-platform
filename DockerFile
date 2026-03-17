@@ -1,12 +1,35 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
+# Install PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip zip libicu-dev libonig-dev libxml2-dev \
-    libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
-    && docker-php-ext-install intl pdo pdo_mysql zip opcache
+    git unzip zip libicu-dev libonig-dev libxml2-dev libzip-dev \
+    libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) intl pdo pdo_mysql zip opcache gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+    # RUN apt-get update && apt-get install -y \
+    # git unzip zip libicu-dev libonig-dev libxml2-dev libzip-dev \
+    # libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev \
+    # libmagickwand-dev --no-install-recommends \
+    # && pecl install imagick \
+    # && docker-php-ext-enable imagick \
+    # && docker-php-ext-install -j$(nproc) intl pdo pdo_mysql zip opcache \
+    # && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Enable Apache rewrite
 RUN a2enmod rewrite
 
+# Configure Apache vhost
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working dir
 WORKDIR /var/www/html
+
+
+RUN mkdir -p var/cache var/log public && \
+    chown -R www-data:www-data var/ public && \
+    chmod -R 775 var/

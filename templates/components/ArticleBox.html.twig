@@ -1,0 +1,46 @@
+ <!-- Article -->
+ <article class="article-card">
+
+    <!-- Media -->
+    <div class="article-card__media">
+        <time 
+            class="article-card__date"
+            datetime="{{ date|date('Y-m-d') }}"
+        >
+            {{ date }}
+        </time>
+
+        <a href="{{ link }}" class="article-card__media-link">
+            <picture class="article-card__picture">
+                <img
+                    src="/media/images/camera.jpg"
+                    alt="Camera with photography material"
+                    class="article-card__image u-img-cover"
+                    loading="lazy"
+                >
+            </picture>
+        </a>
+    </div>
+
+    <!-- Content -->
+    <div class="article-card__content">
+        <h4 class="article-card__title">
+            <a href="{{ link }}" class="article-card__link">
+                {{ title }}
+            </a>
+        </h4>
+
+        <!-- Tags -->
+        {% if tags is defined and tags is iterable and tags|length > 0 %}
+        <ul class="article-card__tags" aria-label="Article tags">
+            {% for tag in tags %}
+                <li class="article-card__tag">
+                    {{ tag }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+</article>
+<!-- /Article -->

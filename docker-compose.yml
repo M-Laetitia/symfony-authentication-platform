@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   php-apache:
     build:
@@ -10,21 +8,25 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
+      - symfony_vendor:/var/www/html/vendor
+      - symfony_var:/var/www/html/var
     depends_on:
       - db
       - mailhog
+    env_file:
+      - .env
 
   db:
     image: mysql:8.0
     container_name: symfony_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: symfony
-      MYSQL_USER: symfony
-      MYSQL_PASSWORD: symfony
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
   mailhog:
     image: mailhog/mailhog
@@ -32,3 +34,63 @@ services:
     ports:
       - "8025:8025"  # interface web mailhog
       - "1025:1025"  # port SMTP
+
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: symfony_fail2ban
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - "./fail2ban/data/jail.d:/etc/fail2ban/jail.d"
+      - "./fail2ban/data/filter.d:/etc/fail2ban/filter.d"
+      - "./var/log/security/honeypot:/var/log/security/honeypot:ro"
+    environment:
+      - TZ=Europe/Paris
+      - F2B_LOG_LEVEL=INFO
+      - F2B_DB_PURGE_AGE=1d
+    restart: unless-stopped
+    depends_on:
+      - php-apache
+
+###> symfony/mercure-bundle ###
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    ports:
+    - "3000:80" # host:container
+    environment:
+      # Uncomment the following line to disable HTTPS,
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
+      # Set the URL of your Symfony project (without trailing slash!) as value of the cors_origins directive
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins http://localhost:8080 http://127.0.0.1:8080
+    # Comment the following line to disable the development mode
+    command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
+    # With https
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "https://localhost/healthz"]
+    #   timeout: 5s
+    #   retries: 5
+    #   start_period: 60s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - mercure_data:/data
+      - mercure_config:/config
+###< symfony/mercure-bundle ###
+
+volumes:
+  db_data:
+  symfony_vendor:
+  symfony_var:
+###> symfony/mercure-bundle ###
+  mercure_data:
+  mercure_config:
+###< symfony/mercure-bundle ###

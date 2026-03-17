@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Message Reported</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2>Your Message Has Been Reported</h2>
+
+    <p>Hello {{ reportedUser.firstname }},</p>
+
+    <p>
+        One of your messages has been reported by another user.
+    </p>
+
+    <h3>Message Content:</h3>
+    <blockquote style="background: #f5f5f5; padding: 10px; border-left: 4px solid #ccc;">
+        {{ messageContent }}
+    </blockquote>
+
+    <h3>Reason for the Report:</h3>
+    <p><strong>{{ reason }}</strong></p>
+
+    <p>
+        The conversation has been temporarily suspended while we review the situation.
+    </p>
+
+    <p>
+        If you believe this was a mistake, please contact our support team.
+    </p>
+
+    <br>
+
+    <p>
+        — The Mosaic Team
+    </p>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{# {% block body_class %}page--profile{% endblock %} #}
+
+{% block body %}
+
+<twig:Banner
+title="Contact"
+subtitle="Something to say?"
+/>
+
+<section
+    class="main-section-page contact u-display-center"
+    aria-labelledby="contact-title"
+>
+
+    <div class="contact__container">
+        {% include 'layout/contact.html.twig' %}
+    </div>
+
+</section>
+
+
+
+{% endblock %}

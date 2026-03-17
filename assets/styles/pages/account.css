@@ -1,0 +1,392 @@
+/* &-------------LOGIN -------------- */
+/* &--------------------------------- */
+
+.account {
+    width: 100%;
+    /* min-height: 100vh; */
+    padding-top: var(--height-navbar );
+    /* height: calc(100vh - var(--height-navbar )); */
+
+    .account__container {
+        background-color: var(--color-grey-800);
+        width: 800px;
+        padding: 40px 80px 80px 80px;
+    }
+    .auth__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 65px;
+        
+    }
+    .auth__title, .reset-password__title {
+        color: var(--color-white);
+        font-size: 30px;
+        font-family: var(--font-heading);
+        font-weight: 500;
+    }
+
+    .auth__nav {
+        display: flex;
+        gap: 50px;
+
+        a {
+          font-family: var(--font-heading);
+          font-size:18px;
+          font-weight: 500; 
+          text-transform: uppercase;
+          transition: var(--transition-base);
+          &:hover {
+            color: var(--color-accent);
+          }
+        }
+    }
+
+    .auth-form__fieldset {
+        display: flex;
+        gap: 21px;
+        flex-direction: column;
+        border: none;
+        margin-bottom: 30px;
+    }
+
+    .auth-form__options {
+        .auth-form__forgot {
+            color: var(--color-accent);
+            transition: var(--transition-base);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .auth-form__submit {
+        margin-top: 60px;
+    }
+
+    .auth-form__group--checkbox {
+        a {
+            color: var(--color-accent);
+            transition: var(--transition-base);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+}
+
+/* &------------REGISTER ------------ */
+/* &--------------------------------- */
+
+.account--register {
+    .auth-form__group--password {
+        display: flex;
+        flex-direction: column;
+    }
+    .password-wrapper--firstPassword {
+        margin-bottom: 21px;
+    }
+    .password-wrapper {
+        position: relative;
+
+
+        .toggle-password {
+            height: auto;
+            position: absolute;
+            display: inline-block;
+            right: 25px;
+            transform: translateY(-50%);
+            top : 50%;
+            cursor: pointer;
+            /* pointer-events: none;  */
+        }
+    }
+}
+
+.password-requirements {
+    overflow: hidden;        
+    max-height: 0;  
+    transition: max-height 1s ease, opacity 1s ease;
+    opacity: 0;  
+}
+
+.password-requirements.show {
+    max-height: 200px; 
+    opacity: 1;
+    margin-bottom: 20px;
+}
+  
+  .password-requirements li {
+    margin-bottom: 4px;
+  }
+  
+  .password-requirements li.valid {
+    text-decoration: line-through;
+  }
+
+/* &------------ PROFILE ------------ */
+/* &--------------------------------- */
+
+.account--profile {
+    height: auto;
+    padding-top: 0;
+    padding: 0 20px;
+    margin-top: 0;
+    
+    .account__container {
+        width: var(--width-content);
+        background-color: var(--color-grey-900);
+        padding: 80px;
+    }
+
+    .profile__layout {
+        display: flex;
+        justify-content:space-between;
+        column-gap: 30px;
+    }
+
+    .profile__panel--left, .profile__panel--right {
+        display: flex;
+        flex-direction: column;
+    }
+    .profile__panel--left {
+        width: 30%;
+        gap: 90px ;
+    }
+
+    .profile__panel--right {
+        width: 48%;
+        justify-content: space-between;
+    }
+
+    .profile-avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 35px;
+    }
+    .profile-avatar__media {
+        width: 230px;
+        height: 230px;
+
+        img {
+            /* opacity: 0.5; */
+        }
+    }
+
+    .profile__title {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .profile-password__form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .profile-password__submit {
+        margin-top: 20px;
+    }
+
+    .profile-info__submit {
+        margin-top: 26px;
+    }
+
+    .profile-info .profile-info__form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 25px;
+
+        input {
+            margin-top: 20px;
+        }
+        
+    }
+
+    .profile-delete-account {
+
+        .profile-delete-account__title {
+            color: var(--color-accent);
+        }
+        .profile-delete-account__action {
+            margin-top: 45px;
+        }
+
+        .profile-delete-account__text {
+            font-weight: 300;
+        }
+    }
+
+    .profile-avatar__form{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+
+        input {
+            padding: 0px;
+        }
+    }
+
+    .profile-avatar__avatar-delete, .profile-avatar__avatar-form {
+        width: 100%;
+    }
+
+    /* .input-file-hidden {
+        display: none; 
+    }
+    
+    .custom-file-upload {
+        width: 100%;
+        label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF; 
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .button {
+            margin-bottom: 20px;
+        }
+    }
+    
+    
+    .custom-file-upload label:hover {
+        background-color: #0056b3;
+    } */
+
+
+}
+
+/* &--------- RESET PASSWORD --------- */
+/* &--------------------------------- */
+.account--reset-password  {
+    .reset-password__title {
+        margin-bottom: 65px;
+    }
+    .reset-password__text {
+        margin-bottom: 20px;
+    }
+    .reset-password-form__group {
+        margin-bottom: 30px;
+    }
+    #change_password_form_plainPassword_first {
+        margin-bottom: 21px;
+    }
+}
+
+.account--check-email {
+    .check-email__text {
+        strong {
+            color: var(--color-accent);
+        }
+    }
+    .check-email__subtext {
+        a {
+            transition: var(--transition-base);
+            color: var(--color-accent);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+/* ?-------- MEDIA QUERIES  --------- */
+/* ?--------------------------------- */
+
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+    .account--profile {
+        .profile__panel--left {
+            width: 40%;
+        }
+    }
+
+    .profile__panel--right {
+        width: 60%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 1280px) {
+    .account--profile {
+        .account__container {
+            width: 100%;
+        }
+    }
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+
+    
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 900px ) {
+    .account {
+        padding: 120px 30px 0 30px;
+        .account__container
+     {
+            width: 100%;
+        }
+    }
+    .account--profile {
+        padding-top: 0;
+    }
+    .account--profile {
+        .account__container
+     {
+            padding: 50px;
+        }
+    }
+
+}
+@media (max-width: 768px ) {
+    .account {
+        .account__container
+     {
+            padding: 30px;
+        }
+    }
+
+    .account--profile {
+        .profile__layout {
+            row-gap: 80px;
+            flex-direction: column;
+        }
+        .profile__panel--left, .profile__panel--right
+        {
+            width: 100%;
+        }
+
+        .profile-delete-account {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--color-grey-700);
+        }
+    }
+
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+
+@media (max-width: 480px) {
+
+}

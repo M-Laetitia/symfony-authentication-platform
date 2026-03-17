@@ -1,0 +1,39 @@
+<div class="">
+    <div class="">
+        {# <h4 class="">{{ proposal.service.name }}</h4> #}
+        <span class="">{{ proposal.status.value|capitalize }}</span>
+    </div>
+    <p class="">{{ proposal.message }}</p>
+
+    <p class="">
+        Price (excl. tax): €{{ proposal.priceExcluTax }}<br>
+        Tax ({{ proposal.tax.rate * 100 }}%): €{{ (proposal.priceExcluTax  * proposal.tax.rate)|number_format(2) }}<br>
+        Total: €{{ (proposal.priceExcluTax  * (1 + proposal.tax.rate))|number_format(2) }} <br>
+        Expiration Date: {{ proposal.expirationDate|date('d/m/Y') }}
+    </p>
+
+    {% if proposal.status.value == 'pending' and app.user and app.user.id == proposal.conversation.client.id %}
+    <form
+        class="proposal-accept-form"
+        method="post"
+        action="{{ path('proposal_accept', {'id': proposal.id}) }}"
+    >
+        <input type="hidden" name="_token" value="{{ csrf_token('accept_proposal_' ~ proposal.id) }}">
+        <input type="hidden" name="action" value="request_confirmation">
+        <button type="submit" class="btn btn-success">Accept offer</button>
+    </form>
+
+    <form
+        method="post"
+        action="{{ path('proposal_refuse', {'id': proposal.id}) }}"
+        style="display:inline;"
+        class="proposal-refuse-form"
+    >
+        <input type="hidden" name="_token" value="{{ csrf_token('refuse_proposal_' ~ proposal.id) }}">
+        <input type="hidden" name="action" value="request_confirmation">
+        <button type="submit" class="btn btn-outline-danger">Decline offer</button>
+    </form>
+        <p>Status: {{ proposal.status.value|capitalize }}</p>
+    {% endif %}
+</div>
+

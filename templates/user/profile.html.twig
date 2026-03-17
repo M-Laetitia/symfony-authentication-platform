@@ -1,0 +1,250 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}My profile{% endblock %}
+
+{% block body_class %}page--profile{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+title="My Profile"
+subtitle="Welcome back, {{ app.user ? app.user.username : '' }}"
+variant="dark"
+/>
+
+<section
+    class="main-section-page profile account account--profile u-display-center"
+    aria-labelledby="profile-title"
+>
+    <div class="profile__container account__container auth__container">
+
+        <div class="profile__layout">
+
+            <!-- LEFT PANEL -->
+            <aside class="profile__panel profile__panel--left">
+
+                <!-- Avatar -->
+                <section class="profile-avatar" aria-labelledby="profile-avatar-title">
+                    <p id="profile-avatar-title" class="visually-hidden">
+                        Profile picture
+                    </p>
+
+                    <figure class="profile-avatar__media">
+                        <img
+                            src="{{ user.avatar ? asset('uploads/' ~ user.avatar.path) : 'media/images/avatar-profile.jpg' }}"
+                            alt="Profile picture"
+                            class="profile-avatar__image u-img-cover "
+                        >
+                    </figure>
+
+                    {# Upload avatar #}
+                    <div class="profile-avatar__avatar-form">
+                             {{ form_start(formAvatar, {attr: {class: 'profile-avatar__form'}}) }}
+                             {{ form_widget(formAvatar.avatar, {attr: {class: 'input input--dark'}}) }}
+                             <div class="field-error register-form-error">
+                               {{ form_errors(formAvatar.avatar) }}  
+                             </div>
+                             
+                             <button type="submit" class="button button--large button--accent">
+                                 Upload picture
+                             </button>
+                         {{ form_end(formAvatar) }}
+                    </div>
+
+                    {# Delete avatar #}
+                    <div class="profile-avatar__avatar-delete">
+                        {% if user.avatar %}
+                        <form method="post" action="{{ path('app_profile_delete_avatar') }}" onsubmit="return confirm('Are you sure you want to delete your avatar?');">
+                            <button type="submit" class="button button--large button--border-accent">
+                                Delete Avatar
+                            </button>
+                        </form>
+                    {% endif %}
+                    </div>
+
+
+                </section>
+
+             
+                <!-- Change password -->
+                <section
+                    class="profile-password"
+                    aria-labelledby="profile-password-title"
+                >
+                    <p
+                        id="profile-password-title"
+                        class="profile__title profile-password__title"
+                    >
+                        Change your password
+                    </p>
+
+                    {{ form_start(formPassword, { attr: { class: 'profile-password__form' } }) }}
+
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.currentPassword, {
+                            attr: {
+                                class: 'input input--dark',
+                                id: 'current-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                            {{ form_errors(formPassword.currentPassword) }}
+                        </div>
+                        
+                    </div>
+
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.newPassword.first, {
+                            attr: {
+                                class: 'input input--dark',
+                                id: 'new-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                           {{ form_errors(formPassword.newPassword.first) }} 
+                        </div>
+                        
+                    </div>
+
+                    <div class="profile-password__group">
+                        {{ form_widget(formPassword.newPassword.second, {
+                            attr: {
+                                class: 'input input--dark',
+                                id: 'confirm-password'
+                            }
+                        }) }}
+                        <div class="field-error register-form-error">
+                           {{ form_errors(formPassword.newPassword.second) }} 
+                        </div>
+                        
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="button button--large button--accent profile-password__submit"
+                    >
+                        Change my password
+                    </button>
+
+                    {{ form_end(formPassword) }}
+                </section>
+
+            </aside>
+
+            <!-- RIGHT PANEL -->
+            <main class="profile__panel profile__panel--right">
+
+                <!-- Account info -->
+                <section
+                    class="profile-info"
+                    aria-labelledby="profile-info-title"
+                >
+
+                {{ form_start(profilInfoForm, {
+                    attr: { class: 'profile-info__form' }
+                }) }}
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.username, 'Username', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.username, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(profilInfoForm.username) }}
+                    </div>
+                    
+                </div>
+                
+                <div class="profile-info__group">
+                    {{ form_label(profilInfoForm.email, 'Email address', {
+                        label_attr: { class: 'profile__title profile-info__label' }
+                    }) }}
+                    {{ form_widget(profilInfoForm.email, {
+                        attr: { class: 'input input--dark' }
+                    }) }}
+                    <div class="field-error register-form-error">
+                        {{ form_errors(profilInfoForm.email) }}
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="button button--large button--accent profile-info__submit"
+                >
+                    Update information
+                </button>
+
+                {{ form_end(profilInfoForm) }}
+                </section>
+
+                <!-- Delete account -->
+                <section
+                    class="profile-delete-account"
+                    aria-labelledby="profile-delete-account-title"
+                >
+                    <p
+                        id="profile-delete-account-title"
+                        class="profile__title profile-delete-account__title"
+                    >
+                        Delete your account
+                    </p>
+
+                    <p class="profile-delete-account__text">
+                        This will permanently deactivate your account and all
+                        your activities from Mosaic.
+                        <strong>This cannot be undone.</strong>
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button  button--large button--border-accent profile-delete-account__action"
+                    >
+                        Delete my account
+                    </button>
+                </section>
+
+            </main>
+
+        </div>
+    </div>
+</section>
+
+
+
+        <h1>Mon profil</h1>
+    
+        <div>
+            <p><strong>Roles :</strong>
+                {% for role in user.roles %}
+                    <span >{{ role }}</span>
+                {% else %}
+                    <span >Aucun rôle</span>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+
+    {# <p>Test is granted</p>
+    {% if is_granted('ROLE_USER') %}
+        <p>Role user </p>
+    {% endif %}
+
+    {% if is_granted('ROLE_PHOTOGRAPHER') %}
+        <p>Role employé</p>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>Role admin</p>
+    {% endif %}
+
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <p>Role super-admin</p>
+    {% endif %} #}
+
+
+
+{% endblock %}

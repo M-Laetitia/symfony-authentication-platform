@@ -4,6 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    bad_words_yaml_path: '%kernel.project_dir%/config/bad_words.yaml'
+    uploads_directory: '%kernel.project_dir%/public/uploads'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
 
 services:
     # default configuration for services in *this* file
@@ -18,3 +22,51 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    app.custom_log_formatter:
+        class: App\Logger\CustomLogFormatter
+
+    app.security.oauth_user_provider:
+        class: App\Security\OAuthUserProvider
+        autowire: true
+        autoconfigure: true
+    App\Security\OAuthConnector:
+        arguments:
+            $properties:
+                'google': 'googleId'
+    App\Security\OAuthRegistrationFormHandler: ~
+    App\Service\MediaUploader:
+        arguments:
+            $uploadsDir: '%kernel.project_dir%/public/uploads'
+    App\Service\CommentSecurityService:
+        arguments:
+            $logger: '@monolog.logger.comments'
+            $badWordsYamlPath: '%bad_words_yaml_path%'
+    App\EventSubscriber\HoneyPotSubscriber:
+        arguments:
+            $honeyPotLogger: '@logger'
+            $requestStack: '@request_stack'
+            $field1: 'phone'  
+            $field2: 'faxNumber'         
+    App\Service\LogEncryptor:
+        arguments:
+            $encryptionKey: '%env(LOG_ENCRYPTION_KEY)%'
+    App\Monolog\Processor\IpAnonymizationProcessor:
+        tags:
+            - { name: monolog.processor }
+    App\Controller\UserController:
+        arguments:
+            $uploadsDir: '%kernel.project_dir%/public/uploads'    
+    App\Controller\ConversationController:
+        arguments:
+            $messagesLogger: '@monolog.logger.messages'    
+            $messageSendingLimiter: '@limiter.message_sending' 
+    App\Twig\AppExtension:
+        arguments:
+            $messageRepository: '@App\Repository\MessageRepository'
+            $security: '@security.helper' 
+        tags: ['twig.extension']
+    App\Service\StripeService:
+        arguments:
+            $secretKey: '%stripe_secret_key%'
+            $webhookSecret: '%stripe_webhook_secret%'

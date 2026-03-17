@@ -1,0 +1,82 @@
+/* &------------ CONTACT ------------ */
+/* &--------------------------------- */
+
+.main-section-page.contact {
+    .bg-text--contact {
+        display: none;
+    }
+    .contact__container {
+        width : 100%;
+        justify-content: center;
+    }
+    .contact__info {
+        width: auto;
+    }
+    .contact__form-wrapper {
+        width: 885px;
+    }
+    .contact__title {
+        font-size: 50px;
+    }
+}
+
+
+
+
+
+/* ?-------- MEDIA QUERIES  --------- */
+/* ?--------------------------------- */
+
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+
+}
+
+@media (max-width: 1280px) {
+    .main-section-page.contact {
+        .contact__form-wrapper
+        {
+            width: 100%;
+        }
+        .contact__title
+        {
+            font-size: 46px;
+        }
+        .section-contact {
+            & .contact__info {
+                .contact__detail-link
+                {
+                    font-size: 24px;
+                }
+            }
+        }
+    }
+
+}
+
+
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+  
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 900px ) {
+
+}
+@media (max-width: 768px ) {
+
+}
+
+
+/* ?------------ VERY SMALL --------- */
+
+@media (max-width: 480px) {
+
+}

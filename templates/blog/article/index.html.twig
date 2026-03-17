@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+<h1>Articles du blog</h1>
+
+<h1>Liste des articles</h1>
+
+    {% for article in articles %}
+        <article>
+            <h2>
+                <a href="{{ path('article_show', {'slug': article.slug}) }}">
+                    {{ article.title }}
+                </a>
+            </h2>
+            {% if article.medias|length > 0 %}
+                {% set cover = article.medias.first %}
+                {# <figure>
+                    <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?: article.title }}">
+                </figure> #}
+                <div>
+                    <p>image redimensionnée test</p>
+                    <img src="{{ asset(cover.path)|imagine_filter('article_cover_thumb') }}" 
+                    {# <img src="{{ asset(cover.path|trim('\"'))|imagine_filter('article_cover_thumb') }}"
+                    alt="{{ cover.altText ?: article.title }}"> #}
+                </div>
+            {% else %}
+                <figure>
+                    <div>Aucune image de cover</div>
+                </figure>
+            {% endif %}
+            <p>
+                <p>
+                    Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }} - {{ article.status }}
+                </p>
+            </p>
+        </article>
+        <hr>
+    {% else %}
+        <p>Aucun article trouvé.</p>
+    {% endfor %}
+
+
+    {% if app.user %}
+        <p>Créer un article</p>
+        <button><a href="{{ path('article_new') }}">CREER</a></button>
+    {% endif %}
+
+{% endblock %}

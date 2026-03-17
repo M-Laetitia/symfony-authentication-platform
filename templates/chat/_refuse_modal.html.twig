@@ -1,0 +1,28 @@
+<div class="modal" id="refuseModal" style="display:flex; position:fixed; inset:0; z-index:1050; align-items:center; justify-content:center;">
+    <div class="modal-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.5);"></div>
+
+    <div class="modal-content" style="position:relative; background:#fff; padding:20px; z-index:1060; max-width:500px; width:100%; border-radius:8px;">
+        <h5 style="color: #dc3545;">Decline proposal</h5>
+        <p>Are you sure you want to decline this proposal?</p>
+
+        <div style="border: 1px solid #f8d7da; background: #fff5f5; padding: 10px; margin: 10px 0; border-radius: 4px;">
+            <p><strong>Message:</strong> {{ proposal.message }}</p>
+            <p><strong>Total price (incl. tax):</strong> €{{ (proposal.priceExcluTax * (1 + proposal.tax.rate))|number_format(2) }}</p>
+        </div>
+
+        <div style="border: 1px solid #ffc107; background: #fff8e1; padding: 10px; margin: 10px 0; border-radius: 4px; display:flex; align-items:center; gap:.5rem;">
+            
+            <p style="margin:0; color:#856404;"><strong>This action cannot be undone.</strong> The proposal will be permanently declined.</p>
+        </div>
+
+        <div style="margin-top: 1rem; display:flex; justify-content:flex-end; gap:.5rem;">
+            <button type="button" class="btn btn-secondary cancel-modal-btn">Cancel</button>
+
+            <form method="post" action="{{ path('proposal_refuse', {'id': proposal.id}) }}" style="display: inline;">
+                <input type="hidden" name="_confirm_token" value="{{ csrf_token('confirm_refuse_' ~ proposal.id) }}">
+                <input type="hidden" name="action" value="confirm">
+                <button type="submit" class="btn btn-danger">Yes, Decline</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}My chats{% endblock %}
+
+{# {% block body_class %}page--profile{% endblock %} #}
+
+{% block body %}
+
+<twig:Banner
+title="My blabla page"
+subtitle="Aut fuga culpa ab quibusdam"
+variant="dark"
+/>
+
+<section class="conversation">
+    <h1>CHats: </h1>
+
+    <p>Tous les msg non lus: {{unreadMessages}} </p>
+    <br>
+    <br>
+    <ul>
+        {% for conv in conversationData %}
+        <li>
+            <a href="{{ path('chat_conversation_show', {'id': conv.id}) }}">
+                Conversation ID : {{ conv.id }} - Avec : {{ conv.otherParticipant }}<br>
+                Dernier message : {{ conv.lastMessage }}
+                {% if conv.lastMessageDate %}
+                    - {{ conv.lastMessageDate|date('H:i d/m/Y') }}
+                {% endif %}
+                {% if conv.unreadCount > 0 %}
+                    <span class="chat-badge">
+                      <p>Message non lus: {{ conv.unreadCount }}</p> 
+                    </span>
+                {% endif %}
+            </a>
+        </li>
+    {% else %}
+        <li>Aucune conversation</li>
+    {% endfor %}
+        </ul>
+</section>
+
+
+{% endblock %}

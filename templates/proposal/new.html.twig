@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Make a Proposal{% endblock %}
+
+{% block body %}
+    <h1 class="">Make a Proposal</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.message) }}
+        {{ form_row(form.price_exclu_tax) }}
+        {{ form_row(form.tax) }}
+        {{ form_row(form.expiration_date) }}
+        <button type="submit" class="">
+            Send Proposal
+        </button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('chat_conversation_show', {id: conversation.id}) }}"
+       class="">
+       Back to Conversation
+    </a>
+{% endblock %}

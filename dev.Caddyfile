@@ -1,0 +1,11 @@
+:80 { 
+    route /healthz {
+        respond "OK" 200
+    }
+
+    route /.well-known/mercure* {
+        header Access-Control-Allow-Origin "http://localhost:8080"
+        header Access-Control-Allow-Credentials "true"
+        reverse_proxy localhost:3000
+    }
+}

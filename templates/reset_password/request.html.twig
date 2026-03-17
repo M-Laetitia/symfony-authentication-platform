@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block footer %}{% endblock %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body_class %}page--account{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <section class="reset-password account account--reset-password u-display-center" aria-labelledby="reset-password-title">
+
+        <div class="reset-password__container account__container">
+            <div class="reset-password__header">
+                <h1 id="reset-password-title" class="reset-password__title">RESET YOUR PASSWORD</h1>
+            </div>
+
+            <div class="reset-password__text">
+                <p>
+                    Enter your email address, and we will send you a
+                    link to reset your password.
+                </p>
+            </div>
+
+            {{ form_start(requestForm) }}
+
+            <div class="reset-password-form__group">
+                <label for="{{ requestForm.email.vars.id }}"
+                       class="reset-password-form__label sr-only">
+                    Email
+                </label>
+            
+                {{ form_widget(requestForm.email, {
+                    attr: {
+                        class: 'reset-password-form__input input input--dark input--large'
+                    }
+                }) }}
+            
+                {{ form_errors(requestForm.email) }}
+            </div>
+
+
+    
+            <button class="button button--large reset-password__submit button--border-accent">Send password reset email</button>
+            {{ form_end(requestForm) }}
+
+        </div>
+
+    </section>
+
+
+
+  
+
+
+{% endblock %}

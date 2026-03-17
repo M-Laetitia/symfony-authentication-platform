@@ -1,3 +1,21 @@
-body {
-    background-color: skyblue;
-}
+
+/* BASE */
+@import './base/reset.css';
+@import './base/variables.css';
+@import './base/fonts.css';
+@import './base/globals.css';
+
+/* LAYOUT */
+@import './layout/footer.css';
+@import './layout/subscribe.css';
+@import './layout/contact.css';
+@import './layout/components.css';
+@import './layout/navbar.css';
+
+/* PAGES */
+@import './pages/home.css';
+@import './pages/account.css';
+@import './pages/conversation.css';
+@import './pages/infos.css';
+
+/* COMPONENTS */

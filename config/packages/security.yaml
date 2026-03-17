@@ -1,17 +1,49 @@
 security:
+    # enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+
+                provider: app_user_provider
+                default_target_path: home
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
+            oauth:
+                resource_owners:
+                    google: "/login/check-google"
+                login_path: app_login
+                use_forward: false
+                failure_path: /connect/registration/google
+                oauth_user_provider:
+                    service: app.security.oauth_user_provider
+                # provider: hwi_oauth.user.provider
+                default_target_path: /home 
+            entry_point: form_login
+            user_checker: App\Security\UserChecker
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: home
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -23,7 +55,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/profile, roles: ROLE_USER }*
+        - { path: ^/stripe/webhook, roles: PUBLIC_ACCESS }
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN:       [ROLE_PHOTOGRAPHER]
+        ROLE_EMPLOYEE:    [ROLE_USER]
+        ROLE_USER:        []
 
 when@test:
     security:
