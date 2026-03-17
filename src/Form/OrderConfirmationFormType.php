@@ -19,9 +19,9 @@ class OrderConfirmationFormType extends AbstractType
                 'label' => "I agree to the terms and conditions* - AJOUTER LIEN",
                 'required' => true,
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'You must accept the terms and conditions.',
-                    ]),
+                    new IsTrue(
+                        message: 'You must accept the terms and conditions.',
+                    ),
                 ],
             ])
 

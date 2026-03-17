@@ -17,20 +17,20 @@ class ProfileAvatarUploadFormType extends AbstractType
             'mapped' => false,
             'required' => true,
             'constraints' => [
-                new NotBlank([
-                    'message' => 'Please select an image',
-                ]),
-                new File([
-                    'maxSize' => '3M',
-                    'maxSizeMessage' => 'The file is too large. Maximum allowed size is 3MB.',
-                    'mimeTypes' => [
+                new NotBlank(
+                    message: 'Please select an image',
+                ),
+                new File(
+                    maxSize: '3M',
+                    maxSizeMessage: 'The file is too large. Maximum allowed size is 3MB.',
+                    mimeTypes: [
                         'image/jpeg',
                         'image/jpg',
                         'image/png',
                         'image/webp',
                     ],
-                    'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, WEBP).',
-                ]),
+                    mimeTypesMessage: 'Please upload a valid image (JPEG, PNG, WEBP).',
+                ),
             ],
         ]);
     }

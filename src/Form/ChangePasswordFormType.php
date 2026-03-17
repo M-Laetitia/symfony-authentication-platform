@@ -30,19 +30,19 @@ class ChangePasswordFormType extends AbstractType
                         'placeholder' => 'New password',
                     ],
                     'constraints' => [
-                        new NotBlank([
-                            'message' => 'Please enter a password',
-                        ]),
-                        new Length([
-                            'min' => 12,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        new NotBlank(
+                            message: 'Please enter a password',
+                        ),
+                        new Length(
+                            min: 12,
+                            minMessage: 'Your password should be at least {{ limit }} characters',
                             // max length allowed by Symfony for security reasons
-                            'max' => 4096,
-                        ]),
-                        new Regex([
-                            'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
-                            'message' => 'Password must contain at least one uppercase letter, one number, and one special character.',
-                        ]),
+                            max: 4096,
+                        ),
+                        new Regex(
+                            pattern: '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
+                            message: 'Password must contain at least one uppercase letter, one number, and one special character.',
+                        ),
                         new PasswordStrength(),
                         new NotCompromisedPassword(),
                     ],
