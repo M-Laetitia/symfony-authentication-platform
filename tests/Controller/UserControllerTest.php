@@ -74,7 +74,7 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         // vérifie qu'un élément spécifique est présent
-        $this->assertSelectorTextContains('h1', 'My profile');
+        $this->assertSelectorTextContains('h1', 'My Profile');
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();
