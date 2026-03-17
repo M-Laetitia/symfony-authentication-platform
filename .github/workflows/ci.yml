@@ -70,8 +70,13 @@ jobs:
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # - name: Wait a bit for MySQL
-      #   run: sleep 15
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h 127.0.0.1 -u root -proot --silent && break
+            echo "Waiting for MySQL... ($i)"
+            sleep 2
+          done
 
       - name: Get MySQL container ID
         run: |
