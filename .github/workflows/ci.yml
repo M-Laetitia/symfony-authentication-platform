@@ -70,8 +70,8 @@ jobs:
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Wait a bit for MySQL
-        run: sleep 15
+      # - name: Wait a bit for MySQL
+      #   run: sleep 15
 
       - name: Get MySQL container ID
         run: |
