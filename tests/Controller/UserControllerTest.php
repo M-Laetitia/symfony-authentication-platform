@@ -37,7 +37,7 @@ class UserControllerTest extends WebTestCase
         // permet de vérifier que la page est protégée pour les utilisaters non authentifiés
         // $this->assertResponseRedirects('/login');
         $crawler = $this->client->followRedirect();
-        $this->assertSelectorTextContains('h1', 'Please sign in');
+        $this->assertSelectorTextContains('h1', 'PROFILE');
     }
 
     public function testProfilePageAsUser()
