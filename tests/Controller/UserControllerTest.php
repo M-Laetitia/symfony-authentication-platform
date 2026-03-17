@@ -56,6 +56,7 @@ class UserControllerTest extends WebTestCase
 
         $user = new User();
         $user->setEmail('testuser2@example.com');
+        $user->setUsername('testuser2');
         // $user->setPassword($hashedPassword); 
         // utiliser UserPasswordHasherInterface si besoin
         $user->setPassword($this->passwordHasher->hashPassword($user, 'testpassword'));
