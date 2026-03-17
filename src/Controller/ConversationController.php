@@ -474,7 +474,7 @@ class ConversationController extends AbstractController
                 throw $this->createAccessDeniedException('You cannot refuse this proposal.');
             }
 
-            $proposal->setStatus(ServiceProposalType::REJECTED);
+            $proposal->setStatus(ServiceProposalType::DECLINED);
             $em->flush();
 
             $this->addFlash('success', 'The proposal has been declined successfully.');
