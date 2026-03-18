@@ -50,7 +50,12 @@ class ConversationController extends AbstractController
         ConversationRepository $conversationRepository,
     ): Response {
         $client = $this->getUser();
-        if (!$client) {
+        // if (!$client) {
+        //     throw $this->createAccessDeniedException();
+        // }
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        if ($this->isGranted('ROLE_PHOTOGRAPHER')) {
             throw $this->createAccessDeniedException();
         }
 
