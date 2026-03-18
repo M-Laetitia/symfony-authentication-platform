@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\MediaRepository;
 use App\Repository\PhotographerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,5 +19,23 @@ class PhotographerController extends AbstractController
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
         ]);
+    }
+
+    #[Route('/team/{slug}', name: 'team_show')]
+    public function show(PhotographerRepository $photographerRepository, MediaRepository $mediaRepository,  string $slug): Response
+    {
+        $photographer = $photographerRepository->findOneBy(['slug' => $slug]);
+
+        if (!$photographer) {
+            throw $this->createNotFoundException('Photographer not found');
+        }
+
+        $bannerImage = $mediaRepository->findPortfolioCoverByPhotographer($photographer);
+
+        return $this->render('photographer/show.html.twig', [
+            'photographer' => $photographer,
+            'bannerImage' => $bannerImage,
+        ]);
+        
     }
 }
