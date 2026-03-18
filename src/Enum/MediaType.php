@@ -5,8 +5,13 @@ namespace App\Enum;
 enum MediaType: string
 {
     case ARTICLE_COVER = 'article_cover';
-    case GALLERY_IMAGE = 'gallery_image';
     case ARTICLE_IMAGE = 'article_image';
+
     case AVATAR = 'avatar';
+
+    case PORTFOLIO_COVER = 'portfolio_cover';        
+    case PORTFOLIO_FEATURED = 'portfolio_featured';  
+    case GALLERY_SERIES = 'gallery_series';
+
     case DEFAULT = 'default'; 
 }
