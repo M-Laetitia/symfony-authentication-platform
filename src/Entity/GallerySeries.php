@@ -32,6 +32,9 @@ class GallerySeries
     #[ORM\Column(type: 'string', enumType: GallerySeriesType::class)]
     private GallerySeriesType $type;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->medias = new ArrayCollection();
@@ -104,6 +107,18 @@ class GallerySeries
     public function setType(GallerySeriesType $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
         return $this;
     }
 }
