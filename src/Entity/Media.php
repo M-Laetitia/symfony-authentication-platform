@@ -43,6 +43,15 @@ class Media
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $height = null;
 
+    #[ORM\ManyToOne(inversedBy: 'media')]
+    private ?Photographer $photographer = null;
+
+    #[ORM\Column(length: 80, nullable: true)]
+    private ?string $title = null;
+
+    #[ORM\ManyToOne(inversedBy: 'serie')]
+    private ?GallerySeries $gallerySeries = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -144,6 +153,42 @@ class Media
     public function setHeight(?string $height): static
     {
         $this->height = $height;
+
+        return $this;
+    }
+
+    public function getPhotographer(): ?Photographer
+    {
+        return $this->photographer;
+    }
+
+    public function setPhotographer(?Photographer $photographer): static
+    {
+        $this->photographer = $photographer;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getGallerySeries(): ?GallerySeries
+    {
+        return $this->gallerySeries;
+    }
+
+    public function setGallerySeries(?GallerySeries $gallerySeries): static
+    {
+        $this->gallerySeries = $gallerySeries;
 
         return $this;
     }
