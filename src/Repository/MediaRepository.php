@@ -30,6 +30,20 @@ class MediaRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findFeaturedByPhotographer(Photographer $photographer): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.gallerySeries', 's')
+            ->addSelect('s')
+            ->andWhere('m.photographer = :photographer')
+            ->andWhere('m.typeImage = :type')
+            ->setParameter('photographer', $photographer)
+            ->setParameter('type', MediaType::PORTFOLIO_FEATURED)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     // public function findArticleCoverByArticleId(int $articleId): ?Media
     // {
     //     /** @var array<string, mixed> $params */
