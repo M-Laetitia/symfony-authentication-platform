@@ -49,7 +49,7 @@ class Media
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(inversedBy: 'serie')]
+    #[ORM\ManyToOne(inversedBy: 'medias')]
     private ?GallerySeries $gallerySeries = null;
 
     public function __construct()
