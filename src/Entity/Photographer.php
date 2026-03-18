@@ -40,7 +40,7 @@ class Photographer
     #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: 'photographer')]
     private Collection $conversations;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -58,10 +58,24 @@ class Photographer
     #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: PhotographerVisibilityType::class)]
     private array $visibility = [];
 
+    /**
+     * @var Collection<int, Media>
+     */
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'photographer')]
+    private Collection $media;
+
+    /**
+     * @var Collection<int, GallerySeries>
+     */
+    #[ORM\OneToMany(targetEntity: GallerySeries::class, mappedBy: 'photographer')]
+    private Collection $gallerySeries;
+
     public function __construct()
     {
         $this->serviceProposals = new ArrayCollection();
         $this->conversations = new ArrayCollection();
+        $this->media = new ArrayCollection();
+        $this->gallerySeries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -239,6 +253,66 @@ class Photographer
     public function setVisibility(array $visibility): static
     {
         $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPhotographer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getPhotographer() === $this) {
+                $medium->setPhotographer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GallerySeries>
+     */
+    public function getGallerySeries(): Collection
+    {
+        return $this->gallerySeries;
+    }
+
+    public function addGallerySeries(GallerySeries $gallerySeries): static
+    {
+        if (!$this->gallerySeries->contains($gallerySeries)) {
+            $this->gallerySeries->add($gallerySeries);
+            $gallerySeries->setPhotographer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallerySeries(GallerySeries $gallerySeries): static
+    {
+        if ($this->gallerySeries->removeElement($gallerySeries)) {
+            // set the owning side to null (unless already changed)
+            if ($gallerySeries->getPhotographer() === $this) {
+                $gallerySeries->setPhotographer(null);
+            }
+        }
 
         return $this;
     }
