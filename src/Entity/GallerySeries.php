@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Enum\GallerySeriesType;
 use App\Repository\GallerySeriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GallerySeriesRepository::class)]
@@ -25,11 +27,14 @@ class GallerySeries
      * @var Collection<int, Media>
      */
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'gallerySeries')]
-    private Collection $serie;
+    private Collection $medias;
+
+    #[ORM\Column(type: 'string', enumType: GallerySeriesType::class)]
+    private GallerySeriesType $type;
 
     public function __construct()
     {
-        $this->serie = new ArrayCollection();
+        $this->medias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,30 +69,41 @@ class GallerySeries
     /**
      * @return Collection<int, Media>
      */
-    public function getSerie(): Collection
+    public function getMedias(): Collection
     {
-        return $this->serie;
+        return $this->medias;
     }
 
-    public function addSerie(Media $serie): static
+    public function addMedia(Media $media): static
     {
-        if (!$this->serie->contains($serie)) {
-            $this->serie->add($serie);
-            $serie->setGallerySeries($this);
+        if (!$this->medias->contains($media)) {
+            $this->medias->add($media);
+            $media->setGallerySeries($this);
         }
 
         return $this;
     }
 
-    public function removeSerie(Media $serie): static
+    public function removeMedia(Media $media): static
     {
-        if ($this->serie->removeElement($serie)) {
-            // set the owning side to null (unless already changed)
-            if ($serie->getGallerySeries() === $this) {
-                $serie->setGallerySeries(null);
+        if ($this->medias->removeElement($media)) {
+            if ($media->getGallerySeries() === $this) {
+                $media->setGallerySeries(null);
             }
         }
 
+        return $this;
+    }
+
+
+    public function getType(): GallerySeriesType
+    {
+        return $this->type;
+    }
+
+    public function setType(GallerySeriesType $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 }
