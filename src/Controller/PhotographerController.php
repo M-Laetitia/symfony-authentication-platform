@@ -31,10 +31,13 @@ class PhotographerController extends AbstractController
         }
 
         $bannerImage = $mediaRepository->findPortfolioCoverByPhotographer($photographer);
+        $featuredMedias = $mediaRepository->findFeaturedByPhotographer($photographer);
+       
 
         return $this->render('photographer/show.html.twig', [
             'photographer' => $photographer,
             'bannerImage' => $bannerImage,
+            'featuredMedias' => $featuredMedias,
         ]);
         
     }
