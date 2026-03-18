@@ -208,12 +208,12 @@ subtitle="{{photographer.firstName}} - {{photographer.lastName}}"
       </section>
 
       <!-- SECTION: Gallery -->
-      <section class="photographer-gallery">
+      <section class="photographer-gallery gallery-glightbox-isotope">
         {# <h2 class="photographer-gallery__title">GALLERY</h2> #}
         <div class="gallery">
   
           <div class="gallery__filters">
-            <button class="js-filter-button" data-filter="*">All</button>
+            <button class="js-filter-button active" data-filter="*">All</button>
   
             {% for series in photographer.gallerySeries %}
                 {% set seriesClass = series.name|lower|replace({' ': '-', '_': '-'})|trim %}
@@ -221,13 +221,13 @@ subtitle="{{photographer.firstName}} - {{photographer.lastName}}"
                     {{ series.name }}
                 </button>
             {% endfor %}
-        </div>
+          </div>
+
         <div class="gallery__grid js-gallery-grid">
-  
   
            {% for media in featuredMedias %}
               {% set seriesClass = media.gallerySeries ? media.gallerySeries.name|lower|replace({' ': '-', '_': '-'})|trim : '' %}
-              <div class="gallery__item js-gallery-item {{ seriesClass }}">
+              <div class="gallery__item js-gallery-item {{ seriesClass }} {{ loop.index > 9 ? 'is-hidden' }}">
                   <a href="{{ asset('uploads/' ~ media.path) }}"
                     class="gallery__link js-gallery-lightbox"
                     data-gallery="portfolio">
@@ -237,7 +237,11 @@ subtitle="{{photographer.firstName}} - {{photographer.lastName}}"
                   </a>
               </div>
           {% endfor %}
-  
+          
+        </div>
+
+        <div class="photographer-gallery__actions">
+          <button class="gallery__more js-gallery-more button button--accent button--medium">SEE MORE</button>
         </div>
       </div>
 
