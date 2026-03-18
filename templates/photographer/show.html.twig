@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{photographer.firstName}} - {{photographer.lastName}}{% endblock %}
+
+
+{% block body %}
+
+<twig:Banner
+title="Portfolio"
+subtitle="{{photographer.firstName}} - {{photographer.lastName}}"
+/>
+
+<section class="page portfolio-page">
+  <div class="portfolio-page__container section-centered">
+    <div class="portfolio-page__content">
+      <!-- SECTION: Photographer Info -->
+      <section class="photographer-info">
+        <div class="photographer-info__header">
+          <figure class="photographer-info__photo">
+            <a href="#">
+              <img
+                src="/uploads/{{bannerImage.path}}"
+                alt="{{bannerImage.altText}}"
+                class="photographer-info__photo-img u-img-cover"
+              />
+            </a>
+          </figure>
+          <div class="photographer-info__quote">
+            <h5>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci
+              non dolorem totam atque.
+            </h5>
+          </div>
+        </div>
+
+        <div class="photographer-info__details-wrapper">
+          <div class="photographer-info__details">
+            <div class="photographer-info__stats">
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">Grand-Est</p>
+              </div>
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">English, Spanish</p>
+              </div>
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">
+                  Concert, Music, Sport, Events
+                </p>
+              </div>
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">
+                  10+ years of experience - 50+ shootings
+                </p>
+              </div>
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">
+                  Sony A7 IV - 70-200mm f/2.8
+                </p>
+              </div>
+
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">
+                  websitePhotographer@domain.com
+                </p>
+              </div>
+
+              <div class="photographer-info__stat">
+                <span class="photographer-info__stat-icon"
+                  ><!-- SVG Logo ici --></span
+                >
+                <p class="photographer-info__stat-text">
+                  Photographer@example.com
+                </p>
+              </div>
+            </div>
+
+            <div class="photographer-info__social">
+              <h4 class="photographer-info__social-title">FOLLOW ME</h4>
+              <div class="photographer-info__social-links">
+                <a class="photographer-info__social-link" href="#"
+                  ><img src="icon-instagram.svg" alt="Instagram"
+                /></a>
+                <a class="photographer-info__social-link" href="#"
+                  ><img src="icon-twitter.svg" alt="Twitter"
+                /></a>
+                <a class="photographer-info__social-link" href="#"
+                  ><img src="icon-facebook.svg" alt="Facebook"
+                /></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="photographer-info__about-actions">
+            <div class="photographer-info__about">
+              <h2 class="photographer-info__about-title">ABOUT ME</h2>
+              <p class="photographer-info__about-text">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Suscipit totam atque dignissimos porro...
+                <br /><br />
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cumque
+                qui aliquid neque dolor nihil...
+                <br /><br />
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Corporis fuga ducimus dignissimos...
+              </p>
+            </div>
+
+            <div class="photographer-info__actions">
+              <button class="photographer-info__button">
+                MORE DETAILS ABOUT MY SERVICES
+              </button>
+              <button class="photographer-info__button">
+                DISCOVER MY WORK
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Gallery -->
+      <section class="photographer-gallery">
+        <h2 class="photographer-gallery__title">GALLERY</h2>
+        <p>Gallery will be added here...</p>
+      </section>
+
+      <!-- SECTION: Testimonials -->
+      <section class="photographer-testimonials">
+        <h2 class="photographer-testimonials__title">TESTIMONIALS</h2>
+        <p>Testimonials will be added here...</p>
+      </section>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{# 6ct34p3)Ap24lm #}
