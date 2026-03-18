@@ -35,6 +35,9 @@ body.page--account .page-wrapper {
    margin-top: 0;
   }
 
+section.page {
+    padding: 0 20px;
+}
 
 .page-wrapper {
     min-height: 100vh;
@@ -453,6 +456,7 @@ h6 {
 /* ?------------- SMALL ------------- */
 
 @media (max-width: 768px ) {
+    h1 { font-size: 38px; }
     h2 { font-size: 42px; }
     h3 { font-size: 30px; }
     h4 { font-size: 20px; }
@@ -462,6 +466,9 @@ h6 {
     .main-section-page {
         margin-top: 100px ;
         margin-bottom: 120px;
+    }
+    .page-hero__subtitle {
+        font-size: 20px;
     }
 }
 
