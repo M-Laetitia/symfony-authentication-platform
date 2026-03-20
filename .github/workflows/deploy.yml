@@ -32,7 +32,6 @@ jobs:
         run: |
           ssh-keyscan -H 195.154.191.63 >> ~/.ssh/known_hosts
 
-
       - name: Upload build assets
         run: |
           scp -P ${{ secrets.SSH_PORT }} -r public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/
