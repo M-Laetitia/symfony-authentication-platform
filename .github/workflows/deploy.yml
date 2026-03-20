@@ -32,15 +32,9 @@ jobs:
         run: |
           ssh-keyscan -H 195.154.191.63 >> ~/.ssh/known_hosts
 
-      - name: Test ports
-        run: |
-          nc -zv 195.154.191.63 22 2>&1 || echo "Port 22 fermé"
-          nc -zv 195.154.191.63 8022 2>&1 || echo "Port 8022 fermé"
-          nc -zv 195.154.191.63 22022 2>&1 || echo "Port 22022 fermé"
-          
       - name: Upload build assets
         run: |
-          scp -P ${{ secrets.SSH_PORT }} -r public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/
+          rsync -avz -e "ssh -p 22" public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/build/
 
       - name: Deploy via SSH
         run: |
