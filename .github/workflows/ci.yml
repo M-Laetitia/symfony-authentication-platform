@@ -134,5 +134,5 @@ jobs:
 
           git fetch --all
           git checkout test
-          git merge origin/dev --no-ff -m "CI: merge dev into test"
+          git merge origin/dev --no-ff -m "CI: merge dev into test" --strategy-option=ours -- ':!.github/workflows/deploy.yml'
           git push origin test
