@@ -6,7 +6,9 @@ on:
       - dev
 
 permissions:
-  contents: write 
+  contents: write
+  actions: write
+
 
 jobs:
   test:
