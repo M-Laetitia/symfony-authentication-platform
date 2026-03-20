@@ -39,7 +39,6 @@ jobs:
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@195.154.191.63 "
             cd /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
-            git pull origin master &&
             composer install --no-dev --optimize-autoloader &&
             php bin/console cache:clear --env=prod
           "
