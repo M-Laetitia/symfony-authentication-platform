@@ -42,3 +42,5 @@ jobs:
             /opt/plesk/php/8.3/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader &&
             /opt/plesk/php/8.3/bin/php bin/console cache:clear --env=prod
           "
+
+          
