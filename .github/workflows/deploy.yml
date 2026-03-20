@@ -11,6 +11,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: dev
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -43,4 +45,3 @@ jobs:
             /opt/plesk/php/8.3/bin/php bin/console cache:clear --env=prod
           "
 
-          
