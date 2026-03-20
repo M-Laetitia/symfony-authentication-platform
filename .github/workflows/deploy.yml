@@ -35,7 +35,7 @@ jobs:
         run: |
           rsync -avz -e "ssh -p 22" public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/build/
 
-      - name: Deploy via SSH
+      - name: 🚀 Deploy to production server
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@195.154.191.63 "
             cd /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
