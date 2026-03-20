@@ -23,24 +23,10 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add known_hosts
+      - name: Commit and push build
         run: |
-          ssh-keyscan -H 195.154.191.63 >> ~/.ssh/known_hosts
-
-      - name: Upload build assets
-        run: |
-          scp -P ${{ secrets.SSH_PORT }} -r public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/
-
-      - name: Deploy via SSH
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@195.154.191.63 "
-            cd /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
-            git pull origin master &&
-            composer install --no-dev --optimize-autoloader &&
-            php bin/console cache:clear --env=prod
-          "
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f public/build/
+          git diff --staged --quiet || git commit -m "build: update assets"
+          git push origin master
