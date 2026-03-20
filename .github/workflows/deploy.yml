@@ -1,0 +1,46 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add known_hosts
+        run: |
+          ssh-keyscan -H 195.154.191.63 >> ~/.ssh/known_hosts
+
+      - name: Upload build assets
+        run: |
+          scp -P ${{ secrets.SSH_PORT }} -r public/build/ ${{ secrets.SSH_USER }}@195.154.191.63:/var/www/vhosts/mosaic.digitics.fr/httpdocs/public/
+
+      - name: Deploy via SSH
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@195.154.191.63 "
+            cd /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
+            git pull origin master &&
+            composer install --no-dev --optimize-autoloader &&
+            php bin/console cache:clear --env=prod
+          "
