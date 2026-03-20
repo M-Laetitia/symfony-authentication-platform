@@ -31,10 +31,7 @@ jobs:
       - name: Add known_hosts
         run: |
           ssh-keyscan -H 195.154.191.63 >> ~/.ssh/known_hosts
-          
-      - name: Test SSH connection
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} -v ${{ secrets.SSH_USER }}@195.154.191.63 "echo OK"
+
 
       - name: Upload build assets
         run: |
