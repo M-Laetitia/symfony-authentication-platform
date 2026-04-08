@@ -3,9 +3,11 @@
 
 .account {
     width: 100%;
+    /* height: 100vh; */
     /* min-height: 100vh; */
     padding-top: var(--height-navbar );
     /* height: calc(100vh - var(--height-navbar )); */
+    margin-top: 100px;
 
     .account__container {
         background-color: var(--color-grey-800);

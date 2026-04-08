@@ -13,11 +13,20 @@
             {% for photographer in photographers %}
                 <div class="photographer-card">
                     <p>{{ photographer.firstname }}</p>
+                    <p> <a href="{{path('team_show', {slug: photographer.slug}) }}">see profil</a> </p>
                 </div>
-                <a href="{{ path('chat_start', {id: photographer.id}) }}"
-                class="button button--accent button--small">
-                Chat
-             </a>
+
+               {% if is_granted('ROLE_USER') and not is_granted('ROLE_PHOTOGRAPHER') %}
+                    <a href="{{ path('chat_start', {id: photographer.id}) }}"
+                    class="button button--accent button--small">
+                        Chat
+                    </a>
+
+                {% elseif not is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <p>You must have an account and be logged in to start a conversation with a photographer</p>
+                {% endif %}
+                            
+
             {% endfor %}
         </div>
     {% endif %}

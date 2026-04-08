@@ -20,14 +20,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
 use App\Service\CommentSecurityService;
-
+use App\Service\SeoService;
 use Psr\Log\LoggerInterface;
 
 
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo): Response
+    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService): Response
     {
         // $articles = $em->getRepository(Article::class)->findAll();
         // $publishedArticles = $em->getRepository(Article::class)->findBy([
@@ -41,10 +41,11 @@ class ArticleController extends AbstractController
         // ]);
 
         $articles = $articleRepo->findPublishedArticlesWithCover();
-        // dd($articles);
 
         return $this->render('blog/article/index.html.twig', [
             'articles' => $articles,
+            'meta_description' => $seoService->getMetaDescription('blog'),
+            'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
     }
 
@@ -177,10 +178,9 @@ class ArticleController extends AbstractController
     #[Route('/article/{slug}', name: 'article_show')]
     public function show(ArticleRepository $articleRepository, CommentRepository $commentRepository, string $slug, Request $request, EntityManagerInterface $em, CommentSecurityService $CommentSecurityService ): Response
     {   
-
         $article = $articleRepository->findOneBy(['slug' => $slug]);
         if (!$article) {
-            throw $this->createNotFoundException('Article non trouvé');
+            throw $this->createNotFoundException('Article not found');
         }
         $validatedComments = $commentRepository->findBy([
             'article' => $article,

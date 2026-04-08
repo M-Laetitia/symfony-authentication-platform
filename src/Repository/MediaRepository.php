@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Media;
+use App\Entity\Photographer;
+use App\Enum\MediaType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +16,32 @@ class MediaRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Media::class);
+    }
+
+    public function findPortfolioCoverByPhotographer(Photographer $photographer): ?Media
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.photographer = :photographer')
+            ->andWhere('m.typeImage = :type')
+            ->setParameter('photographer', $photographer)
+            ->setParameter('type', MediaType::PORTFOLIO_COVER)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findFeaturedByPhotographer(Photographer $photographer): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.gallerySeries', 's')
+            ->addSelect('s')
+            ->andWhere('m.photographer = :photographer')
+            ->andWhere('m.typeImage = :type')
+            ->setParameter('photographer', $photographer)
+            ->setParameter('type', MediaType::PORTFOLIO_FEATURED)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     // public function findArticleCoverByArticleId(int $articleId): ?Media
