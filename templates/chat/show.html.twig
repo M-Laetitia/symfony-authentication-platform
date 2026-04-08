@@ -31,7 +31,7 @@ variant="dark"
             {% endif %}
             <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
     
-            {# Bouton signaler uniquement pour photographe, si pas déjà reporté et pas son propre message #}
+            {# Reporting button only for photographers, if not already reported and not their own message #}
             {% if is_granted('ROLE_PHOTOGRAPHER') and not msg.isReported and msg.sender.id != app.user.id %}
                 <button class="btn-report" data-message-id="{{ msg.id }}">Report</button>
             {% endif %}
