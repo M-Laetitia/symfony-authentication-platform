@@ -10,9 +10,7 @@
     {% for article in articles %}
         <article>
             <h2>
-                <a href="{{ path('article_show', {'slug': article.slug}) }}">
-                    {{ article.title }}
-                </a>
+                <a href="{{ path('article_show', {'slug': article.slug}) }}">{{ article.title }}</a>
             </h2>
             {% if article.medias|length > 0 %}
                 {% set cover = article.medias.first %}
@@ -27,7 +25,7 @@
                 </div>
             {% else %}
                 <figure>
-                    <div>Aucune image de cover</div>
+                    <div>No cover image</div>
                 </figure>
             {% endif %}
             <p>
@@ -38,7 +36,7 @@
         </article>
         <hr>
     {% else %}
-        <p>Aucun article trouvé.</p>
+        <p>No article Found.</p>
     {% endfor %}
 
 

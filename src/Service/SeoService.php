@@ -11,11 +11,13 @@ class SeoService
     {
         $this->metaDescriptions = [
             'login' => 'Login page',
-            'register' => 'Register page'
+            'register' => 'Register page',
+            'blog' => 'Explore our latest photography articles, tips, tutorials, and inspirations to enhance your photography skills and creativity.',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
             'register' => 'noindex, nofollow',
+            'blog' => 'index, follow',
         ];
     }
 
@@ -30,4 +32,5 @@ class SeoService
     {
         return $this->metaRobots[$page] ?? 'index, follow';
     }
+
 }

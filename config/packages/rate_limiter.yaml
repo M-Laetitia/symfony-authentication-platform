@@ -1,5 +1,9 @@
 framework:
   rate_limiter:
+    login_attempts:
+      policy: 'sliding_window'
+      limit: 5
+      interval: '1 minute'
     comment_posting:
       policy: 'sliding_window'
       limit: 3

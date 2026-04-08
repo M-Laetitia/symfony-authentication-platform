@@ -48,48 +48,37 @@ class CommentSecurityService
             ];
         }
     
-        // Trop de requêtes >  Rate-limit atteint
+        // Too many requests > Rate limit reached
         $retryAfter = $limit->getRetryAfter()?->getTimestamp();
     
-        // 1. Tentative légèrement excessive >  warning (spam léger)
+        // 1. Lightly excessive attempt > warning (mild spam)
         if ($limit->getRemainingTokens() > -3) {
             $this->logger->warning(
                 "[CommentRateLimit] Excessive usage detected — soft limit reached",
                 $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
             );
     
-            return [
-                'accepted' => false,
-                'retry_after' => $retryAfter,
-                'status' => 'excess'
+            return ['accepted' => false,'retry_after' => $retryAfter,'status' => 'excess'
             ];
         }
     
-        // 2. Tentatives nombreuses > spam probable
+        // 2. Multiple attempts > probable spam activity
         if ($limit->getRemainingTokens() > -10) {
             $this->logger->error(
                 "[CommentRateLimit] Repeated limit violations — probable spam activity", 
                 $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
             );
     
-            return [
-                'accepted' => false,
-                'retry_after' => $retryAfter,
-                'status' => 'spam'
-            ];
+            return ['accepted' => false,'retry_after' => $retryAfter,'status' => 'spam'];
         }
     
-        // 3. tentatives massives > bot évident
+        // 3. Multiple attempts > clear bot activity
         $this->logger->critical(
             "[CommentRateLimit] Automated activity detected — bot blocked",
             $this->buildCommonLogContext($request, $this->logEncryptor, ['retry_after' => $retryAfter])
         );
     
-        return [
-            'accepted' => false,
-            'retry_after' => $retryAfter,
-            'status' => 'bot'
-        ];
+        return ['accepted' => false,'retry_after' => $retryAfter,'status' => 'bot'];
     }
 
     /**
