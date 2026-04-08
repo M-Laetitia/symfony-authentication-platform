@@ -8,6 +8,10 @@ import './bootstrap.js';
 import './styles/app.css';
 import './js/global.js';
 
+if (document.querySelector('.gallery-glightbox-isotope')) {
+    import('./js/glightbox-isotope.js');
+}
+
 if (document.querySelector('#conversation-page')) {
     import('./js/chat-mercure.js');
 }

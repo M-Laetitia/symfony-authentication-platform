@@ -6,6 +6,7 @@
     --color-grey-900: #1c1c1c;
     --color-grey-800: #2F2F2F;
     --color-grey-700: #585858;
+    --color-grey-400: #9c9c9c;
     --color-grey-200: #D2D2CE;
     --color-accent: #5FEEAB;
 
@@ -22,7 +23,7 @@
     
     --breakpoint-mobile: 768px;
   
-    --width-content : 75%;
+    --width-content : 73%;
     --height-navbar : 100px;
     /* --radius-sm: 4px;
     --radius-md: 8px;*/

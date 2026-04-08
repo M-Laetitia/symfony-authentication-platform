@@ -7,10 +7,12 @@
     "@editorjs/quote": "^2.7.6",
     "@editorjs/simple-image": "^1.6.0",
     "@hotwired/stimulus": "^3.2.2",
-    "core-js": "^3.45.1"
+    "core-js": "^3.45.1",
+    "glightbox": "^3.3.1",
+    "isotope-layout": "^3.0.6"
   },
   "devDependencies": {
-    "@symfony/webpack-encore": "^5.2.0",
+    "@symfony/webpack-encore": "^5.3.1",
     "baseline-browser-mapping": "^2.9.19",
     "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
