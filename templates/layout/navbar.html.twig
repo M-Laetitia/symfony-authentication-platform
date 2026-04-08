@@ -41,7 +41,7 @@
                         <a href="/gallery" class="navbar__link">Gallery</a>
                     </li>
                     <li class="navbar__item">
-                        <a href="/blog" class="navbar__link">Blog</a>
+                        <a href="{{ path('blog_index')}}" class="navbar__link">Blog</a>
                     </li>
                     <li class="navbar__item">
                         <a href="{{ path('contact') }}"
@@ -133,11 +133,10 @@
                                 {% if app.user %}
                                     <li class="navbar__user-item">
                                         <a href="{{ path('app_profile') }}"
-                                        class="navbar__user-link "
-                                        {% if app.request.attributes.get('_route') == 'app_profile' %}aria-current="page"{% endif %}>
-                                        Profile
-                                     </a>
-
+                                            class="navbar__user-link "
+                                            {% if app.request.attributes.get('_route') == 'app_profile' %}aria-current="page"{% endif %}>
+                                            Profile
+                                        </a>
                                     </li>
                                     <li class="navbar__user-item">
                                         <a href="{{ path('app_logout') }}" class="navbar__user-link">Log out</a>

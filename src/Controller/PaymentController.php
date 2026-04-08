@@ -193,7 +193,7 @@ class PaymentController extends AbstractController
             throw $this->createNotFoundException('Commande introuvable');
         }
 
-        // Sécurité : vérifier que la commande appartient à l'utilisateur connecté
+        // Security : check that the order belongs to the logged-in user
         if ($order->getServiceProposal()->getClient() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }

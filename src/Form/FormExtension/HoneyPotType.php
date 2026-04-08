@@ -15,7 +15,6 @@ class HoneyPotType extends AbstractType
     private LoggerInterface $honeyPotLogger;
     private RequestStack $requestStack;
 
-
     public function __construct(LoggerInterface $honeyPotLogger, RequestStack $requestStack)
     {
         $this->honeyPotLogger = $honeyPotLogger;
@@ -27,8 +26,10 @@ class HoneyPotType extends AbstractType
         $builder
         ->add($options['honeypot_field_1'], TextType::class, $this->setHoneyPotConfiguration())
         ->add($options['honeypot_field_2'], TextType::class, $this->setHoneyPotConfiguration())
-        ->addEventSubscriber(new HoneyPotSubscriber($this->honeyPotLogger, $this->requestStack, $options['honeypot_field_1'], $options['honeypot_field_2']))
-    ;
+        ->addEventSubscriber(new HoneyPotSubscriber(
+            $this->honeyPotLogger, $this->requestStack, 
+            $options['honeypot_field_1'], $options['honeypot_field_2'])
+        );
     }
 
     protected function setHoneyPotConfiguration(): array
