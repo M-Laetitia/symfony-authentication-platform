@@ -112,11 +112,11 @@ class MediaUploader implements MediaUploaderInterface
 
     private function validateFile(UploadedFile $file, array $constraints): void
     {
-        // Vérifie la taille max
+        // Check the max size constraint
         if (isset($constraints['max_size'])) {
             $maxSize = $constraints['max_size'];
     
-            // Si $maxSize est une string, convertir en octets
+            // If $maxSize is a string like '3M', convert it to bytes
             if (is_string($maxSize)) {
                 $maxSize = trim($maxSize);
                 $unit = strtoupper(substr($maxSize, -1));
@@ -131,7 +131,7 @@ class MediaUploader implements MediaUploaderInterface
             }
     
             if ($file->getSize() > $maxSize) {
-                throw new \RuntimeException(sprintf('Le fichier est trop volumineux (max: %s).', $constraints['max_size']));
+                throw new \RuntimeException(sprintf('The file is too large (max: %s).', $constraints['max_size']));
             }
         }
 
@@ -139,18 +139,18 @@ class MediaUploader implements MediaUploaderInterface
         // Vérifier l'extension pour une première couche de filtrage.
         // Vérifier le MIME type pour une validation plus robuste du contenu.
 
-        // vérifie l'extension
+        // Check extension
         $allowedExtensions = ['png', 'jpeg', 'jpg', 'webp'];
         $fileExtension = strtolower($file->getClientOriginalExtension());
         if (!in_array($fileExtension, $allowedExtensions)) {
-            throw new \Exception('Extension de fichier non autorisée.');
+            throw new \Exception('Unsupported file extensions');
         }
 
-        // vérifie le MIME type
+        // Check MIME type
         $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         $fileMimeType = $file->getMimeType();
         if (!in_array($fileMimeType, $allowedMimeTypes)) {
-        throw new \Exception('Type de fichier non autorisé.');
+            throw new \Exception('Unsupported file type.');
         }
     }
 
@@ -171,7 +171,6 @@ class MediaUploader implements MediaUploaderInterface
         $prefix = $type instanceof MediaType ? $type->value : 'media';
         $random = bin2hex(random_bytes(16));
         $webpFilename = $prefix . '_' . $random . '.webp';
-        // $webpFilename = uniqid($prefix . '_', true) . '.webp';
         $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
 
         try {

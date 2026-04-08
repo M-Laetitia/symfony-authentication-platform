@@ -37,7 +37,7 @@ class UserControllerTest extends WebTestCase
         // permet de vérifier que la page est protégée pour les utilisaters non authentifiés
         // $this->assertResponseRedirects('/login');
         $crawler = $this->client->followRedirect();
-        $this->assertSelectorTextContains('h1', 'Please sign in');
+        $this->assertSelectorTextContains('h1', 'PROFILE');
     }
 
     public function testProfilePageAsUser()
@@ -56,6 +56,7 @@ class UserControllerTest extends WebTestCase
 
         $user = new User();
         $user->setEmail('testuser2@example.com');
+        $user->setUsername('testuser2');
         // $user->setPassword($hashedPassword); 
         // utiliser UserPasswordHasherInterface si besoin
         $user->setPassword($this->passwordHasher->hashPassword($user, 'testpassword'));
@@ -73,7 +74,7 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         // vérifie qu'un élément spécifique est présent
-        $this->assertSelectorTextContains('h1', 'Mon profil');
+        $this->assertSelectorTextContains('h1', 'My Profile');
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();

@@ -22,7 +22,7 @@ class ProfileChangePasswordFormType extends AbstractType
                 'placeholder' => 'Current password',
             ],
             'constraints' => [
-                new NotBlank(['message' => 'Please enter your current password']),
+                new NotBlank(message: 'Please enter your current password'),
             ],
         ]);
 
@@ -37,16 +37,16 @@ class ProfileChangePasswordFormType extends AbstractType
                     'placeholder' => 'New password',
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'Please enter a new password']),
-                    new Length([
-                        'min' => 12,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        'max' => 4096,
-                    ]),
-                    new Regex([
-                        'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
-                        'message' => 'Password must contain at least one uppercase letter, one number, and one special character.',
-                    ]),
+                    new NotBlank(message: 'Please enter a new password'),
+                    new Length(
+                        min: 12,
+                        minMessage: 'Your password should be at least {{ limit }} characters',
+                        max: 4096,
+                    ),
+                    new Regex(
+                        pattern: '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
+                        message: 'Password must contain at least one uppercase letter, one number, and one special character.',
+                    ),
                 ],
             ],
             'second_options' => [

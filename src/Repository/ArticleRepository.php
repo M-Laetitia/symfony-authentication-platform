@@ -21,15 +21,32 @@ class ArticleRepository extends ServiceEntityRepository
     public function findPublishedArticlesWithCover(): array
     {
         return $this->createQueryBuilder('a')
+            ->select('partial a.{id, title, slug, createdAt}', 'm')
+            ->distinct()
             ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
-            ->addSelect('m') 
             ->where('a.status = :status')
             ->setParameter('status', 'published')
             ->setParameter('typeImage', MediaType::ARTICLE_COVER)
             ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(6)
             ->getQuery()
             ->getResult();
     }
+    
+    //     public function findPublishedArticlesWithCover(): array
+    // {
+    //     return $this->createQueryBuilder('a')
+    //         ->distinct()
+    //         ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
+    //         ->addSelect('m') 
+    //         ->where('a.status = :status')
+    //         ->setParameter('status', 'published')
+    //         ->setParameter('typeImage', MediaType::ARTICLE_COVER)
+    //         ->orderBy('a.createdAt', 'DESC')
+    //         ->setMaxResults(6)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
     
     //    /**

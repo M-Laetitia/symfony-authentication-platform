@@ -70,18 +70,18 @@ class RegistrationForm extends HoneyPotType
                     ],
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 12,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        'max' => 4096,
-                    ]),
-                    new Regex([
-                        'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
-                        'message' => 'Password must contain at least one uppercase letter, one number, and one special character.',
-                    ]),
+                    new NotBlank(
+                        message: 'Please enter a password',
+                    ),
+                    new Length(
+                        min: 12,
+                        minMessage: 'Your password should be at least {{ limit }} characters',
+                        max: 4096,
+                    ),
+                    new Regex(
+                        pattern: '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
+                        message: 'Password must contain at least one uppercase letter, one number, and one special character.',
+                    ),
                 ],
             ])
         ;
