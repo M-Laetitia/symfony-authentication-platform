@@ -210,8 +210,84 @@
                 </div>
             
             </article>
+
+        </div>
+        
+    <div class="article__nav">
+
+        <div class="article__nav-wrapper">
+
+            {% if previousArticle %}
+                <div class="article__nav-item article__nav-item--previous">
+                    <span class="article__nav-icon article__nav-icon--previous">
+                        <svg width="61" height="61" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.668945 60.332L0.500981 14.207L13.5049 1.20312L13.6357 37.457L13.6406 38.6572L14.4902 37.8086L51.4668 0.833007L60.168 9.53418L23.1914 46.5098L22.3428 47.3594L23.543 47.3643L59.7979 47.4961L46.7939 60.5L0.668945 60.332Z" fill="#242424" stroke="#5FEEAB"/>
+                        </svg>
+                    </span>
+
+                    <a href="{{ path('article_show', { slug: previousArticle.slug }) }}"
+                    class="article__nav-link">
+                        <p class="article__nav-label">Previous Article</p>
+                        <h5 class="article__nav-title">{{ previousArticle.title }}</h5>
+                    </a>
+
+                </div>
+            {% endif %}
+
+            {% if nextArticle %}
+                <div class="article__nav-item article__nav-item--next">
+
+                    <a href="{{ path('article_show', { slug: nextArticle.slug }) }}"
+                    class="article__nav-link">
+
+                        <p class="article__nav-label">Next Article</p>
+                        <h5 class="article__nav-title">{{ nextArticle.title }}</h5>
+
+                    </a>
+
+                    <span class="article__nav-icon article__nav-icon--next">
+                        <svg width="61" height="61" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.668945 60.332L0.500981 14.207L13.5049 1.20312L13.6357 37.457L13.6406 38.6572L14.4902 37.8086L51.4668 0.833007L60.168 9.53418L23.1914 46.5098L22.3428 47.3594L23.543 47.3643L59.7979 47.4961L46.7939 60.5L0.668945 60.332Z" fill="#242424" stroke="#5FEEAB"/>
+                        </svg>
+                    </span>
+
+                </div>
+            {% endif %}
+
         </div>
 
+    </div>
+
+  
+
+        {% if relatedArticles is not empty %}
+            <div class="related-articles">
+                <h3>Related Articles</h3>
+                <div class="related-articles__list">
+                    {% for related in relatedArticles %}
+                        <a href="{{ path('article_show', { 'slug': related.slug }) }}" class="related-article-card">
+                            {# <div class="related-article-card__image">
+                                {% set cover = related.medias|first %}
+                                {% if cover %}
+                                    <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?? related.title }}" class="related-article-card__img u-img-cover"
+                                    loading="lazy">
+                                {% endif %}
+                            </div> #}
+                            <div class="related-article-card__content">
+                                <h4 class="related-article-card__title">{{ related.title }}</h4>
+                                <time 
+                                    class="related-article-card__date"
+                                    datetime="{{ related.createdAt|date('d-m-Y') }}"
+                                >
+                                    {{ related.createdAt|date('d F Y') }}             
+                                </time>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
 </section>
 
 
