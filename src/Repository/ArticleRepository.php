@@ -19,7 +19,7 @@ class ArticleRepository extends ServiceEntityRepository
 
 
 
-    public function findPublishedArticlesWithCover(int $limit = 6): array
+    public function findPublishedArticlesWithCover(): array
     {
         return $this->createQueryBuilder('a')
             ->select('partial a.{id, title, slug, createdAt, status, excerpt}', 'm')
@@ -29,7 +29,6 @@ class ArticleRepository extends ServiceEntityRepository
             ->setParameter('status', 'published')
             ->setParameter('typeImage', MediaType::ARTICLE_COVER)
             ->orderBy('a.createdAt', 'DESC')
-            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
