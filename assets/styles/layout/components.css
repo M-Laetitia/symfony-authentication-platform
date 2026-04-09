@@ -29,7 +29,7 @@
         text-transform: uppercase;
 
         .page-hero__subtitle {
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             letter-spacing: 1.1px;
             position: relative;
             padding-left: 27px;
@@ -52,7 +52,6 @@
 
     .breadcrumb {
         color: var(--color-white);
-        /* margin-top: 2.2rem; */
         margin-top: clamp(1.5rem, 3vw, 2.2rem);
         .breadcrumb__list {
             display: flex;
@@ -60,6 +59,12 @@
         }
         .breadcrumb__current {
             color: var(--color-accent);
+        }
+        a {
+            transition: var(--transition-base);
+            &:hover {
+                color: var(--color-accent);
+            }
         }
     }
 }
@@ -352,6 +357,11 @@
     .service-box {
         width: 100%;
     }
+    .page-hero {
+        .page-hero__container {
+            width: 90%;
+        }
+    }
 }
 /* ?------------- MEDIUM ------------ */
 
@@ -374,6 +384,11 @@
 @media (max-width: 900px ) {
     .photograph-box {
         width: 100%;;
+    }
+    .page-hero {
+        .page-hero__container {
+            width: 100%;
+        }
     }
 
 }
