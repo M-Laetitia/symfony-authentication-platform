@@ -32,7 +32,7 @@ class Article
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $content = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 160, nullable: true)]
     private ?string $excerpt = null;
 
     #[ORM\Column(length: 255)]
@@ -71,6 +71,9 @@ class Article
      */
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'article', orphanRemoval: true)]
     private Collection $medias;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isFeatured = null;
 
     public function __construct()
     {
@@ -321,6 +324,18 @@ class Article
                 $media->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isFeatured(): ?bool
+    {
+        return $this->isFeatured;
+    }
+
+    public function setIsFeatured(?bool $isFeatured): static
+    {
+        $this->isFeatured = $isFeatured;
 
         return $this;
     }
