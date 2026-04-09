@@ -12,7 +12,7 @@ class SeoService
         $this->metaDescriptions = [
             'login' => 'Login page',
             'register' => 'Register page',
-            'blog' => 'Explore our latest photography articles, tips, tutorials, and inspirations to enhance your photography skills and creativity.',
+            'blog' => 'Explore photography tips, techniques, and artistic insights to elevate your art. Discover creative inspiration on our blog.',
             'contact' => 'Get in touch with us for questions, ideas, or support. We\'re here to respond quickly and help you!',
         ];
         $this->metaRobots = [
