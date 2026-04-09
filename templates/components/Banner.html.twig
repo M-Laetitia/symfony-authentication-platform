@@ -1,6 +1,6 @@
 <header class="page-hero{% if variant %} page-hero--{{ variant }}{% endif %} u-display-center">
-    <div class="page-hero__container">
 
+    <div class="page-hero__container">
         <div class="page-hero__content">
 
             {% if subtitle is defined and subtitle %}
@@ -13,7 +13,27 @@
                 {{ title }}
             </h1>
 
-        </div>
+            {% if breadcrumbs is defined and breadcrumbs %}
+                <nav class="breadcrumb" aria-label="breadcrumb">
+                    <ul class="breadcrumb__list">
+                        {% for crumb in breadcrumbs %}
+                            <li class="breadcrumb__item">
+                                {% if crumb.url is defined %}
+                                    <a href="{{ crumb.url }}" class="breadcrumb__link">
+                                        {{ crumb.label }}
+                                    </a>
+                                {% else %}
+                                    <span class="breadcrumb__current" aria-current="page">
+                                        {{ crumb.label }}
+                                    </span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
 
+        </div>
     </div>
+
 </header>

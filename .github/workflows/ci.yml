@@ -126,12 +126,15 @@ jobs:
       - name: ✅ Run Tests
         run: APP_ENV=test php bin/phpunit
 
+      - name: Nettoyer les fichiers de build
+        if: success()
+        run: rm -f public/build/entrypoints.json public/build/manifest.json
+
       - name: ⬆️ Merge dev into test if tests pass
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git fetch --all
           git checkout test
           git merge origin/dev --no-ff -m "CI: merge dev into test"
