@@ -1,0 +1,63 @@
+
+<!-- Search bar -->
+<div class="blog__search">
+    <form class="blog__search-form" role="search" aria-label="Recherche dans le blog">
+        <label for="blog-search" class="visually-hidden">Rechercher des articles</label>
+        <input type="search" id="blog-search" name="q" class="blog__search-input" placeholder="Rechercher..." />
+        <button type="submit" class="blog__search-button">🔍</button>
+    </form>
+</div>
+
+<!-- Categories -->
+<nav class="blog__categories" aria-labelledby="blog-categories-title">
+    <h3 id="blog-categories-title" class="blog__title">Categories</h3>
+
+    <ul class="blog__categories-list">
+        {% for category in categories %}
+            <li class="blog__category-item">
+                <a href="" class="blog__category-link">
+                    {{ category.name }} - ({{ category.articlesCount }})
+                </a>
+                {# "{{ path('blog_category', {'slug': category.slug}) }}" #}
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+
+<!-- Top posts -->
+<section class="blog__top-posts" aria-labelledby="blog-top-posts-title">
+    <h3 id="blog-top-posts-title" class="blog__title">Featured posts</h3>
+    <ol class="blog__top-posts-list">
+        {% for article in topArticles %}
+            <li class="blog__top-post">
+                <span class="blog__top-post-rank">{{ loop.index }}</span>
+                <article class="blog__top-post-content">
+                <h4>
+                    <a href="{{ path('article_show', {'slug': article.slug}) }}" class="blog__top-post-link">
+                    {{ article.title }}
+                    </a>
+                </h4>
+                        
+                    <div class="blog__top-post-tags">
+                        {% if article.tags|length %}
+                            <small>
+                                {% for tag in article.tags %}
+                                    <span class="blog__tag">{{ tag.name }}{% if not loop.last %} {% endif %}</span>
+                                {% endfor %}
+                            </small>
+                        {% endif %}
+                    </div>
+                </article>
+            </li>
+        {% endfor %}
+    </ol>
+</section>
+
+<!-- Instagram -->
+{# <section class="blog__instagram" aria-labelledby="blog-instagram-title">
+    <h4 id="blog-instagram-title" class="blog__title">Instagram</h4>
+    <div class="blog__instagram-feed">
+        <!-- instagram images -->
+    </div>
+</section> #}
+
