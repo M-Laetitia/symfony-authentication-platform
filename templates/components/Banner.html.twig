@@ -9,7 +9,7 @@
                 </div>
             {% endif %}
 
-            <h1 id="{{ id|default('page-hero-title') }}" class="page-hero__title">
+            <h1 {% if id is defined and id != '' %}id="{{ id }}"{% endif %} class="page-hero__title">
                 {{ title }}
             </h1>
 
