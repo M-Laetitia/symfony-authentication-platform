@@ -22,22 +22,30 @@ use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Service\CommentSecurityService;
 use App\Service\SeoService;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService, CategoryRepository $categoryRepo): Response
+    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
     {
 
-        $articles = $articleRepo->findPublishedArticlesWithCover(6);
+        $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
         $categories = $categoryRepo->findCategoriesWithArticleCount();
         $topArticles = $articleRepo->findTopArticles(5);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,                       
+            $request->query->getInt('page', 1),    
+            6                                      
+        );
     
 
         return $this->render('blog/article/index.html.twig', [
-            'articles' => $articles,
+            // 'articles' => $articles,
+            'pagination' => $pagination,
             'categories' => $categories,
             'topArticles' => $topArticles,
             'meta_description' => $seoService->getMetaDescription('blog'),
