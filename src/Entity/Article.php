@@ -75,6 +75,9 @@ class Article
     #[ORM\Column(nullable: true)]
     private ?bool $isFeatured = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $introduction = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -149,6 +152,11 @@ class Article
         $this->content = $content;
 
         return $this;
+    }
+
+    public function getCommentsCount(): int
+    {
+        return $this->comments->count();
     }
 
     public function getExcerpt(): ?string
@@ -336,6 +344,18 @@ class Article
     public function setIsFeatured(?bool $isFeatured): static
     {
         $this->isFeatured = $isFeatured;
+
+        return $this;
+    }
+
+    public function getIntroduction(): ?string
+    {
+        return $this->introduction;
+    }
+
+    public function setIntroduction(string $introduction): static
+    {
+        $this->introduction = $introduction;
 
         return $this;
     }
