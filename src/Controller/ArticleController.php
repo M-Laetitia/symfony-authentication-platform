@@ -19,31 +19,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Service\CommentSecurityService;
 use App\Service\SeoService;
-use Psr\Log\LoggerInterface;
+
 
 
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService): Response
+    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService, CategoryRepository $categoryRepo): Response
     {
-        // $articles = $em->getRepository(Article::class)->findAll();
-        // $publishedArticles = $em->getRepository(Article::class)->findBy([
-        //     'status' => 'published'
-        // ], [
-        //     'createdAt' => 'DESC' 
-        // ]);
 
-        // return $this->render('blog/article/index.html.twig', [
-        //     'articles' => $publishedArticles,
-        // ]);
-
-        $articles = $articleRepo->findPublishedArticlesWithCover();
+        $articles = $articleRepo->findPublishedArticlesWithCover(6);
+        $categories = $categoryRepo->findCategoriesWithArticleCount();
+        $topArticles = $articleRepo->findTopArticles(5);
+    
 
         return $this->render('blog/article/index.html.twig', [
             'articles' => $articles,
+            'categories' => $categories,
+            'topArticles' => $topArticles,
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
