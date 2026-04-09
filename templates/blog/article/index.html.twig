@@ -28,7 +28,7 @@
     
         <div class="blog__content">
 
-            {% for article in articles %}
+            {% for article in pagination %}
 
                 {% set cover = article.medias|first %}
                 <twig:ArticleBlogBox
@@ -44,6 +44,22 @@
                 <p>No articles found.</p>
             {% endfor %}
 
+            <div class="blog__footer">
+
+                <div class="blog__pagination">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+
+                {% if app.user and (is_granted('ROLE_ADMIN') or is_granted('ROLE_PHOTOGRAPHER')) %}
+                    <div class="blog__actions">
+                        <a href="{{ path('article_new') }}" class="blog__button-link">
+                            <button type="button" class="button button--medium button--accent blog__button">New article</button>
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+
         </div>
 
     </div>
@@ -51,11 +67,6 @@
 </section>
 
 
-    {% if app.user and (is_granted('ROLE_ADMIN') or is_granted('ROLE_PHOTOGRAPHER')) %}
-        <p>Créer un article</p>
-        <a href="{{ path('article_new') }}">
-            <button>New article</button>
-        </a>
-    {% endif %}
+
 
 {% endblock %}
