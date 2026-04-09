@@ -35,6 +35,7 @@ class ArticleController extends AbstractController
         $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
         $categories = $categoryRepo->findCategoriesWithArticleCount();
         $topArticles = $articleRepo->findTopArticles(5);
+        
 
         $pagination = $paginator->paginate(
             $queryBuilder,                       
@@ -187,7 +188,10 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException('Article not found');
         }
         $content = $article->getContent();
-
+        $previousArticle = $articleRepository->findPreviousArticle($article->getCreatedAt());
+        $nextArticle = $articleRepository->findNextArticle($article->getCreatedAt());
+        $findRelatedArticles = $articleRepository->findRelatedArticles($article);
+        
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
             'parentComment' => NULL,
@@ -278,6 +282,9 @@ class ArticleController extends AbstractController
             'comments' => $validatedComments,
             'content' => $content,
             'commentsCount' => $article->getCommentsCount(),
+            'previousArticle' => $previousArticle,
+            'nextArticle' => $nextArticle,
+            'relatedArticles' => $findRelatedArticles,
         ]);
     }
 
