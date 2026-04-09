@@ -9,11 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\CommentSecurityService;
+use App\Service\SeoService;
 
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'contact')]
-    public function contact(Request $request, MailerService $mailerService, CommentSecurityService $CommentSecurityService): Response
+    public function contact(Request $request, MailerService $mailerService, CommentSecurityService $CommentSecurityService, SeoService $seoService): Response
     {
         $form = $this->createForm(ContactFormType::class);
         $form->handleRequest($request);
@@ -48,6 +49,8 @@ class ContactController extends AbstractController
 
         return $this->render('contact/contact.html.twig', [
             'contactForm' => $form->createView(),
+            'meta_description' => $seoService ->getMetaDescription('contact'),
+            'metaRobots' => $seoService ->getMetaRobots('contact'),
         ]);
     }
 }

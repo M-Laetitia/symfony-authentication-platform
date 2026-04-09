@@ -66,6 +66,9 @@ h1, h2 {
 h1 {
     font-size: 48px;
 }
+.page-hero__title {
+    font-size: clamp(2rem, 7vw, 4rem);
+}
 h2 {
     font-size: 80px;
 }
@@ -423,7 +426,31 @@ h6 {
     border: 0;
 }
 
+/* &-------- SCROLL TOP BTN --------- */
+/* &-------------------------------- */
 
+.scroll-top-btn {
+  position: fixed;
+  bottom: 40px;  
+  right: 40px;   
+  font-size: 1.5rem;
+  border : 1px solid var(--color-accent);
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  display: flex!important;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  z-index: 1000; 
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.scroll-top-btn:hover {
+  opacity: 1;
+}
 
 /* ?------------- LARGE ------------- */
 
@@ -474,8 +501,8 @@ h6 {
         margin-top: 100px ;
         margin-bottom: 120px;
     }
-    .page-hero__subtitle {
-        font-size: 20px;
+    .scroll-top-btn {
+        display: none;
     }
 }
 
