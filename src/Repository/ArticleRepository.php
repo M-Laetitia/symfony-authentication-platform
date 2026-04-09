@@ -46,22 +46,45 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult(); 
     }
-    
-    //     public function findPublishedArticlesWithCover(): array
-    // {
-    //     return $this->createQueryBuilder('a')
-    //         ->distinct()
-    //         ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
-    //         ->addSelect('m') 
-    //         ->where('a.status = :status')
-    //         ->setParameter('status', 'published')
-    //         ->setParameter('typeImage', MediaType::ARTICLE_COVER)
-    //         ->orderBy('a.createdAt', 'DESC')
-    //         ->setMaxResults(6)
-    //         ->getQuery()
-    //         ->getResult();
-    // }
 
+    public function findPreviousArticle(\DateTimeInterface $date): ?Article
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.createdAt < :date')
+            ->setParameter('date', $date)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findNextArticle(\DateTimeInterface $date): ?Article
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.createdAt > :date')
+            ->setParameter('date', $date)
+            ->orderBy('a.createdAt', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    
+    public function findRelatedArticles(Article $article): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.tags', 't')
+            ->addSelect('COUNT(t.id) AS HIDDEN tagMatch')
+            ->andWhere('a.category = :cat OR t IN (:tags)')
+            ->setParameter('cat', $article->getCategory())
+            ->setParameter('tags', $article->getTags())
+            ->andWhere('a.id != :id')
+            ->setParameter('id', $article->getId())
+            ->groupBy('a.id')
+            ->orderBy('tagMatch', 'DESC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
     
     //    /**
     //     * @return Article[] Returns an array of Article objects
