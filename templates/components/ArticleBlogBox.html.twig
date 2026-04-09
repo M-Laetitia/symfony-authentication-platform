@@ -14,7 +14,7 @@
             <picture class="article-card__picture">
                 <img
                     src="{{ 'uploads/' ~ imagePath }}"
-                    alt="{{ alt }}"
+                    alt="{{ alt is defined and alt != '' ? alt : title }}"
                     class="article-card__image u-img-cover"
                     loading="lazy"
                 >
