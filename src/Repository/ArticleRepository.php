@@ -21,7 +21,7 @@ class ArticleRepository extends ServiceEntityRepository
     public function findPublishedArticlesWithCover(): array
     {
         return $this->createQueryBuilder('a')
-            ->select('partial a.{id, title, slug, createdAt}', 'm')
+            ->select('partial a.{id, title, slug, createdAt, status}', 'm')
             ->distinct()
             ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
             ->where('a.status = :status')

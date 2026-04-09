@@ -1,3 +1,22 @@
+// Scroll to top button
+const scrollBtn = document.getElementById('scrollTopBtn');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight) { 
+        scrollBtn.style.display = 'block';
+    } else {
+        scrollBtn.style.display = 'none';
+    }
+});
+
+
+scrollBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
 // FLash messages
 document.addEventListener('DOMContentLoaded', () => {
     const flashes = document.querySelectorAll('.flash-message');

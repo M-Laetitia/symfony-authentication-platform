@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Contact Us{% endblock %}
-
-{# {% block body_class %}page--profile{% endblock %} #}
 
 {% block body %}
 
 <twig:Banner
-title="Contact"
-subtitle="Something to say?"
+    title="Stay in touch  with us!"
+    subtitle="Questions? Ideas? Let's talk."
+    :breadcrumbs="[
+        { label: 'Home', url: path('home') },
+        { label: 'Contact' }
+    ]"
 />
 
 <section
@@ -21,7 +22,5 @@ subtitle="Something to say?"
     </div>
 
 </section>
-
-
 
 {% endblock %}

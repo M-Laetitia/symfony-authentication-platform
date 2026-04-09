@@ -32,16 +32,24 @@
                         class="navbar__link {% if app.request.attributes.get('_route') == 'home' %}navbar__link--active{% endif %}"
                         {% if app.request.attributes.get('_route') == 'home' %}aria-current="page"{% endif %}>
                         Home
-                     </a>
+                        </a>
                     </li>
                     <li class="navbar__item">
-                        <a href="{{ path('team_index') }}" class="navbar__link" {% if app.request.attributes.get('_route') == 'team' %}navbar__link--active{% endif %}>Team</a>
+                        <a href="{{ path('team_index') }}" 
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'team' %} navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'team' %}aria-current="page"{% endif %}>
+                        Team
+                        </a>
                     </li>
-                    <li class="navbar__item">
+                    {# <li class="navbar__item">
                         <a href="/gallery" class="navbar__link">Gallery</a>
-                    </li>
+                    </li> #}
                     <li class="navbar__item">
-                        <a href="{{ path('blog_index')}}" class="navbar__link">Blog</a>
+                        <a href="{{ path('blog_index')}}" 
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'blog_index' %}navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'blog_index' %}aria-current="page"{% endif %}>
+                        Blog
+                        </a>
                     </li>
                     <li class="navbar__item">
                         <a href="{{ path('contact') }}"
@@ -49,9 +57,6 @@
                         {% if app.request.attributes.get('_route') == 'contact' %}aria-current="page"{% endif %}>
                         Contact
                         </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a href="/contact" class="navbar__link">Contact</a>
                     </li>
                 </ul>
 

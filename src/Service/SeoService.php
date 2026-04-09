@@ -13,11 +13,13 @@ class SeoService
             'login' => 'Login page',
             'register' => 'Register page',
             'blog' => 'Explore our latest photography articles, tips, tutorials, and inspirations to enhance your photography skills and creativity.',
+            'contact' => 'Get in touch with us for questions, ideas, or support. We\'re here to respond quickly and help you!',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
             'register' => 'noindex, nofollow',
             'blog' => 'index, follow',
+            'contact' => 'index, follow',
         ];
     }
 
