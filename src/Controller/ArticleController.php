@@ -186,6 +186,8 @@ class ArticleController extends AbstractController
         if (!$article) {
             throw $this->createNotFoundException('Article not found');
         }
+        $content = $article->getContent();
+
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
             'parentComment' => NULL,
@@ -274,6 +276,8 @@ class ArticleController extends AbstractController
             'form' => $form->createView(),
             'article' => $article,
             'comments' => $validatedComments,
+            'content' => $content,
+            'commentsCount' => $article->getCommentsCount(),
         ]);
     }
 
