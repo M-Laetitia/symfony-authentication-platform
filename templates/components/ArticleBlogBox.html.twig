@@ -13,7 +13,7 @@
         <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__media-link">
             <picture class="article-card__picture">
                 <img
-                    src="{{ 'uploads/' ~ imagePath }}"
+                    src="{{ asset('uploads/' ~ imagePath) }}"
                     alt="{{ alt is defined and alt != '' ? alt : title }}"
                     class="article-card__image u-img-cover"
                     loading="lazy"
