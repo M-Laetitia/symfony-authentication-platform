@@ -318,7 +318,13 @@
 .section-articles__container {
     display: flex;
     gap: 33px;
+
+    .related-articles {
+        width : 100%;
+    }
 }
+
+
 
 
 /* ?-------- MEDIA QUERIES  --------- */

@@ -34,5 +34,45 @@ liip_imagine:
                     size: [400, 400]
                     mode: outbound 
                     focus: center
-    webp:
-        generate: true
+
+        thumbnail_small:      # mobile DPR1
+            filters:
+                thumbnail:
+                    size: [480, 320]
+                    mode: outbound
+
+        thumbnail_medium:     # mobile DPR2 / tablette DPR1
+            filters:
+                thumbnail:
+                    size: [960, 640]
+                    mode: outbound
+
+        thumbnail_large:      # tablette DPR2 / desktop
+            filters:
+                thumbnail:
+                    size: [1536, 1024]
+
+        # blog desktop thumbnail for desktop and tablette (DPR2 of 425×500)
+        blog_thumb:
+            filters:
+                thumbnail:
+                    size: [850, 1000] 
+                    mode: outbound
+
+        # blog mobile thumbnail for mobile (DPR2 of 1170×720)
+        blog_thumb_mobile:
+            filters:
+                thumbnail:
+                    size: [1170, 720] 
+                    mode: outbound
+
+        # blog cover for desktop and tablette (DPR2 of 1360×600)
+        article_cover:
+            filters:
+                thumbnail:
+                    size: [2720, 1200]  
+                    mode: outbound
+
+
+    # webp:
+    #     generate: true

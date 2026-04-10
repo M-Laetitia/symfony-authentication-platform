@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-
 {% block title %}My profile{% endblock %}
 
 {% block body_class %}page--profile{% endblock %}
@@ -8,9 +7,15 @@
 {% block body %}
 
 <twig:Banner
-title="My Profile"
-subtitle="Welcome back, {{ app.user ? app.user.username : '' }}"
-variant="dark"
+    title="My Profile"
+    subtitle="A closer look at your account! "
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Profile', type: 'current' }
+    ]"
+    variant="dark"
+    id="blog-title"
 />
 
 <section

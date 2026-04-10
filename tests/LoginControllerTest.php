@@ -48,14 +48,13 @@ class LoginControllerTest extends WebTestCase
         $this->client->submitForm('Log in', [
             '_username' => 'doesNotExist@example.com',
             '_password' => 'password',
-            
         ]);
 
         self::assertResponseRedirects('/login');
         $this->client->followRedirect();
-
-        // Ensure we do not reveal if the user exists or not.
         self::assertSelectorTextContains('.field-error', 'Invalid credentials.');
+
+        $this->client->restart();
 
         // Denied - Can't login with invalid password.
         $this->client->request('GET', '/login');
@@ -68,20 +67,23 @@ class LoginControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/login');
         $this->client->followRedirect();
-
-        // Ensure we do not reveal the user exists but the password is wrong.
         self::assertSelectorTextContains('.field-error', 'Invalid credentials.');
 
+        $this->client->restart();
+
         // Success - Login with valid credentials is allowed.
+        $this->client->request('GET', '/login');
         $this->client->submitForm('Log in', [
             '_username' => 'email@example.com',
             '_password' => 'password',
         ]);
 
+        // Vérifie que la redirection est bien vers /home
         self::assertResponseRedirects('/home');
         $this->client->followRedirect();
 
-        self::assertSelectorNotExists('.field-error');
+        // Vérifie que la page est accessible et qu'il n'y a PAS de message d'erreur
         self::assertResponseIsSuccessful();
+        self::assertSelectorTextNotContains('.field-error', 'Invalid credentials.');
     }
 }

@@ -1,75 +1,306 @@
 {% extends 'base.html.twig' %}
+{% block meta_description %}{{article.excerpt}}{% endblock %}
 
-{% block title %}Articles{% endblock %}
+{% block title %}{{ article.title }} | Photography Tips & Inspiration{% endblock %}
 
 {% block body %}
-{# {{ dump(article) }} #}
 
-<h1>{{ article.title }}</h1>
-<p>Publié le {{ article.createdAt|date('d/m/Y') }} par {{ article.author.username }} - {{ article.status }}</p>
-<pre>{{ dump(article.content) }}</pre>
-<div class="article-content">
-    {{ article.content|editorjs}}
-</div>
+<twig:Banner
+    title="Framing Inspiration"
+    subtitle="Explore insights and techniques."
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Blog', url: path('blog_index'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: article.title, type: 'current' }
+    ]"
+/>
+
+<section
+    class="main-section-page article u-display-center"
+    aria-labelledby="article-title"
+> 
+        <div class="article__wrapper section-centered">
+            <article class="article__content">
+                <div class="article__header">
+                    {% if article.tags is defined %}
+                        <div class="article-card__tags u-display-center">
+                            {% for tag in article.tags %}
+                                <span class="article-card__tag ">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <h2 id="article-title" class="article__title">{{ article.title }}</h2>
+                    <div class="u-display-center">
+                        <time 
+                            class="article__date"
+                            datetime="{{ article.createdAt|date('d-m-Y') }}"
+                        >
+                            {{ article.createdAt|date('d F Y') }}
+                        </time>
+                    </div>
+                    <p class="article__introduction u-large-line-height"> {{ article.introduction}}</p>
+                </div>
+
+                <div class="article__media">
+                    {% set cover = article.medias|first %}
+                    {% if cover %}
+                        <img
+                            src="{{ cover.path | imagine_filter('article_cover') }}"
+                            srcset="
+                                {{ cover.path | imagine_filter('article_cover') }} 2720w
+                            "
+                            sizes="100vw"
+                            alt="{{ cover.altText ?? article.title }}"
+                            class="article__image u-img-cover"
+                            loading="eager"
+                        />
+                    {% endif %}
+                </div>
 {# 
-{% cache 'article_content' article.id %}
-    {{ article.content|editorjs|raw }}
-{% endcache %} #}
+                <div class="article__media">
+                    {% set cover = article.medias|first %}
+                    {% if cover %}
+                        <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?? article.title }}" class="article__image u-img-cover"
+                        loading="lazy">
+                    {% endif %}
+                </div> #}
 
-<h2>Ajouter un commentaire</h2>
+            
+                <div class="article__body">
+                    {% for block in content.blocks %}
+                        
+                        {% if block.type == 'paragraph' %}
+                            <p class="article__paragraph">
+                                {{ block.data.text|raw }}
+                            </p>
+                        {% endif %}
 
-    {{ form_start(form) }}
-        {{ form_row(form.content) }}
-        {% if form.authorName is defined %}
-            {{ form_row(form.authorName) }}
-        {% endif %}
-        <button type="submit">Poster</button>
-    {{ form_end(form)}}
+                        {% if block.type == 'header' %}
+                            {% if block.data.level == 2 %}
+                                <h2 class="article__heading article__heading--h2">
+                                    {{ block.data.text|raw }}
+                                </h2>
+                            {% elseif block.data.level == 3 %}
+                                <h3 class="article__heading article__heading--h3">
+                                    {{ block.data.text|raw }}
+                                </h3>
+                            {% elseif block.data.level == 4 %}
+                                <h4 class="article__heading article__heading--h4">
+                                    {{ block.data.text|raw }}
+                                </h4>
+                            {% endif %}
+                        {% endif %}
 
-<h3>Liste des commentaires</h3>
+                    {% endfor %}
+                </div>
 
-{% for comment in comments %}
-    <div class="comment" style="margin-bottom: 15px;">
-        <p>{{ comment.content }}</p>
+                <div class="article__footer">
+                    
+                    <div class="article__meta">
+                        <div class="article__meta-item">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.57143 5C8.57143 4.81056 8.64668 4.62888 8.78064 4.49492C8.91459 4.36097 9.09627 4.28571 9.28571 4.28571C9.47515 4.28571 9.65684 4.36097 9.79079 4.49492C9.92475 4.62888 10 4.81056 10 5V10H12.8571C13.0466 10 13.2283 10.0753 13.3622 10.2092C13.4962 10.3432 13.5714 10.5248 13.5714 10.7143C13.5714 10.9037 13.4962 11.0854 13.3622 11.2194C13.2283 11.3533 13.0466 11.4286 12.8571 11.4286H9.28571C9.09627 11.4286 8.91459 11.3533 8.78064 11.2194C8.64668 11.0854 8.57143 10.9037 8.57143 10.7143V5ZM10 20C15.5229 20 20 15.5229 20 10C20 4.47714 15.5229 0 10 0C4.47714 0 0 4.47714 0 10C0 15.5229 4.47714 20 10 20ZM10 18.5714C5.26643 18.5714 1.42857 14.7336 1.42857 10C1.42857 5.26643 5.26643 1.42857 10 1.42857C14.7336 1.42857 18.5714 5.26643 18.5714 10C18.5714 14.7336 14.7336 18.5714 10 18.5714Z" fill="#585858"/>
+                        </svg>
+                            <span class="article__meta-text"
+                            datetime="{{ article.createdAt|date('d-m-Y') }}"
+                            >
+                                {{ article.createdAt|date('d F Y') }}             
+                            </span>
+                        </div>
 
-        {% if comment.isApproved %}
-        {% else %}
-            <p style="color: #888; font-size: 0.9em;">
-                Ce commentaire n'a pas encore été approuvé par la modération.
-            </p>
+                        <div class="article__meta-item">
+                            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 1.75C0 0.784 0.784 0 1.75 0H19.25C20.216 0 21 0.784 21 1.75V14.25C21 14.7141 20.8156 15.1592 20.4874 15.4874C20.1592 15.8156 19.7141 16 19.25 16H9.56L5.987 19.573C5.78305 19.7762 5.52352 19.9144 5.24112 19.9703C4.95872 20.0262 4.66609 19.9973 4.40011 19.8871C4.13414 19.777 3.90673 19.5905 3.74655 19.3513C3.58636 19.1121 3.50058 18.8309 3.5 18.543V16H1.75C1.28587 16 0.840752 15.8156 0.512563 15.4874C0.184375 15.1592 0 14.7141 0 14.25V1.75ZM1.75 1.5C1.6837 1.5 1.62011 1.52634 1.57322 1.57322C1.52634 1.62011 1.5 1.6837 1.5 1.75V14.25C1.5 14.388 1.612 14.5 1.75 14.5H4.25C4.44891 14.5 4.63968 14.579 4.78033 14.7197C4.92098 14.8603 5 15.0511 5 15.25V18.44L8.72 14.72C8.86052 14.5793 9.05115 14.5002 9.25 14.5H19.25C19.3163 14.5 19.3799 14.4737 19.4268 14.4268C19.4737 14.3799 19.5 14.3163 19.5 14.25V1.75C19.5 1.6837 19.4737 1.62011 19.4268 1.57322C19.3799 1.52634 19.3163 1.5 19.25 1.5H1.75Z" fill="#585858"/>
+                            </svg>
+                            <span class="article__meta-text">
+                                {{ commentsCount }} {{ commentsCount > 1 ? 'comments' : 'comment' }}
+                            </span>
+                        </div>
 
-            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-                <form method="post" action="{{ path('comment_approve', {'id': comment.id}) }}">
-                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
-                </form>
+                    </div>
+
+                    {# <div class="article__actions">
+                        picto coeur
+                    </div> #}
+
+                </div>
+                
+                <div class="article__author">
+                    <div class="article__author-image">
+                        <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" >
+                            <img src="{{ asset('uploads/' ~ article.author.avatar.path) }}" alt="Picture of {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}" class="article__author-photo u-img-cover"
+                            loading="lazy">
+                        </a>
+                    </div>
+                    <div class="article__author-info">
+                        <p class="article__author-name">
+                            <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" > {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}</a>
+                        </p>
+                        <p class="article__author-bio">{{article.author.photographer.profile.biography}}</p>
+                    </div>
+                </div>
+
+
+                <div class="article__comments">
+                    <div class="article__comments-title">
+                        <span class="line" aria-hidden="true"></span>
+                        <h5>{{ commentsCount }} {{ commentsCount > 1 ? 'comments' : 'comment' }}</h5>
+                        <span class="line" aria-hidden="true"></span>
+                    </div>
+
+                    
+
+                    {% for comment in comments %}
+                        <div class="article__comment">
+                            <div class="article__comment-header">
+                                <div class="article__comment-meta">
+                                    <span class="article__comment-author">{{ comment.authorName }}</span>
+                                    <span class="article__comment-date">{{ comment.createdAt|date('d F Y') }}</span>
+                                </div>
+                                {# <button class="article__comment-reply">REPLY</button> #}
+                            </div>
+
+                            <div class="article__comment-body">
+                                {{ comment.content }}
+                            </div>
+
+                            <div class="article__comment-pending">
+                                {% if not comment.isApproved %}
+                                    <p >
+                                        This comment has not yet been approved by moderation.
+                                    </p>
+                                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                        <form method="post" action="{{ path('comment_approve', {'id': comment.id}) }}">
+                                            <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+
+                        </div>
+                    {% else %}
+                        <p>No comments yet. Be the first to share your thoughts!</p>
+                    {% endfor %}
+
+                </div>
+
+                <div class="article__comment-form">
+                    <div class="article__comment-form-header">
+                        <span class="line" aria-hidden="true"></span>
+                        <h5 class="article__comment-form-title">LEAVE A COMMENT</h5>
+                        <span class="line" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="article__comment-form-body">
+                        <form name="comment_form" method="post">
+
+                            <div class="article__form-field field-content">
+                                {{ form_label(form.content) }}
+                                {{ form_widget(form.content) }}
+                                <div class="field-error">
+                                    {{ form_errors(form.content) }}  
+                                </div>
+                            </div>
+
+                            {% if form.authorName is defined %}
+                                <div class="article__form-field feiel-authorName">
+                                    {{ form_label(form.authorName) }}
+                                    {{ form_widget(form.authorName) }}
+                                    <div class="field-error ">
+                                        {{ form_errors(form.authorName) }}  
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <button type="submit" class="article__comment-form-submit button button--medium button--accent">
+                                POST COMMENT
+                            </button>
+
+                            {{ form_rest(form) }}
+                        </form>
+                    </div>
+
+                </div>
+            
+            </article>
+
+        </div>
+        
+    <section class="article__nav">
+
+        <div class="article__nav-wrapper">
+
+            {% if previousArticle %}
+                <div class="article__nav-item article__nav-item--previous">
+                    <span class="article__nav-icon article__nav-icon--previous">
+                        <svg width="61" height="61" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.668945 60.332L0.500981 14.207L13.5049 1.20312L13.6357 37.457L13.6406 38.6572L14.4902 37.8086L51.4668 0.833007L60.168 9.53418L23.1914 46.5098L22.3428 47.3594L23.543 47.3643L59.7979 47.4961L46.7939 60.5L0.668945 60.332Z" fill="#242424" stroke="#5FEEAB"/>
+                        </svg>
+                    </span>
+
+                    <a href="{{ path('article_show', { slug: previousArticle.slug }) }}"
+                    class="article__nav-link">
+                        <p class="article__nav-label">Previous Article</p>
+                        <h5 class="article__nav-title">{{ previousArticle.title }}</h5>
+                    </a>
+
+                </div>
             {% endif %}
-        {% endif %}
 
-        {# Lien "Éditer" si auteur ou admin #}
-        {% if (app.user and comment.author == app.user) or (app.user and 'ROLE_ADMIN' in app.user.roles) %}
-            <a href="#" onclick="showEditForm({{ comment.id }})">Éditer</a>
-        {% endif %}
+            {% if nextArticle %}
+                <div class="article__nav-item article__nav-item--next">
 
-        {# Réponses au commentaire #}
-        {% for reply in comment.replies %}
-            <div class="reply" style="margin-left: 20px;">
-                <p>{{ reply.content }}</p>
-            </div>
-        {% endfor %}
+                    <a href="{{ path('article_show', { slug: nextArticle.slug }) }}"
+                    class="article__nav-link">
 
-        {% if comment.author is not null %}
-            <p>par {{ comment.author.username }} -
-        {% else %}
-            <p>par {{ comment.authorName }} -
-        {% endif %}
-        le {{ comment.createdAt|date('d/m/Y') }}</p>
-    </div>
-{% else %}
-    <p>Aucun commentaire pour le moment :( </p>
-{% endfor %}
+                        <p class="article__nav-label">Next Article</p>
+                        <h5 class="article__nav-title">{{ nextArticle.title }}</h5>
 
-<hr>
-<hr>
+                    </a>
+
+                    <span class="article__nav-icon article__nav-icon--next">
+                        <svg width="61" height="61" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.668945 60.332L0.500981 14.207L13.5049 1.20312L13.6357 37.457L13.6406 38.6572L14.4902 37.8086L51.4668 0.833007L60.168 9.53418L23.1914 46.5098L22.3428 47.3594L23.543 47.3643L59.7979 47.4961L46.7939 60.5L0.668945 60.332Z" fill="#242424" stroke="#5FEEAB"/>
+                        </svg>
+                    </span>
+
+                </div>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    {% if relatedArticles is not empty %}
+    <section class="related-articles section-centered">
+
+        <h3 class="related-articles__title">Related Articles</h3>
+        
+        <div class="related-articles__list">
+            {% for related in relatedArticles %}
+            {% set cover = related.medias|first %}
+                    <twig:ArticleBox
+                    :title="related.title"
+                    :imagePath="cover ? cover.path : ''"
+                    :slug="related.slug"
+                    :date="related.createdAt|date('j F Y')"
+                    :tags="related.tags is defined ? related.tags|map(t => t.name) : []"
+                    />
+            {% endfor %}
+        </div>
+
+    </section>
+    {% endif %}
+        
+</section>
+
+
+
 
 
 {% endblock %}

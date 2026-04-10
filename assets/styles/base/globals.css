@@ -67,7 +67,7 @@ h1 {
     font-size: 48px;
 }
 .page-hero__title {
-    font-size: clamp(2rem, 7vw, 4rem);
+    font-size: clamp(2rem, 7vw, 3.8rem);
 }
 h2 {
     font-size: 80px;
@@ -180,13 +180,88 @@ h6 {
     justify-content: space-between;
 }
 
-/* &------------ ALERT _------------- */
+/* &----------- SEARCH BAR ---------- */
+/* &--------------------------------- */
+
+.search-bar {
+    margin-bottom: 35px;
+
+    .search-bar__input-group {
+        background-color: var(--color-grey-900);
+        color: var(--color-white);
+        display: flex;
+        width: 100%;
+    }
+    form {
+        display: flex;
+        height: 50px;
+    }
+    .search-bar__button svg path {
+        transition: var(--transition-base);
+        &:hover {
+            fill: var(--color-accent);
+        }
+    }
+    .search-bar__button {
+        padding-left: 10px;
+    }
+    input {
+        background-color: transparent;
+        border: none;
+        padding: 0 15px;
+        width: 100%;
+        &::placeholder {
+            color: var(--color-white);
+        }
+        &:focus {
+            outline: none;
+            border: 1px solid var(--color-gray-900);
+        }
+    }
+    .search-bar__clear {
+        width: 50px;
+        border: 1px solid var(--color-grey-900);
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-base);
+        font-size: 24px;
+        font-weight: 600;
+        &:hover {
+            background-color: var(--color-grey-900);
+            color: var(--color-white);
+        }
+     
+     
+    }
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='white' d='M10 8.6L4.7 3.3 3.3 4.7 8.6 10l-5.3 5.3 1.4 1.4L10 11.4l5.3 5.3 1.4-1.4L11.4 10l5.3-5.3-1.4-1.4z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+    cursor: pointer;
+}
+
+/* &------------ ALERT -------------- */
 /* &--------------------------------- */
 
 
 .register-form-error {
     color: var(--color-error);
 }
+
+.field-error li{
+    border: 1px solid red;
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+
 
 .auth-form__alert {
 
@@ -493,8 +568,8 @@ h6 {
     h1 { font-size: 38px; }
     h2 { font-size: 42px; }
     h3 { font-size: 30px; }
-    h4 { font-size: 20px; }
-    h5 { font-size: 18px; }
+    h4 { font-size: 22px; }
+    h5 { font-size: 20px; }
     h6 { font-size: 18px; }
 
     .main-section-page {
@@ -515,9 +590,9 @@ h6 {
 @media (max-width: 480px) {
     h2 { font-size: 34px; }
     h3 { font-size: 26px; }
-    h4 { font-size: 18px; }
-    h5 { font-size: 16px; }
-    h6 { font-size: 14px; }
+    h4 { font-size: 20px; }
+    h5 { font-size: 18px; }
+    h6 { font-size: 16px; }
 }
 
 

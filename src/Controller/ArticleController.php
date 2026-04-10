@@ -9,6 +9,7 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Service\MediaUploader;
 use App\Form\ArticleFormType;
+use App\Form\SearchArticleFormType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
 use App\Enum\MediaType;
@@ -19,31 +20,66 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Service\CommentSecurityService;
 use App\Service\SeoService;
-use Psr\Log\LoggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService): Response
-    {
-        // $articles = $em->getRepository(Article::class)->findAll();
-        // $publishedArticles = $em->getRepository(Article::class)->findBy([
-        //     'status' => 'published'
-        // ], [
-        //     'createdAt' => 'DESC' 
-        // ]);
+    public function index(
+        EntityManagerInterface $em, 
+        ArticleRepository $articleRepo, 
+        SeoService $seoService, 
+        CategoryRepository $categoryRepo, 
+        PaginatorInterface $paginator, 
+        Request $request
+        ): Response {
 
-        // return $this->render('blog/article/index.html.twig', [
-        //     'articles' => $publishedArticles,
-        // ]);
+        $form = $this->createForm(SearchArticleFormType::class);
+        $form->handleRequest($request);
+        
+        $search = '';
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->get('search')->getData() ?? '';
+        }
 
-        $articles = $articleRepo->findPublishedArticlesWithCover();
+        $categorySlug = $request->query->get('category');
+        $category = null;
+            if ($categorySlug) {
+                $category = $categoryRepo->findOneBy(['slug' => $categorySlug]);
+        }
+        
+        if ($search) {
+            $queryBuilder = $articleRepo->findPublishedArticlesBySearch($search);
+        } elseif ($category) {
+            $queryBuilder = $articleRepo->findPublishedArticlesByCategory($category);
+        } else {
+            $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
+        }
+
+        // $queryBuilder = $search ? $articleRepo->findPublishedArticlesBySearch($search) : $articleRepo->findPublishedArticlesWithCover();
+        $categories = $categoryRepo->findCategoriesWithArticleCount();
+        $topArticles = $articleRepo->findTopArticles(5);
+
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,                       
+            $request->query->getInt('page', 1),    
+            6                                      
+        );
+
 
         return $this->render('blog/article/index.html.twig', [
-            'articles' => $articles,
+            'pagination' => $pagination,
+            'categories' => $categories,
+            'search' => $search,
+            'topArticles' => $topArticles,
+            'searchForm' => $form->createView(),
+            'selectedCategory' => $category,
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
@@ -182,6 +218,11 @@ class ArticleController extends AbstractController
         if (!$article) {
             throw $this->createNotFoundException('Article not found');
         }
+        $content = $article->getContent();
+        $previousArticle = $articleRepository->findPreviousArticle($article->getCreatedAt());
+        $nextArticle = $articleRepository->findNextArticle($article->getCreatedAt());
+        $findRelatedArticles = $articleRepository->findRelatedArticles($article);
+        
         $validatedComments = $commentRepository->findBy([
             'article' => $article,
             'parentComment' => NULL,
@@ -270,6 +311,11 @@ class ArticleController extends AbstractController
             'form' => $form->createView(),
             'article' => $article,
             'comments' => $validatedComments,
+            'content' => $content,
+            'commentsCount' => $article->getCommentsCount(),
+            'previousArticle' => $previousArticle,
+            'nextArticle' => $nextArticle,
+            'relatedArticles' => $findRelatedArticles,
         ]);
     }
 
