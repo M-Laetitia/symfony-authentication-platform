@@ -17,11 +17,16 @@
                 <nav class="breadcrumb" aria-label="breadcrumb">
                     <ul class="breadcrumb__list">
                         {% for crumb in breadcrumbs %}
-                            <li class="breadcrumb__item">
-                                {% if crumb.url is defined %}
+                            <li class="breadcrumb__item breadcrumb__item--{{ crumb.type }}">
+
+                                {% if crumb.type == 'separator' %}
+                                    <span class="breadcrumb__separator" aria-hidden="true">›</span>
+
+                                {% elseif crumb.url is defined %}
                                     <a href="{{ crumb.url }}" class="breadcrumb__link">
                                         {{ crumb.label }}
                                     </a>
+
                                 {% else %}
                                     <span class="breadcrumb__current" aria-current="page">
                                         {{ crumb.label }}
