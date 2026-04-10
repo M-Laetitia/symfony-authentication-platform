@@ -33,6 +33,10 @@
             a {
                 text-transform: capitalize;
                 font-size: 1.2rem;
+                transition : var(--transition-base);
+                &:hover {
+                    color: var(--color-accent);
+                }   
             }
         }
     }
@@ -49,6 +53,7 @@
             font-size: 2.6rem;
             font-family: var(--font-heading);
             line-height: 1;
+            
         }
     }
     h4 {
@@ -77,6 +82,9 @@
         font-family: var(--font-base);
         text-transform: none;
         display: block;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
@@ -85,6 +93,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    align-items: start;
 
     .article-card {
         width: 100%;
@@ -422,7 +431,7 @@
 /* &-------- RELATED ARTICLES ------- */
 /* &--------------------------------- */
 
-.article .related-articles {
+.related-articles {
     flex-direction: column;
     display: flex;
 
@@ -432,8 +441,16 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 30px;
     }
-
-    /* .related-article-card {
-        width: 33%;
-    } */
 }
+
+
+@media (max-width: 768px ) {
+    .related-articles {
+        .related-articles__list {
+            display: flex;
+            gap: 40px;
+            flex-direction: column;
+        }
+    }
+}
+

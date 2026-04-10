@@ -67,6 +67,10 @@
             }
         }
     }
+    .breadcrumb__separator {
+        color: var(--color-accent);
+        font-size: 18px;
+    }
 }
 
 
@@ -285,6 +289,7 @@
 
 .article-card {
     /* width: 33%; */
+    height: 100%;
 }
 .article-card__media {
     position: relative;
@@ -362,6 +367,11 @@
             width: 90%;
         }
     }
+    .article-card__media {
+    .article-card__picture{
+            height: 350px;
+        }
+    }
 }
 /* ?------------- MEDIUM ------------ */
 
@@ -403,6 +413,13 @@
 
     .article-card {
         width: 100%;
+    }
+    .related_articles {
+        .related-articles__list {
+            display: flex;
+            gap: 40px;
+            flex-direction: column;
+        }
     }
 }
 
