@@ -32,12 +32,21 @@
     <h3 id="blog-categories-title" class="blog__title">Categories</h3>
 
     <ul class="blog__categories-list">
+        <!-- Link for all articles -->
+        <div class="blog__category-all">
+            <a href="{{ path('blog_index') }}" 
+               class="blog__category-link {% if not selectedCategory %}active{% endif %}">
+                All ARTICLES
+            </a>
+        </div>
+
         {% for category in categories %}
             <li class="blog__category-item">
-                <a href="" class="blog__category-link">
-                    {{ category.name }} - ({{ category.articlesCount }})
-                </a>
-                {# "{{ path('blog_category', {'slug': category.slug}) }}" #}
+                <a href="{{ path('blog_index', { category: category.slug }) }}" 
+               class="blog__category-link {% if selectedCategory and selectedCategory.id == category.id %}active{% endif %}">
+                {{ category.name }}
+                <span class="category-count">({{ category.articlesCount }})</span>
+            </a>
             </li>
         {% endfor %}
     </ul>
