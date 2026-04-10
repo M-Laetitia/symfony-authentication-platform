@@ -388,23 +388,8 @@
     <div class="u-divider-medium"></div>
 
 
-    {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
-        Se connecter avec Google
-    </a>
+    {% include 'layout/contact.html.twig' %} 
 
-    {% if app.user %}
-        <p><a href="{{ path('app_profile') }}">Profil</a></p>
-        <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
-    {% else %}
-        <p><a href="{{ path('app_login') }}">Se connecter</a></p>
-        <p><a href="{{ path('app_register') }}">S'inscrire</a></p>
-    {% endif %}
-    <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
-
-
-
-    {# {% include 'layout/contact.html.twig' %} #}
-    <h1>remettre contact form</h1>
 
     <div class="u-divider-medium"></div>
 
