@@ -30,8 +30,14 @@ use Knp\Component\Pager\PaginatorInterface;
 class ArticleController extends AbstractController
 {
     #[Route('/blog', name: 'blog_index')]
-    public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
-    {
+    public function index(
+        EntityManagerInterface $em, 
+        ArticleRepository $articleRepo, 
+        SeoService $seoService, 
+        CategoryRepository $categoryRepo, 
+        PaginatorInterface $paginator, 
+        Request $request
+        ): Response {
 
         $form = $this->createForm(SearchArticleFormType::class);
         $form->handleRequest($request);
@@ -41,12 +47,24 @@ class ArticleController extends AbstractController
             $search = $form->get('search')->getData() ?? '';
         }
 
-        $queryBuilder = $search ? $articleRepo->findPublishedArticlesBySearch($search) : $articleRepo->findPublishedArticlesWithCover();
-    
-        // $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
+        $categorySlug = $request->query->get('category');
+        $category = null;
+            if ($categorySlug) {
+                $category = $categoryRepo->findOneBy(['slug' => $categorySlug]);
+        }
+        
+        if ($search) {
+            $queryBuilder = $articleRepo->findPublishedArticlesBySearch($search);
+        } elseif ($category) {
+            $queryBuilder = $articleRepo->findPublishedArticlesByCategory($category);
+        } else {
+            $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
+        }
+
+        // $queryBuilder = $search ? $articleRepo->findPublishedArticlesBySearch($search) : $articleRepo->findPublishedArticlesWithCover();
         $categories = $categoryRepo->findCategoriesWithArticleCount();
         $topArticles = $articleRepo->findTopArticles(5);
-        
+
 
         $pagination = $paginator->paginate(
             $queryBuilder,                       
@@ -61,6 +79,7 @@ class ArticleController extends AbstractController
             'search' => $search,
             'topArticles' => $topArticles,
             'searchForm' => $form->createView(),
+            'selectedCategory' => $category,
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
