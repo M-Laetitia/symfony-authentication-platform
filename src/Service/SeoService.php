@@ -14,12 +14,14 @@ class SeoService
             'register' => 'Register page',
             'blog' => 'Explore photography tips, techniques, and artistic insights to elevate your art. Discover creative inspiration on our blog.',
             'contact' => 'Get in touch with us for questions, ideas, or support. We\'re here to respond quickly and help you!',
+            'home' => 'Welcome to our photography blog, where we share tips, techniques, and inspiration to help you capture stunning images. Explore our latest articles and unleash your creativity.',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
             'register' => 'noindex, nofollow',
             'blog' => 'index, follow',
             'contact' => 'index, follow',
+            'home' => 'index, follow',
         ];
     }
 
