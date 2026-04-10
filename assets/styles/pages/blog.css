@@ -30,14 +30,21 @@
         color: var(--color-white);
         li {
             padding-bottom: 18px;
-            a {
-                text-transform: capitalize;
-                font-size: 1.2rem;
-                transition : var(--transition-base);
-                &:hover {
-                    color: var(--color-accent);
-                }   
-            }
+        }
+        .blog__category-link {
+            text-transform: capitalize;
+            font-size: 1.2rem;
+            transition : var(--transition-base);
+            &:hover {
+                color: var(--color-accent);
+            }   
+        }
+        .blog__category-all {
+            margin-bottom: 18px;
+        }
+        .blog__category-link.active {
+            color: var(--color-accent);
+            font-weight: 600;
         }
     }
 }
