@@ -10,9 +10,11 @@
     title="Photography Inspiration"
     subtitle="Explore insights and techniques."
     :breadcrumbs="[
-        { label: 'Home', url: path('home') },
-        { label: 'Blog', url: path('blog_index') },
-        { label: article.title}
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Blog', url: path('blog_index'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: article.title, type: 'current' }
     ]"
 />
 

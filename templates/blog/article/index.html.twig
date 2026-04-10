@@ -8,8 +8,9 @@
     title="Discover, Create & Inspire"
     subtitle="See the World Through the Lens"
     :breadcrumbs="[
-        { label: 'Home', url: path('home') },
-        { label: 'Blog' }
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Blog', type: 'current' }
     ]"
     id="blog-title"
 />
