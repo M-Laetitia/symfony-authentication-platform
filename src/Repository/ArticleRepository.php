@@ -19,18 +19,22 @@ class ArticleRepository extends ServiceEntityRepository
 
 
 
-    public function findPublishedArticlesWithCover(): array
+    public function findPublishedArticlesWithCover(?int $limit = null): array
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->select('partial a.{id, title, slug, createdAt, status, excerpt}', 'm')
             ->distinct()
             ->leftJoin('a.medias', 'm', 'WITH', 'm.typeImage = :typeImage')
             ->where('a.status = :status')
             ->setParameter('status', 'published')
             ->setParameter('typeImage', MediaType::ARTICLE_COVER)
-            ->orderBy('a.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('a.createdAt', 'DESC');
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findTopArticles(int $limit = 5): array
@@ -84,6 +88,54 @@ class ArticleRepository extends ServiceEntityRepository
             ->setMaxResults(3)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Finds published articles matching the search criteria in title or tags
+     * Supports multi-word search with OR logic between words
+     * 
+     * @param string $search The search query (can contain multiple space-separated words)
+     * @return Query Returns a Doctrine Query object (not executed) for pagination compatibility
+     */
+    public function findPublishedArticlesBySearch(string $search)
+    {
+        // Initialize QueryBuilder with Article entity alias 'a'
+        $qb = $this->createQueryBuilder('a')
+            // LEFT JOIN with tags to search in tag names (preserves articles without tags)
+            ->leftJoin('a.tags', 't')
+            ->where('a.status = :status')
+            ->setParameter('status', 'published');
+
+        // Split search string into individual words using whitespace as delimiter
+        // preg_split handles multiple consecutive spaces better than explode
+        $words = preg_split('/\s+/', trim($search));
+
+        // Create an OR expression container for multiple search conditions
+        $orX = $qb->expr()->orX();
+
+        // Build dynamic WHERE conditions for each word
+        foreach ($words as $key => $word) {
+            // Add LIKE condition for article title
+            $orX->add("a.title LIKE :word$key");
+            // Add LIKE condition for tag name
+            $orX->add("t.name LIKE :word$key");
+
+            // Bind parameter with wildcard for partial matching
+            // Using unique parameter names (:word0, :word1, etc.) to avoid conflicts
+            $qb->setParameter("word$key", '%' . $word . '%');
+        }
+
+        // Apply the OR conditions to the query
+        // Results will match if ANY word is found in title OR tags
+        $qb->andWhere($orX);
+
+        return $qb
+            // Sort by most recent articles first
+            ->orderBy('a.createdAt', 'DESC')
+            // Remove duplicate articles (important when joining with tags collection)
+            ->distinct()
+            // Return Query object (not executed) to allow pagination
+            ->getQuery();
     }
     
     //    /**
