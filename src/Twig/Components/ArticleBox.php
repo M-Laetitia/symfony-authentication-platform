@@ -12,4 +12,5 @@ final class ArticleBox
     public ?array $tags= null;
     public string $date = '';
     public string $imagePath ='#';
+    public string $slug = '';
 }
