@@ -14,7 +14,7 @@ class SeoService
             'register' => 'Register page',
             'blog' => 'Explore photography tips, techniques, and artistic insights to elevate your art. Discover creative inspiration on our blog.',
             'contact' => 'Get in touch with us for questions, ideas, or support. We\'re here to respond quickly and help you!',
-            'home' => 'Welcome to our photography blog, where we share tips, techniques, and inspiration to help you capture stunning images. Explore our latest articles and unleash your creativity.',
+            'home' => 'Professional photography agency capturing emotion, light, and timeless moments. Discover our visual storytelling, expertise, and passion for creating stunning, meaningful images.',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
