@@ -2,6 +2,7 @@
 /* &--------------------------------- */
 
 .blog {
+
     .blog__wrapper {
         display: flex;
         gap: 2.6rem;
@@ -156,10 +157,13 @@
     width: 63rem;
     margin: auto;
 }
+.article {
+    flex-direction: column;
+}
 .article .article__wrapper {
     h2 {
         text-align: center;
-        font-size: clamp(2.1rem, 4.7vw, 3.8rem);
+        font-size: clamp(2.1rem, 4.7vw, 3.5rem);
         text-transform: capitalize;
         font-weight: 500;
     }
@@ -348,5 +352,88 @@
         background-color: transparent;
     }
 
+}
 
+/* &------- PREV/NEXT ARTICLE ------- */
+/* &--------------------------------- */
+
+.article .article__nav {
+    width: 100%;
+    padding: 100px 20px;
+    background-color: var(--color-grey-900);
+    color: var(--color-white);
+    margin: 150px 0 150px 0;
+
+    .article__nav-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 70rem;
+        margin: auto;
+    }
+    .article__nav-link {
+        display: flex;
+        flex-direction: column;
+    }
+    .article__nav-item {
+        display: flex;
+        gap: 20px;
+        width: 25rem;
+    }
+    .article__nav-label {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 500;
+        color: var(--color-accent);
+        line-height: 1;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+    .article__nav-title {
+        color: var(--color-grey-200);
+        text-transform: capitalize;
+        /* font-family: var(--font-base); */
+        font-weight: 400;
+        font-size: 1.5rem;
+        transition: var(--transition-base);
+    }
+
+    .article__nav-item--next {
+        justify-content: flex-end;
+        .article__nav-title , .article__nav-label {
+            text-align: right;
+        }
+        .article__nav-icon {
+            transform: scaleX(-1);
+        }
+    }
+
+    .article__nav-icon svg path {
+        transition: var(--transition-base);
+    }
+    .article__nav-item:hover .article__nav-icon svg path{
+        fill: var(--color-accent);
+    }
+    .article__nav-item:hover .article__nav-title{
+        color: white;
+    }
+}
+
+/* &-------- RELATED ARTICLES ------- */
+/* &--------------------------------- */
+
+.article .related-articles {
+    flex-direction: column;
+    display: flex;
+
+    .related-articles__list{
+        margin-top: 60px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    /* .related-article-card {
+        width: 33%;
+    } */
 }
