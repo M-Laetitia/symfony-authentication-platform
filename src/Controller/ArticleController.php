@@ -9,6 +9,7 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Service\MediaUploader;
 use App\Form\ArticleFormType;
+use App\Form\SearchArticleFormType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
 use App\Enum\MediaType;
@@ -32,7 +33,17 @@ class ArticleController extends AbstractController
     public function index(EntityManagerInterface $em, ArticleRepository $articleRepo, SeoService $seoService, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
     {
 
-        $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
+        $form = $this->createForm(SearchArticleFormType::class);
+        $form->handleRequest($request);
+        
+        $search = '';
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->get('search')->getData() ?? '';
+        }
+
+        $queryBuilder = $search ? $articleRepo->findPublishedArticlesBySearch($search) : $articleRepo->findPublishedArticlesWithCover();
+    
+        // $queryBuilder = $articleRepo->findPublishedArticlesWithCover();
         $categories = $categoryRepo->findCategoriesWithArticleCount();
         $topArticles = $articleRepo->findTopArticles(5);
         
@@ -42,13 +53,14 @@ class ArticleController extends AbstractController
             $request->query->getInt('page', 1),    
             6                                      
         );
-    
+
 
         return $this->render('blog/article/index.html.twig', [
-            // 'articles' => $articles,
             'pagination' => $pagination,
             'categories' => $categories,
+            'search' => $search,
             'topArticles' => $topArticles,
+            'searchForm' => $form->createView(),
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
