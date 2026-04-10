@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Article;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Enum\MediaType;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Article>
@@ -137,6 +139,26 @@ class ArticleRepository extends ServiceEntityRepository
             // Return Query object (not executed) to allow pagination
             ->getQuery();
     }
+
+   
+    /**
+     * Find all published articles for a specific category
+     * 
+     * @param Category $category The category to filter by
+     * @return Query Doctrine Query object for pagination
+     */
+    public function findPublishedArticlesByCategory(Category $category): Query
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.status = :status')
+            ->andWhere('a.category = :category')
+            ->setParameter('status', 'published')
+            ->setParameter('category', $category)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery();
+    }
+
+
     
     //    /**
     //     * @return Article[] Returns an array of Article objects
