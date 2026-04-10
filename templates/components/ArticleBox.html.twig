@@ -10,10 +10,10 @@
             {{ date }}
         </time>
 
-        <a href="{{ link }}" class="article-card__media-link">
+        <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__media-link">
             <picture class="article-card__picture">
                 <img
-                    src="/media/images/camera.jpg"
+                    src="{{ asset('uploads/' ~ imagePath) }}"
                     alt="Camera with photography material"
                     class="article-card__image u-img-cover"
                     loading="lazy"
@@ -25,7 +25,7 @@
     <!-- Content -->
     <div class="article-card__content">
         <h4 class="article-card__title">
-            <a href="{{ link }}" class="article-card__link">
+            <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__link">
                 {{ title }}
             </a>
         </h4>
