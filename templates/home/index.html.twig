@@ -388,23 +388,8 @@
     <div class="u-divider-medium"></div>
 
 
-    {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
-        Se connecter avec Google
-    </a>
+    {% include 'layout/contact.html.twig' %} 
 
-    {% if app.user %}
-        <p><a href="{{ path('app_profile') }}">Profil</a></p>
-        <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
-    {% else %}
-        <p><a href="{{ path('app_login') }}">Se connecter</a></p>
-        <p><a href="{{ path('app_register') }}">S'inscrire</a></p>
-    {% endif %}
-    <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
-
-
-
-    {# {% include 'layout/contact.html.twig' %} #}
-    <h1>remettre contact form</h1>
 
     <div class="u-divider-medium"></div>
 
@@ -430,29 +415,24 @@
 
                 <div class="section-articles__container">
 
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Tutorial"
-                    link="#"
-                    :tags="['Art', 'Technique', 'Outdoor']"
-                    date="3 March 2026"
-                    />
+                    {% if latestArticles is not empty %}
+                    <section class="related-articles section-centered">
+                       
+                        <div class="related-articles__list">
+                            {% for article in latestArticles %}
+                            {% set cover = article.medias|first %}
+                                    <twig:ArticleBox
+                                    :title="article.title"
+                                    :imagePath="cover ? cover.path : ''"
+                                    :slug="article.slug"
+                                    :date="article.createdAt|date('j F Y')"
+                                    :tags="article.tags is defined ? article.tags|map(t => t.name) : []"
+                                    />
+                            {% endfor %}
+                        </div>
 
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Interview"
-                    link="#"
-                    :tags="['Travel', 'Photograph']"
-                    date="10 Feb 2026"
-                    />
-
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Street Photography"
-                    link="#"
-                    :tags="['Art', 'Technique', 'Street photography']"
-                    date="10 Feb 2026"
-                    />
+                    </section>
+                    {% endif %}
 
                 </div>
             </div>

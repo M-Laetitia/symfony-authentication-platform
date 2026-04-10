@@ -12,26 +12,12 @@
 
         <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__media-link">
             <picture class="article-card__picture">
-                {% if imagePath %}
-                    <img
-                        src="{{ imagePath | imagine_filter('blog_thumb') }}"
-                        srcset="
-                            {{ imagePath | imagine_filter('blog_thumb_mobile') }} 1170w,
-                            {{ imagePath | imagine_filter('blog_thumb') }} 850w
-                        "
-                        sizes="(max-width: 768px) 585px, 425px"
-                        alt="{{ title }}"
-                        class="article-card__image u-img-cover"
-                        loading="lazy"
-                    />
-                {% else %}
-                    <img
-                        src="{{ asset('images/placeholder.jpg') }}"
-                        alt="{{ title }}"
-                        class="article-card__image u-img-cover"
-                        loading="lazy"
-                    />
-                {% endif %}
+                <img
+                    src="{{ asset('uploads/' ~ imagePath) }}"
+                    alt="{{ alt is defined and alt != '' ? alt : title }}"
+                    class="article-card__image u-img-cover"
+                    loading="lazy"
+                >
             </picture>
         </a>
     </div>
@@ -53,6 +39,13 @@
                 </li>
             {% endfor %}
         </ul>
+        {% endif %}
+
+        <!-- Excerpt -->
+        {% if excerpt is defined and excerpt is not empty %}
+        <p class="article-card__excerpt">
+            {{ excerpt }}
+        </p>
         {% endif %}
     </div>
 
