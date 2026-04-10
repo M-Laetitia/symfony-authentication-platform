@@ -12,12 +12,26 @@
 
         <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__media-link">
             <picture class="article-card__picture">
-                <img
-                    src="{{ asset('uploads/' ~ imagePath) }}"
-                    alt="Camera with photography material"
-                    class="article-card__image u-img-cover"
-                    loading="lazy"
-                >
+                {% if imagePath %}
+                    <img
+                        src="{{ imagePath | imagine_filter('blog_thumb') }}"
+                        srcset="
+                            {{ imagePath | imagine_filter('blog_thumb_mobile') }} 1170w,
+                            {{ imagePath | imagine_filter('blog_thumb') }} 850w
+                        "
+                        sizes="(max-width: 768px) 585px, 425px"
+                        alt="{{ title }}"
+                        class="article-card__image u-img-cover"
+                        loading="lazy"
+                    />
+                {% else %}
+                    <img
+                        src="{{ asset('images/placeholder.jpg') }}"
+                        alt="{{ title }}"
+                        class="article-card__image u-img-cover"
+                        loading="lazy"
+                    />
+                {% endif %}
             </picture>
         </a>
     </div>

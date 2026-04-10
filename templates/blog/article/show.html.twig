@@ -5,9 +5,8 @@
 
 {% block body %}
 
-
 <twig:Banner
-    title="Photography Inspiration"
+    title="Framing Inspiration"
     subtitle="Explore insights and techniques."
     :breadcrumbs="[
         { label: 'Home', url: path('home'), type: 'link' },
@@ -48,10 +47,27 @@
                 <div class="article__media">
                     {% set cover = article.medias|first %}
                     {% if cover %}
+                        <img
+                            src="{{ cover.path | imagine_filter('article_cover') }}"
+                            srcset="
+                                {{ cover.path | imagine_filter('article_cover') }} 2720w
+                            "
+                            sizes="100vw"
+                            alt="{{ cover.altText ?? article.title }}"
+                            class="article__image u-img-cover"
+                            loading="eager"
+                        />
+                    {% endif %}
+                </div>
+{# 
+                <div class="article__media">
+                    {% set cover = article.medias|first %}
+                    {% if cover %}
                         <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?? article.title }}" class="article__image u-img-cover"
                         loading="lazy">
                     {% endif %}
-                </div>
+                </div> #}
+
             
                 <div class="article__body">
                     {% for block in content.blocks %}
@@ -282,15 +298,9 @@
     {% endif %}
         
 </section>
-                  {# Image #}
-                    {# <div class="related-article-card__media">
-                        {% set cover = related.medias|first %}
-                        {% if cover %}
-                            <img src="{{ asset('uploads/' ~ cover.path) }}"
-                                alt="{{ cover.altText ?? related.title }}"
-                                class="related-article-card__image u-img-cover"
-                                loading="lazy">
-                        {% endif %}
-                    </div> #}
+
+
+
+
 
 {% endblock %}
