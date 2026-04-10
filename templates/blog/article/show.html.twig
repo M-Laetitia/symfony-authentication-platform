@@ -177,7 +177,6 @@
                         <span class="line" aria-hidden="true"></span>
                     </div>
 
-
                     <div class="article__comment-form-body">
                         <form name="comment_form" method="post">
 
@@ -213,7 +212,7 @@
 
         </div>
         
-    <div class="article__nav">
+    <section class="article__nav">
 
         <div class="article__nav-wrapper">
 
@@ -256,39 +255,40 @@
 
         </div>
 
-    </div>
+    </section>
 
-  
 
-        {% if relatedArticles is not empty %}
-            <div class="related-articles">
-                <h3>Related Articles</h3>
-                <div class="related-articles__list">
-                    {% for related in relatedArticles %}
-                        <a href="{{ path('article_show', { 'slug': related.slug }) }}" class="related-article-card">
-                            {# <div class="related-article-card__image">
-                                {% set cover = related.medias|first %}
-                                {% if cover %}
-                                    <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?? related.title }}" class="related-article-card__img u-img-cover"
-                                    loading="lazy">
-                                {% endif %}
-                            </div> #}
-                            <div class="related-article-card__content">
-                                <h4 class="related-article-card__title">{{ related.title }}</h4>
-                                <time 
-                                    class="related-article-card__date"
-                                    datetime="{{ related.createdAt|date('d-m-Y') }}"
-                                >
-                                    {{ related.createdAt|date('d F Y') }}             
-                                </time>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
+    {% if relatedArticles is not empty %}
+    <section class="related-articles section-centered">
+
+        <h3 class="related-articles__title">Related Articles</h3>
+        
+        <div class="related-articles__list">
+            {% for related in relatedArticles %}
+            {% set cover = related.medias|first %}
+                    <twig:ArticleBox
+                    :title="related.title"
+                    :imagePath="cover ? cover.path : ''"
+                    :slug="related.slug"
+                    :date="related.createdAt|date('j F Y')"
+                    :tags="related.tags is defined ? related.tags|map(t => t.name) : []"
+                    />
+            {% endfor %}
+        </div>
+
+    </section>
+    {% endif %}
         
 </section>
-
+                  {# Image #}
+                    {# <div class="related-article-card__media">
+                        {% set cover = related.medias|first %}
+                        {% if cover %}
+                            <img src="{{ asset('uploads/' ~ cover.path) }}"
+                                alt="{{ cover.altText ?? related.title }}"
+                                class="related-article-card__image u-img-cover"
+                                loading="lazy">
+                        {% endif %}
+                    </div> #}
 
 {% endblock %}
