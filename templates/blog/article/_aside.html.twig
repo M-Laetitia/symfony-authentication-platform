@@ -1,12 +1,31 @@
 
 <!-- Search bar -->
-<div class="blog__search">
-    <form class="blog__search-form" role="search" aria-label="Recherche dans le blog">
-        <label for="blog-search" class="visually-hidden">Rechercher des articles</label>
-        <input type="search" id="blog-search" name="q" class="blog__search-input" placeholder="Rechercher..." />
-        <button type="submit" class="blog__search-button">🔍</button>
-    </form>
-</div>
+<div class="search-bar blog__search">
+    {{ form_start(searchForm) }}
+    <div class="search-bar__input-group">
+        <button
+        type="submit"
+        class="search-bar__button"
+        >
+        <svg id="fi_7535830" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m20.7 19.3-3.4-3.4c1.1-1.4 1.7-3.1 1.7-4.9 0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8c1.8 0 3.5-.6 4.9-1.7l3.4 3.4c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4zm-15.7-8.3c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z" fill="#F2F2F2"></path></svg>
+    </button>
+        {{ form_label(searchForm.search, null, { label_attr: { class: 'sr-only' } }) }}
+        {{ form_widget(searchForm.search) }}            
+    </div>
+    
+
+    {% if search %}
+        <a href="{{ path('blog_index') }}"
+        class="search-bar__clear"
+        aria-label="Clear search">
+            ↺
+        </a>
+    {% endif %}
+    
+    {{ form_rest(searchForm) }}
+    {{ form_end(searchForm) }}
+</div>      
+
 
 <!-- Categories -->
 <nav class="blog__categories" aria-labelledby="blog-categories-title">
