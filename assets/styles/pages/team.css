@@ -1,6 +1,8 @@
 /* &------------- TEAM -------------- */
 /* &--------------------------------- */
-
+.team {
+    padding: 0 20px;
+}
 .team .team__intro {
     display: flex;
     gap: 90px;
@@ -27,8 +29,8 @@
         margin-right: 48px;
         width: 40%;
         right: 0;
-        height: 580px;
-        width: 490px;
+        height: 150%;
+        width: 37%;
         z-index: 1000;
         &::after {
             content: '';
@@ -46,7 +48,7 @@
 
     .team__title {
         text-transform: none;
-        font-size: 44px;
+        font-size: clamp(2.1rem, 3.5vw, 2.75rem);
     }
     .team__description {
         span {
@@ -124,7 +126,7 @@
         margin-bottom: 70px;
     }
     .team__artists-title {
-        font-size: 58px;
+        font-size: clamp(2.25rem, 5vw, 3.2rem);
     }
 
     .team__artists-description {
@@ -472,11 +474,32 @@
 }
 
 @media (max-width: 1280px) {
-.portfolio-page {
-    .photographer-info__details-wrapper {
-        gap: 60px;
+    .portfolio-page {
+        .photographer-info__details-wrapper {
+            gap: 60px;
+        }
     }
-}
+    .team {
+        .team__description {
+            font-size: 18px;
+        }
+        .team__intro {
+            padding: 30px;
+            gap: 40px;
+            .team__actions {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                bottom: -150px;
+            }
+        }
+        
+        .team__artist-list {
+            grid-template-columns: repeat(2, 2fr);
+        }
+    }
 }
 
 /* ?------------- MEDIUM ------------ */
@@ -488,9 +511,6 @@
 
 /* ?------------- SMALL ------------- */
 
-@media (max-width: 768px ) {
-
-}
 
 @media (max-width: 900px ) {
     .portfolio-page {
@@ -499,17 +519,60 @@
             flex-direction: column-reverse;
         }
         .photographer-info__details {
-             width: 100%;
-             max-width: 500px;
+            width: 100%;
+            max-width: 500px;
         }
         .photographer-info__about-actions {
             width: 100%;
         }
     }
+    .bloc {
+        display: none;
+    }
+    .team {
+        .team__intro {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+            .team__image {
+                position: relative;
+                width: 100%;    
+                margin:0px;
+                height: 650px;
+            }
+            .team__intro-content{
+                gap: 30px;
+            }
+            .team__actions {
+                position: relative;
+                bottom: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+            }
+        }
+        .team__artists {
+            margin-top: 100px;
+        }
+    }
 }
 
+@media (max-width: 768px ) {
+    .team {
+        .team__artist-list {
+            grid-template-columns: repeat(1, 2fr);
+        }
+    }
+}
 
 /* ?------------ VERY SMALL --------- */
 @media (max-width: 480px) {
-
+    .team {
+        .team__intro {
+            .team__image {
+                height: 500px;
+            }
+        }
+    } 
 }
