@@ -1,4 +1,93 @@
-/* &----------- PORTFOLIO ----------- */
+/* &------------- TEAM -------------- */
+/* &--------------------------------- */
+
+
+.team .team__intro {
+    display: flex;
+    gap: 90px;
+    border: 1px solid var(--color-grey-200);
+    padding: 48px;
+    margin-bottom: 15px;
+    position: relative;
+
+    .team__intro-content {
+        display: flex;
+        flex-direction: column;
+        gap: 80px;
+        width: auto;
+    }
+
+    .bloc {
+        width: 210rem;
+    }
+
+    .team__image {
+        position: absolute;
+        margin-right: 48px;
+        width: 40%;
+        right: 0;
+    }
+
+    .team__title {
+        text-transform: none;
+        font-size: 44px;
+    }
+    .team__description {
+        span {
+            background-color: var(--color-grey-800);
+            color: var(--color-white);
+            font-weight: 400;
+        }   
+    }
+    .section-divider__large {
+        margin: 16px 0;
+    }
+    .team__actions {
+        display: flex;
+        justify-content: center;
+        justify-content: space-between;
+    }
+    .team__socials {
+        display: flex;
+        gap: 15px;
+    }
+    .team__social-item {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 1px solid var(--color-grey-800);
+    }
+    .team__call-to-action {
+        display: flex;
+        gap: 20px;
+    }
+
+
+}
+
+.team .team__artists {
+    margin-top: 400px;
+
+    .team__artists-header {
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--color-grey-400);
+        margin-bottom: 70px;
+    }
+    .team__artists-title {
+        font-size: 58px;
+    }
+
+    .team__artists-description {
+        font-size: 20px;
+        font-weight: 300;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        margin: 10px 0;
+    }
+}
+
+
+/* &---------- PORTFOLIO------------- */
 /* &--------------------------------- */
 
 .portfolio-page {
