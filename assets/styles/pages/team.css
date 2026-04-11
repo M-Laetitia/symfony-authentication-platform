@@ -1,0 +1,342 @@
+/* &------------- TEAM -------------- */
+/* &--------------------------------- */
+
+
+.team .team__intro {
+    display: flex;
+    gap: 90px;
+    border: 1px solid var(--color-grey-200);
+    padding: 48px;
+    margin-bottom: 15px;
+    position: relative;
+
+    .team__intro-content {
+        display: flex;
+        flex-direction: column;
+        gap: 80px;
+        width: auto;
+    }
+
+    .bloc {
+        width: 210rem;
+    }
+
+    .team__image {
+        position: absolute;
+        margin-right: 48px;
+        width: 40%;
+        right: 0;
+    }
+
+    .team__title {
+        text-transform: none;
+        font-size: 44px;
+    }
+    .team__description {
+        span {
+            background-color: var(--color-grey-800);
+            color: var(--color-white);
+            font-weight: 400;
+        }   
+    }
+    .section-divider__large {
+        margin: 16px 0;
+    }
+    .team__actions {
+        display: flex;
+        justify-content: center;
+        justify-content: space-between;
+    }
+    .team__socials {
+        display: flex;
+        gap: 15px;
+    }
+    .team__social-item {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 1px solid var(--color-grey-800);
+    }
+    .team__call-to-action {
+        display: flex;
+        gap: 20px;
+    }
+
+
+}
+
+.team .team__artists {
+    margin-top: 400px;
+
+    .team__artists-header {
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--color-grey-400);
+        margin-bottom: 70px;
+    }
+    .team__artists-title {
+        font-size: 58px;
+    }
+
+    .team__artists-description {
+        font-size: 20px;
+        font-weight: 300;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        margin: 10px 0;
+    }
+}
+
+
+/* &---------- PORTFOLIO------------- */
+/* &--------------------------------- */
+
+.portfolio-page {
+    .photographer-info__header {
+        position: relative;
+
+        margin-bottom: 132px;
+    }
+    .photographer-info__photo {
+        width: 100%;
+        height: 720px;
+    }
+
+    .photographer-info__quote {
+        position: absolute;
+        display: grid;
+        align-items: center;
+        padding: 0 20px;
+        bottom: -25px;
+        right: -75px;
+        height: 50px ;
+        background-color: var(--color-accent);
+
+        h5 {
+            font-family: var(--font-base);
+            font-weight: 500;
+            font-size: 18px;
+            text-transform: none;
+        }
+    }
+}
+
+.portfolio-page {
+    .photographer-info__details-wrapper{
+        display: flex;
+        gap: 80px;
+        margin-bottom: 200px;
+    }
+
+    .photographer-info__details {
+        width: 35%;
+        padding: 30px;
+        padding-bottom: 15px;
+        border: 1px solid var(--color-grey-800);
+        box-shadow: 15px 15px 0px 0px var(--color-grey-800);
+        /* max-height: 460px; */
+
+        .photographer-info__stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+        .photographer-info__stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .photographer-info__stat-icon {
+            width: 35px;
+        }
+    }
+    .photographer-info__social {
+        .photographer-info__social-title {
+            margin-bottom: 15px;
+        }
+        .photographer-info__social-picto {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--color-grey-800);
+            border: 1px solid var(--color-grey-800);
+            padding: 4px;
+            transition: var(--transition-base);
+
+            &:hover {
+                background-color: var(--color-accent);
+                border-color: var(--color-accent);
+                translate: 0 -3px;
+            }
+
+            &:hover path {
+                fill: var(--color-grey-800);
+            }
+
+            path {
+                fill: var(--color-white);
+                transition: var(--transition-base);
+            }
+        }
+
+        .photographer-info__social-links {
+            display: flex;
+            gap: 10px;
+        }
+    }
+
+}
+.portfolio-page {
+    .photographer-info__about-actions {
+        width: 65%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 30px;
+    }
+    .photographer-info__about-title {
+        font-size: 48px ;
+        border-bottom: 1px solid var(--color-grey-400);
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .photographer-info__actions {
+        display: flex;
+        gap: 28px;
+    }
+}
+
+.portfolio-page {
+    .photographer-gallery {
+        .gallery__grid {
+            margin: 0 -30px ;
+        }
+       .gallery__item {
+        width: calc(33.333% - 60px); 
+        margin: 30px; 
+        aspect-ratio: 1 / 1;
+        float: left;
+        overflow: hidden;
+        }
+
+    }
+    .gallery__link {
+        position: relative;
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            translate: -101% 0;
+            z-index: 1000;
+            transition: var(--transition-base);
+        }
+        &:hover:before {
+            translate: 0 0;
+        }
+
+
+    }
+    .gallery__filters {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-bottom: 35px;
+    }
+    .js-filter-button {
+        font-family: var(--font-heading);
+        font-size: 25px;
+        text-transform: uppercase;
+        font-weight: 500;
+        position: relative;
+
+        &:before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: 12px;
+            background-color: var(--color-accent);
+            z-index: -1;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: var(--transition-base);
+        }
+
+        &:hover:before,
+        &.active:before {
+            transform: scaleX(1);        
+        }
+    }
+    .photographer-gallery__actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 70px;
+        margin-bottom: 150px;
+        .button {
+            display: inline-block;
+        }
+    }
+}
+
+
+/* ?--------- MEDIA QUERIES --------- */
+/* ?--------------------------------- */
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+    .portfolio-page {
+        .photographer-info__quote{
+            right: 0;
+        }
+    }
+}
+
+@media (max-width: 1280px) {
+.portfolio-page {
+    .photographer-info__details-wrapper {
+        gap: 60px;
+    }
+}
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+ 
+}
+
+/* ?------------- SMALL ------------- */
+
+@media (max-width: 768px ) {
+
+}
+
+@media (max-width: 900px ) {
+    .portfolio-page {
+        .photographer-info__details-wrapper{
+            margin-bottom: 200px;
+            flex-direction: column-reverse;
+        }
+        .photographer-info__details {
+             width: 100%;
+             max-width: 500px;
+        }
+        .photographer-info__about-actions {
+            width: 100%;
+        }
+    }
+}
+
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+
+}
