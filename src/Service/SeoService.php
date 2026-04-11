@@ -15,6 +15,7 @@ class SeoService
             'blog' => 'Explore photography tips, techniques, and artistic insights to elevate your art. Discover creative inspiration on our blog.',
             'contact' => 'Get in touch with us for questions, ideas, or support. We\'re here to respond quickly and help you!',
             'home' => 'Professional photography agency capturing emotion, light, and timeless moments. Discover our visual storytelling, expertise, and passion for creating stunning, meaningful images.',
+            'team' => 'Meet our talented photographers, each with a unique style and vision. Discover their passion for storytelling through the lens and explore their captivating portfolios.',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
@@ -22,6 +23,7 @@ class SeoService
             'blog' => 'index, follow',
             'contact' => 'index, follow',
             'home' => 'index, follow',
+            'team' => 'index, follow',
         ];
     }
 
