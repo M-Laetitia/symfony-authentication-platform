@@ -36,8 +36,8 @@
                     </li>
                     <li class="navbar__item">
                         <a href="{{ path('team_index') }}" 
-                        class="navbar__link {% if app.request.attributes.get('_route') == 'team' %} navbar__link--active{% endif %}"
-                        {% if app.request.attributes.get('_route') == 'team' %}aria-current="page"{% endif %}>
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'team_index' %} navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'team_index' %}aria-current="page"{% endif %}>
                         Team
                         </a>
                     </li>
