@@ -3,6 +3,111 @@
 {% block title %}Our Photographers{% endblock %}
 
 {% block body %}
+
+<twig:Banner
+    title="Behind the lens"
+    subtitle="Crafting Visual Stories, One Frame at a Time"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Team', type: 'current' }
+    ]"
+    id="team-title"
+/>
+
+<section
+    class="main-section-page team u-display-center"
+    aria-labelledby="team-title"
+>
+    <div class="team__container section-centered">
+
+        <header class="team__intro">
+            <div class="team__intro-content">
+                <div class="team__content">
+                    <h2 id="team-title" class="team__title">
+                        It all started with a passion...
+                    </h2>
+                    <div class="section-divider__large" aria-hidden="true"></div>
+                    <p class="team__description text-medium">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, <span>mattis nec mollis ac</span>, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, vel mollis neque facilisis vel. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas <span>eget diam sed sagittis</span>. Vivamus consectetur purus vel felis molestie sollicitudin. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
+                    </p>
+                </div>
+
+
+    
+                <div class="team__actions">
+                    <ul class="team__socials" aria-label="Creator social media links">
+                        <li class="team__social-item">
+                            <a href="#" class="team__social-link" aria-label="Twitter">
+                                
+                            </a>
+                        </li>
+                        <li class="team__social-item">
+                            <a href="#" class="team__social-link" aria-label="Facebook">
+                                
+                            </a>
+                        </li>
+                        <li class="team__social-item">
+                            <a href="#" class="team__social-link" aria-label="Instagram">
+                                
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="team__call-to-action">
+                        <button class="team__profile-button button button--medium button--black " type="button">
+                            See my profile
+                        </button>
+                        <button class="team__contact-button button button--medium button--accent" type="button">
+                            Send me a message
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bloc" aria-hidden="true"></div>
+
+            <figure class="team__image">
+                <img
+                    src="/uploads/media/founder_picture.webp"
+                    alt="Portrait of the site creator"
+                    class="team__founder-image u-img-cover"
+                >
+            </figure>
+        </header>
+
+        <section
+            class="team__artists"
+            aria-labelledby="artists-title"
+        >
+            <header class="team__artists-header">
+                <h2 id="artists-title" class="team__artists-title">
+                    Meet Our Artists
+                </h2>
+
+                <p class="team__artists-description">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                </p>
+            </header>
+
+            <div class="team__artist-list">
+
+                <twig:TeamBox
+                    name="name name"
+                    slug=""
+                    imagePath=""
+                    :tags="['marriage', 'portrait', 'outdoor']"
+                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
+                    alt=""
+                />
+
+            </div>
+        </section>
+
+    </div>
+
+</section>
+
 <div class="photographer-page">
     <h1 class="photographer-page__title">Our Photographers</h1>
 
