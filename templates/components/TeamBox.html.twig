@@ -1,37 +1,39 @@
 <article class="artist-card">
-    <figure class="artist-card__media">
-        <img
-            src=""
-            alt="Portrait of Name Name"
-            class="artist-card__image"
-        >
-    </figure>
-
-    <div class="artist-card__overlay">
-        <p class="artist-card__bio">
-            Photographer specialized in natural light and outdoor portraits.
-        </p>
+    <div class="artice-card__media-container">
+        <figure class="artist-card__media">
+            <img
+                src=" {{imagePath}}"
+                alt="Portrait of Name Name"
+                class="artist-card__image u-img-cover"
+            >
+        </figure>
+    
+        <div class="artist-card__overlay">
+            <p class="artist-card__bio">
+                {{bio}}
+            </p>
+        </div>
     </div>
-
+    
     <div class="artist-card__content">
         <h3 class="artist-card__name">
-            Name Name
+            <a href="{{ path('team_show', { slug: slug }) }}" class="artist-card__link" aria-label="See {{ name }}\'s profil">
+                {{name}}
+            </a>
         </h3>
 
         <div class="artist-card__footer">
-            <ul class="artist-card__tags" aria-label="Artist specialties">
-                <li class="artist-card__tag">Tag</li>
-                <li class="artist-card__tag">Tag</li>
-                <li class="artist-card__tag">Tag</li>
+            <ul class="artist-card__tags tags-list" aria-label="Artist specialties">
+                {% for tag in tags %}
+                    <li class="artist-card__tag tags">{{ tag }}</li>
+                {% endfor %}
             </ul>
 
-            <a
-                href="#"
-                class="artist-card__link"
-                aria-label="View Name Name profile"
-            >
-                icon arrow
-            </a>
+            <span class="artist-card__picto">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M43.0131 0.12043L9.89949 0L0 9.89949L26.4847 9.99582L0.0885871 36.3919L6.74162 43.0449L33.1377 16.6489L33.234 43.1335L43.1335 33.234L43.0131 0.12043Z" fill="#242424"/>
+                </svg>
+            </span>
         </div>
     </div>
 </article>
