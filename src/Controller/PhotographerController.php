@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MediaRepository;
 use App\Repository\PhotographerRepository;
+use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,13 +12,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class PhotographerController extends AbstractController
 {
     #[Route('/team', name: 'team_index')]
-    public function index(PhotographerRepository $photographerRepository): Response
+    public function index(PhotographerRepository $photographerRepository, SeoService $seoService): Response
     {
 
         $photographers = $photographerRepository->findAll();
 
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
+            'meta_description' => $seoService->getMetaDescription('team'),
+            'meta_robots' => $seoService->getMetaRobots('team'),
+
         ]);
     }
 
