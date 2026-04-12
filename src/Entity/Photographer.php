@@ -70,12 +70,19 @@ class Photographer
     #[ORM\OneToMany(targetEntity: GallerySeries::class, mappedBy: 'photographer')]
     private Collection $gallerySeries;
 
+    /**
+     * @var Collection<int, Speciality>
+     */
+    #[ORM\ManyToMany(targetEntity: Speciality::class, inversedBy: 'photographers')]
+    private Collection $specialities;
+
     public function __construct()
     {
         $this->serviceProposals = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->gallerySeries = new ArrayCollection();
+        $this->specialities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,6 +234,17 @@ class Photographer
         return $this;
     }
 
+    // public function getSpecialties(): array
+    // {
+    //     $specialties = $this->profile['info']['specialties'] ?? null;
+        
+    //     if (is_string($specialties)) {
+    //         return json_decode($specialties, true) ?? [];
+    //     }
+        
+    //     return is_array($specialties) ? $specialties : [];
+    // }
+
     /**
      * @return PhotographerStatusType[]
      */
@@ -313,6 +331,39 @@ class Photographer
                 $gallerySeries->setPhotographer(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Speciality>
+     */
+    public function getSpecialities(): Collection
+    {
+        return $this->specialities;
+    }
+
+    /**
+     * Get speciality names as array
+     * @return array<string>
+     */
+    public function getSpecialityNames(): array
+    {
+        return $this->specialities->map(fn(Speciality $speciality) => $speciality->getName())->toArray();
+    }
+
+    public function addSpeciality(Speciality $speciality): static
+    {
+        if (!$this->specialities->contains($speciality)) {
+            $this->specialities->add($speciality);
+        }
+
+        return $this;
+    }
+
+    public function removeSpeciality(Speciality $speciality): static
+    {
+        $this->specialities->removeElement($speciality);
 
         return $this;
     }
