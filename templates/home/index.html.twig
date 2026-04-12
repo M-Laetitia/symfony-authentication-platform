@@ -183,33 +183,64 @@
             </div>
 
             <twig:SectionIntro
-            title="Our photographs"
-            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            title="Our photographers"
+            subtitle=" A team of photographers with unique perspectives capturing your most precious moments."
             buttonText="Discover more"
             linkBtn="#"
             variant="light"
             />
-
             <div class="section-photographs__content scroll-text-section__content" >
                 <div class="section-photographs__list">
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
+                   <div class="embla" data-controller="carousel">
+                        <div class="embla__viewport" data-carousel-target="viewport">
+                            <div class="embla__container">
+
+                                {% for photographer in photographers %}
+                                    {% set featured = photographer.media|first %}
+
+                                    <div class="embla__slide">
+                                        <twig:PhotographBox 
+                                            :service="photographer.specialityNames|join(', ')"
+                                            :name="photographer.firstName ~ ' ' ~ photographer.lastName"
+                                            :slug="photographer.slug"
+                                            :alt="featured ? (featured.altText ?: photographer.firstName ~ ' ' ~ photographer.lastName ~ ' featured picture') : photographer.firstName ~ ' ' ~ photographer.lastName ~ ' featured picture'"
+                                            :imageSrc="featured ? asset('uploads/' ~ featured.path) : asset('media/images/camera.jpg')"
+                                        />
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                         <div class="carousel-nav section-photographs__carousel-nav">
+                    <div class="carousel-nav__arrows">
+                        <button
+                            class="carousel-nav__arrow embla__prev"
+                            type="button"
+                            data-action="click->carousel#prev"
+                            aria-label="Previous slide"
+                        >
+                        {% include 'components/icons/leftArrow.html.twig' %}
+
+                        </button>
+
+                        <button
+                            class="carousel-nav__arrow embla__next"
+                            type="button"
+                            data-action="click->carousel#next"
+                            aria-label="Next slide"
+                        >
+                            {% include 'components/icons/rightArrow.html.twig' %}
+                        </button>
+                    </div>
+
+                    <div
+                        class="carousel-nav__dots embla__dots"
+                        data-carousel-target="dots"
+                        aria-label="Carousel navigation"
+                    ></div>
+                </div>
+            </div>
+                    </div> 
                 </div>
             </div>
         </div>
