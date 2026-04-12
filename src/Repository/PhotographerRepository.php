@@ -16,6 +16,21 @@ class PhotographerRepository extends ServiceEntityRepository
         parent::__construct($registry, Photographer::class);
     }
 
+    public function findPhotographersWithCover(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('cover')
+            ->leftJoin('p.media', 'cover', 'WITH', 'cover.typeImage = :coverType')
+            ->andWhere('p.status = :status')
+            ->andWhere('p.visibility = :visibility')
+            ->setParameter('status', 'active')
+            ->setParameter('visibility', 'public')
+            ->setParameter('coverType', 'portfolio_cover')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Photographer[] Returns an array of Photographer objects
 //     */
