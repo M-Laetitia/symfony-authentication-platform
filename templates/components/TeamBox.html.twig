@@ -1,11 +1,28 @@
 <article class="artist-card">
     <div class="artice-card__media-container">
         <figure class="artist-card__media">
-            <img
-                src=" {{imagePath}}"
-                alt="Portrait of Name Name"
-                class="artist-card__image u-img-cover"
-            >
+            {% if imagePath %}
+                <img
+                    src="{{ imagePath | imagine_filter('team_thumb_desktop') }}"
+                    srcset="
+                        {{ imagePath | imagine_filter('team_thumb_mobile') }} 620w,
+                        {{ imagePath | imagine_filter('team_thumb_desktop') }} 360w
+                    "
+                    sizes="(max-width: 768px) 620px, 360px"
+                    alt="Portrait of {{ name }}"
+                    class="artist-card__image u-img-cover"
+                    loading="lazy"
+                    decoding="async"
+                />
+            {% else %}
+                <img
+                    src="{{ asset('images/placeholder.jpg') }}"
+                    alt="Portrait of {{ name }}"
+                    class="artist-card__image u-img-cover"
+                    loading="lazy"
+                    decoding="async"
+                />
+            {% endif %}
         </figure>
     
         <div class="artist-card__overlay">
@@ -17,7 +34,7 @@
     
     <div class="artist-card__content">
         <h3 class="artist-card__name">
-            <a href="{{ path('team_show', { slug: slug }) }}" class="artist-card__link" aria-label="See {{ name }}\'s profil">
+            <a href="{{ path('team_show', { slug: slug }) }}" class="artist-card__link" aria-label="See {{name}}\'s profil">
                 {{name}}
             </a>
         </h3>
