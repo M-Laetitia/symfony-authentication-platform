@@ -36,7 +36,7 @@
                     :title="article.title"
                     :slug="article.slug"
                     :imagePath="cover ? cover.path : ''"
-                    :tags="article.tags is defined ? article.tags|map(t => t.name) : []"
+                    :tags="article.tagNames"
                     :date="article.createdAt|date('j F Y')"
                     :excerpt="article.excerpt ?? ''"
                     :alt="cover ? cover.altText : article.title"
