@@ -367,4 +367,20 @@ class Photographer
 
         return $this;
     }
+
+    /**
+     * Get languages names as array
+     * @return array<string>
+     */
+    public function getLanguagesNames(): array
+    {
+        $languages = $this->profile['info']['languages'] ?? null;
+        
+        if (is_string($languages)) {
+            return json_decode($languages, true) ?? [];
+        }
+        
+        return is_array($languages) ? $languages : [];
+    }
+
 }
