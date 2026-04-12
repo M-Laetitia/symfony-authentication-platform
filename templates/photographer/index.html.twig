@@ -99,60 +99,26 @@
                     Meet Our Artists
                 </h2>
                 <p class="team__artists-description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+                    A team of photographers with unique perspectives and a shared passion for capturing meaningful moment.
+                    {# Passionate artists capturing every moment #}
             </header>
 
             <div class="team__artist-list">
 
-                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath="/uploads/media/founder_picture.webp"
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet.orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus ni Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
-                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath="/uploads/media/founder_picture.webp"
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
-                                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath=""
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
-                                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath=""
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
-                                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath=""
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
-                                <twig:TeamBox
-                    name="name name"
-                    slug="test"
-                    imagePath=""
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
+                    {% for photographer in photographers %}
+                    {% set cover = photographer.media|first %}
+                    <twig:TeamBox
+                        :name="photographer.firstName ~ ' ' ~ photographer.lastName "
+                        :slug="photographer.slug "
+                        :imagePath="cover ? cover.path : ''"
+                        :tags="photographer.specialityNames ? photographer.specialityNames : []"
+                        :bio="photographer.profile.bio.short"
+                        :alt="'Portrait of ' ~ photographer.firstName ~ ' ' ~ photographer.lastName"
+                    />
+                {% else %}
+                    <p>No photographers.</p>
+                {% endfor %}
+
 
             </div>
         </section>
