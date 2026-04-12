@@ -247,6 +247,15 @@ class Article
     }
 
     /**
+     * Get tag names as array
+     * @return array<string>
+     */
+    public function getTagNames(): array
+    {
+        return $this->tags->map(fn(Tag $tag) => $tag->getName())->toArray();
+    }
+
+    /**
      * @return Collection<int, Comment>
      */
     public function getComments(): Collection
