@@ -15,9 +15,10 @@
         </a>
     </figure>
 
-    <div class="section-photographs__infos">
-        <p class="section-photographs__service">{{service}}</p>
-        <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil"><h4 class="section-photographs__name">{{name}}</h4> </a>
-    </div>
-
+    <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil">
+        <div class="section-photographs__infos">
+            <p class="section-photographs__service">{{service}}</p>
+            <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil"><h4 class="section-photographs__name">{{name}}</h4> </a>
+        </div>
+    </a>
 </div>
