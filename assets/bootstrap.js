@@ -1,9 +1,9 @@
-// import { startStimulusApp } from '@symfony/stimulus-bundle';
-
-// const app = startStimulusApp();
-// register any custom, 3rd party controllers here
-// app.register('some_controller_name', SomeImportedController);
-
-import { Application } from "@hotwired/stimulus"
+import { Application } from '@hotwired/stimulus'
+import CarouselController from './controllers/carousel_controller.js'
 
 const application = Application.start()
+
+// Register controllers
+application.register('carousel', CarouselController)
+
+export { application }

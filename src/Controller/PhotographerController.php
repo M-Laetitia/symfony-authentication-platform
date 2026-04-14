@@ -12,10 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class PhotographerController extends AbstractController
 {
     #[Route('/team', name: 'team_index')]
-    public function index(PhotographerRepository $photographerRepository, SeoService $seoService): Response
+    public function index(PhotographerRepository $photographerRepo, SeoService $seoService): Response
     {
 
-        $photographers = $photographerRepository->findAll();
+        // $photographers = $photographerRepository->findAll();
+        $photographers = $photographerRepo->findPhotographersWithCover();
+    // dd($photographers);
 
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
