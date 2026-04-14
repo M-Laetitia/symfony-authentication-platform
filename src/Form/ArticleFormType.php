@@ -15,6 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\ArticleType;
 
 class ArticleFormType extends AbstractType
 {
@@ -25,12 +27,20 @@ class ArticleFormType extends AbstractType
             ->add('excerpt')
             ->add('metaTitle')
             ->add('metaDescription')
+            ->add('introduction')
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    'Brouillon' => ArticleType::DRAFT,
+                    'Publié' => ArticleType::PUBLISHED,
+                ],
+                'expanded' => false,
+                'multiple' => false,
+            ])
             ->add('content', HiddenType::class, [
                 'mapped' => false, 
                 'required' => false,
                 'attr' => ['id' => 'article_form_content']
             ])
-
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
@@ -52,10 +62,11 @@ class ArticleFormType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Texte alternatif pour la couverture',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Créer l\'article',
+                'attr' => ['class' => 'btn btn-primary']
             ]);
-            // ->add('save', SubmitType::class, [
-            //     'label' => 'Sauvegarder le brouillon', // Libellé par défaut
-            // ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
