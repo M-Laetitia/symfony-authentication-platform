@@ -130,12 +130,14 @@
     }
 
     .team__artists-description {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 300;
         font-family: var(--font-heading);
         text-transform: uppercase;
         margin: 10px 0;
-    }
+        letter-spacing: 1.8px;
+        line-height: 1.2;
+        }
 }
 
 /* &----------- TEAM BOX ------------ */
@@ -278,14 +280,28 @@
 
     .photographer-info__quote {
         position: absolute;
-        display: grid;
+        display: flex;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 55px;
+        gap: 15px;
         bottom: -25px;
         right: -75px;
         height: 50px ;
         background-color: var(--color-accent);
 
+        span {
+            position:absolute;
+            line-height: 0;
+        }
+        .quote-icon-right {
+            bottom: 8px;
+            right: 8px;
+        }
+        .quote-icon-left {
+            transform: scale(-1, 1);
+            top: 8px;
+            left: 8px;
+        }
         h5 {
             font-family: var(--font-base);
             font-weight: 500;
@@ -329,7 +345,7 @@
         .photographer-info__social-title {
             margin-bottom: 15px;
         }
-        .photographer-info__social-picto {
+        .photographer-info__social-link svg {
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -424,9 +440,9 @@
     }
     .js-filter-button {
         font-family: var(--font-heading);
-        font-size: 25px;
+        font-size: 22px;
         text-transform: uppercase;
-        font-weight: 500;
+        font-weight: 400;
         position: relative;
 
         &:before {

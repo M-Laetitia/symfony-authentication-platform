@@ -100,10 +100,12 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    grid-auto-rows: 1fr; 
     align-items: start;
 
     .article-card {
         width: 100%;
+        min-height: 100%;
         border: 1px solid var(--color-grey-800);
     }
     .article-card__title {
