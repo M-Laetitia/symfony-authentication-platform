@@ -24,6 +24,7 @@ use App\Repository\CategoryRepository;
 use App\Service\CommentSecurityService;
 use App\Service\SeoService;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 
@@ -86,6 +87,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/blog/new', name: 'article_new')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MediaUploader $mediaUploader): Response
     {
         $article = new Article();
@@ -97,22 +99,18 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $file = $form->get('coverFile')->getData();
-            $altText = $form->get('coverAlt')->getData();
+            // Le status vient du formulaire - c'est tout!
+            $article->setAuthor($this->getUser());
+            $article->setSlug($slugger->slug($article->getTitle())->lower());
+            
+            $em->persist($article);
+            $em->flush(); // Génère l'ID de l'article
 
             // EDITOR JS
             $editorContent = $form->get('content')->getData();
-            // dump('Contenu reçu:', $editorContent);die;
-            // dump('Type:', gettype($editorContent));
             if ($editorContent) {
                 $contentData = json_decode($editorContent, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
-                    // Enregistre l'article d'abord pour obtenir son ID
-                    $article->setAuthor($this->getUser());
-                    $article->setSlug($slugger->slug($article->getTitle())->lower());
-                    $em->persist($article);
-                    $em->flush(); // Génère l'ID de l'article
-
                     
                     $file = $form->get('coverFile')->getData();
                     $altText = $form->get('coverAlt')->getData();
@@ -186,20 +184,13 @@ class ArticleController extends AbstractController
             // var_dump($article);die;
             // var_dump(get_object_vars($article));die;
 
-            $this->addFlash('success', 'Article créé avec succès !');
+            // Simple: message selon le status
+            if ($article->getStatus() === \App\Enum\ArticleType::PUBLISHED) {
+                $this->addFlash('success', 'Article publié avec succès !');
+            } else {
+                $this->addFlash('success', 'Article enregistré en brouillon !');
+            }
             return $this->redirectToRoute('blog_index');
-
-            // if ($article->getStatus() === 'draft') {
-            //     // Si c'est un brouillon, on le publie et on redirige vers la liste
-            //     $article->setStatus('published');
-            //     $em->persist($article);
-            //     $em->flush();
-            //     $this->addFlash('success', 'Article publié avec succès !');
-            //     return $this->redirectToRoute('blog_index'); // Redirection vers la liste
-            // } else {
-            //     // Sinon, on le repasse en brouillon et on reste sur la page
-            //     $article->setStatus('draft');
-            //     $em->persist($article);
             //     $em->flush();
             //     $this->addFlash('success', 'Article sauvegardé en brouillon.');
             // }
