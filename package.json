@@ -8,6 +8,7 @@
     "@editorjs/simple-image": "^1.6.0",
     "@hotwired/stimulus": "^3.2.2",
     "core-js": "^3.45.1",
+    "embla-carousel": "^8.6.0",
     "glightbox": "^3.3.1",
     "isotope-layout": "^3.0.6"
   },

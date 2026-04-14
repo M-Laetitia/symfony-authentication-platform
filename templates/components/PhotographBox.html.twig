@@ -5,17 +5,20 @@
     >
 
     <figure class="section-photographs__media">
-        <img 
-            src="{{ imageSrc }}" 
-            alt="{{ name }} photography"
-            class="section-photographs__image u-img-cover"
-            loading="lazy"
-        >
+        <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil">
+            <img 
+                src="{{ imageSrc }}" 
+                alt="{{ name }} photography"
+                class="section-photographs__image u-img-cover"
+                loading="lazy"
+            >
+        </a>
     </figure>
 
-    <div class="section-photographs__infos">
-        <p class="section-photographs__service">{{service}}</p>
-        <a  href="{{link}}"><h4 class="section-photographs__name">{{name}}</h4></a>
-    </div>
-
+    <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil">
+        <div class="section-photographs__infos">
+            <p class="section-photographs__service">{{service}}</p>
+            <a href="{{ path('team_show', { slug: slug }) }}"  aria-label="See {{name}}\'s profil"><h4 class="section-photographs__name">{{name}}</h4> </a>
+        </div>
+    </a>
 </div>

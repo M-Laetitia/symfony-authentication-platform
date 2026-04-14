@@ -35,6 +35,7 @@ liip_imagine:
                     mode: outbound 
                     focus: center
 
+        # GENERAL_THUMBNAIL: ~
         thumbnail_small:      # mobile DPR1
             filters:
                 thumbnail:
@@ -51,7 +52,9 @@ liip_imagine:
             filters:
                 thumbnail:
                     size: [1536, 1024]
+                    mode: outbound
 
+        # BLOG_THUMBNAIL: ~
         # blog desktop thumbnail for desktop and tablette (DPR2 of 425×500)
         blog_thumb:
             filters:
@@ -73,6 +76,18 @@ liip_imagine:
                     size: [2720, 1200]  
                     mode: outbound
 
+        # TEAM_THUMBNAIL: ~
+        team_thumb_desktop:
+            filters:
+                thumbnail:
+                    size: [720, 900]   # 360x450 en DPR2
+                    mode: outbound
+
+        team_thumb_mobile:
+            filters:
+                thumbnail:
+                    size: [1240, 900]  # 620x450 en DPR2
+                    mode: outbound
 
     # webp:
     #     generate: true

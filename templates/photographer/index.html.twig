@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Our Photographers{% endblock %}
-
+{% block title %}Meet Our Photographers | MOSAIC {% endblock %}
 {% block body %}
 
 <twig:Banner
@@ -32,35 +30,51 @@
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, <span>mattis nec mollis ac</span>, accumsan a enim. Nunc at euismod arcu. Aliquam ullamcorper eros justo, vel mollis neque facilisis vel. Proin augue tortor, condimentum id sapien a, tempus venenatis massa. Aliquam egestas <span>eget diam sed sagittis</span>. Vivamus consectetur purus vel felis molestie sollicitudin. Vivamus sit amet enim nisl. Cras vitae varius metus, a hendrerit ex. Sed in mi dolor. Proin pretium nibh non volutpat efficitur.
                     </p>
                 </div>
-
-
     
                 <div class="team__actions">
                     <ul class="team__socials" aria-label="Creator social media links">
                         <li class="team__social-item">
-                            <a href="#" class="team__social-link" aria-label="Twitter">
-                                
+                                <a
+                                    href="https://behance.com/..."
+                                    class="team__social-link"
+                                    aria-label="Visit founder's behance profile"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                            {% include 'components/icons/behance.html.twig' %}    
                             </a>
                         </li>
                         <li class="team__social-item">
-                            <a href="#" class="team__social-link" aria-label="Facebook">
-                                
+                                <a
+                                    href="https://website.com/..."
+                                    class="team__social-link"
+                                    aria-label="Visit founder's photography website"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                            {% include 'components/icons/website.html.twig' %}     
                             </a>
                         </li>
                         <li class="team__social-item">
-                            <a href="#" class="team__social-link" aria-label="Instagram">
-                                
+                                 <a
+                                    href="https://instagram.com/..."
+                                    class="team__social-link"
+                                    aria-label="Visit founder's Instagram profile"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                            {% include 'components/icons/instagram.html.twig' %}   
                             </a>
                         </li>
                     </ul>
                     
                     <div class="team__call-to-action">
-                        <button class="team__profile-button button button--medium button--black " type="button">
-                            See my profile
-                        </button>
-                        <button class="team__contact-button button button--medium button--accent" type="button">
+                        <a href="#" class="team__profile-button button button--medium button--black " aria-label="See the founder's profile">
+                                See my profile
+                        </a>
+                        <a href="{{ path('contact')}}" class="team__contact-link button button--medium button--accent" aria-label="go to contact page"> 
                             Send me a message
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -84,56 +98,31 @@
                 <h2 id="artists-title" class="team__artists-title">
                     Meet Our Artists
                 </h2>
-
                 <p class="team__artists-description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+                    A team of photographers with unique perspectives and a shared passion for capturing meaningful moment.
+                    {# Passionate artists capturing every moment #}
             </header>
 
             <div class="team__artist-list">
 
-                <twig:TeamBox
-                    name="name name"
-                    slug=""
-                    imagePath=""
-                    :tags="['marriage', 'portrait', 'outdoor']"
-                    bio="lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus nisl vitae magna pulvinar laoreet. Nullam erat ipsum, mattis nec mollis ac, accumsan a enim."
-                    alt=""
-                />
+                    {% for photographer in photographers %}
+                    {% set cover = photographer.media|first %}
+                    <twig:TeamBox
+                        :name="photographer.firstName ~ ' ' ~ photographer.lastName "
+                        :slug="photographer.slug "
+                        :imagePath="cover ? cover.path : ''"
+                        :tags="photographer.specialityNames ? photographer.specialityNames : []"
+                        :bio="photographer.profile.bio.short"
+                        :alt="'Portrait of ' ~ photographer.firstName ~ ' ' ~ photographer.lastName"
+                    />
+                {% else %}
+                    <p>No photographers.</p>
+                {% endfor %}
+
 
             </div>
         </section>
-
     </div>
-
 </section>
 
-<div class="photographer-page">
-    <h1 class="photographer-page__title">Our Photographers</h1>
-
-    {% if photographers is empty %}
-        <p>No photographers found yet.</p>
-    {% else %}
-        <div class="photographer-list">
-            {% for photographer in photographers %}
-                <div class="photographer-card">
-                    <p>{{ photographer.firstname }}</p>
-                    <p> <a href="{{path('team_show', {slug: photographer.slug}) }}">see profil</a> </p>
-                </div>
-
-               {% if is_granted('ROLE_USER') and not is_granted('ROLE_PHOTOGRAPHER') %}
-                    <a href="{{ path('chat_start', {id: photographer.id}) }}"
-                    class="button button--accent button--small">
-                        Chat
-                    </a>
-
-                {% elseif not is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <p>You must have an account and be logged in to start a conversation with a photographer</p>
-                {% endif %}
-                            
-
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
 {% endblock %}
