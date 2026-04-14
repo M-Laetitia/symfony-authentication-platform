@@ -11,4 +11,5 @@ final class PhotographBox
     public string $service = 'service';
     public string $imgSrc = '';
     public string $linkBtn ="";
+    public string $slug = 'home';
 }
