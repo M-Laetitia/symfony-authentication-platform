@@ -14,6 +14,7 @@ use App\Form\ArticleFilterType;
 use App\Form\ArticleFormType;
 use App\Form\CategoryFormType;
 use App\Form\CommentFormType;
+use App\Form\AdminCommentFormType;
 use App\Form\SearchArticleFormType;
 use App\Form\TagFormType;
 use App\Repository\ArticleRepository;
@@ -95,7 +96,7 @@ class ArticleController extends AbstractController
 
     #[Route('/admin/blog', name: 'admin_blog_index')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
-    public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, TagRepository $tagRepo, PaginatorInterface $paginator, Request $request): Response
+    public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, TagRepository $tagRepo, CommentRepository $commentRepository, PaginatorInterface $paginator, Request $request): Response
     {
         // Get all categories for the filter dropdown
         $categories = $categoryRepo->findAll();
@@ -152,12 +153,14 @@ class ArticleController extends AbstractController
             }
         }
         
-
         $pagination = $paginator->paginate(
             $allArticles,
             $request->query->getInt('page', 1),
             8
         );
+        
+        // Get unapproved comments
+        $unapprovedComments = $commentRepository->findBy(['isApproved' => false], ['createdAt' => 'DESC']);
         
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $pagination,
@@ -172,6 +175,7 @@ class ArticleController extends AbstractController
             ],
             'categories' => $categories,
             'tags' => $tags,
+            'unapprovedComments' => $unapprovedComments,
         ]);
     }
 
@@ -663,6 +667,52 @@ class ArticleController extends AbstractController
             $this->addFlash('success', 'Tag deleted successfully.');
         }
 
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+    // ============= COMMENT MANAGEMENT =============
+
+    #[Route('/admin/blog/comments/{id}/approve', name: 'comment_approve', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function approveComment(Comment $comment, EntityManagerInterface $em): Response
+    {
+        $comment->setIsApproved(true);
+        $em->flush();
+
+        $this->addFlash('success', 'Comment approved successfully.');
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+    #[Route('/admin/blog/comments/{id}/edit', name: 'comment_edit')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function editComment(Comment $comment, Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(AdminCommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setEditedAt(new \DateTimeImmutable());
+            $comment->setLastEditBy($this->getUser());
+            $em->flush();
+
+            $this->addFlash('success', 'Comment updated successfully.');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('admin/blog/comment_edit.html.twig', [
+            'form' => $form->createView(),
+            'comment' => $comment,
+        ]);
+    }
+
+    #[Route('/admin/blog/comments/{id}/delete', name: 'comment_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function deleteComment(Comment $comment, EntityManagerInterface $em): Response
+    {
+        $em->remove($comment);
+        $em->flush();
+
+        $this->addFlash('success', 'Comment deleted successfully.');
         return $this->redirectToRoute('admin_blog_index');
     }
 
