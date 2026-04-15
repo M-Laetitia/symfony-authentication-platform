@@ -175,7 +175,61 @@
         </table>
     </section>
 
+    {# TAGS MANAGEMENT #}
+    <section class="tags-section">
+        <h3>Tags Management</h3>
+        
+        <a href="{{ path('tag_new') }}" class="button button--medium button--accent">Add New Tag</a>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Articles Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td><strong>{{ tag.name }}</strong></td>
+                        <td><code>{{ tag.slug }}</code></td>
+                        <td>
+                            <span class="badge">{{ tag.articles|length }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ path('tag_edit', {'id': tag.id}) }}" class="button button--small">Edit</a>
+                            
+                            <button class="button button--small button--danger" 
+                                    onclick="document.getElementById('deleteTagModal{{ tag.id }}').showModal()"
+                                    {% if tag.articles|length > 0 %}disabled{% endif %}>
+                                Delete
+                            </button>
+                            
+                            {# Delete Modal #}
+                            <dialog id="deleteTagModal{{ tag.id }}" class="admin-blog delete-modal">
+                                <div class="modal-content">
+                                    <h2>Confirm Tag Deletion</h2>
+                                    <p>Are you sure you want to delete the tag <strong>{{ tag.name }}</strong>?</p>
+                                    
+                                    <div class="modal-actions">
+                                        <form method="POST" action="{{ path('tag_delete', {'id': tag.id}) }}" style="display:inline;">
+                                            <button type="submit" class="button button--small button--danger">DELETE</button>
+                                        </form>
+                                        <button type="button" class="button button--small" onclick="document.getElementById('deleteTagModal{{ tag.id }}').close()">CANCEL</button>
+                                    </div>
+                                </div>
+                            </dialog>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No tags found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+
 
 {% endblock %}
-
-
