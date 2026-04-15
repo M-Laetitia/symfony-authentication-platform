@@ -167,13 +167,19 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllForAdminFiltered(string $sortBy = 'date_desc', string $status = '', string $featured = '', string $categoryId = ''): array
+    public function findAllForAdminFiltered(string $sortBy = 'date_desc', string $status = '', string $featured = '', string $categoryId = '', string $search = ''): array
     {
         $qb = $this->createQueryBuilder('a')
             ->leftJoin('a.comments', 'c')
             ->addSelect('c')
             ->leftJoin('a.category', 'cat')
             ->addSelect('cat');
+
+        // Search filter 
+        if ($search !== '' && strlen($search) >= 3) {
+            $qb->andWhere('a.title LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
 
         // Status filter
         if ($status !== '') {
