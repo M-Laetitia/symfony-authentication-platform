@@ -9,7 +9,7 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Service\MediaUploader;
 use App\Form\ArticleFormType;
-use App\Form\SearchArticleFormType;
+use App\Form\ArticleFilterType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
 use App\Enum\MediaType;
@@ -90,12 +90,36 @@ class ArticleController extends AbstractController
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
     {
-        $sortBy = $request->query->get('sortBy', 'date_desc'); 
-        $status = $request->query->get('status', ''); 
-        $featured = $request->query->get('featured', '');
-        $categoryId = $request->query->get('category', '');
+        // Get all categories for the filter dropdown
+        $categories = $categoryRepo->findAll();
         
-        $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured, $categoryId);
+        // create choices array for the form
+        $categoryChoices = [];
+        foreach ($categories as $category) {
+            $categoryChoices[$category->getName()] = (string)$category->getId();
+        }
+        
+        // create form with submitted data or defaults
+        $filterData = [
+            'search' => $request->query->get('search', ''),
+            'sortBy' => $request->query->get('sortBy', 'date_desc'),
+            'status' => $request->query->get('status', ''),
+            'featured' => $request->query->get('featured', ''),
+            'category' => $request->query->get('category', ''),
+        ];
+        
+        $filterForm = $this->createForm(ArticleFilterType::class, $filterData, [
+            'category_choices' => $categoryChoices,
+        ]);
+        
+        // extract filter values for repository method
+        $search = $filterData['search'];
+        $sortBy = $filterData['sortBy'];
+        $status = $filterData['status'];
+        $featured = $filterData['featured'];
+        $categoryId = $filterData['category'];
+        
+        $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured, $categoryId, $search);
         
         $stats = [
             'total' => count($allArticles),
@@ -122,12 +146,12 @@ class ArticleController extends AbstractController
             8
         );
         
-        $categories = $categoryRepo->findAll();
-        
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $pagination,
             'stats' => $stats,
+            'filterForm' => $filterForm->createView(),
             'filters' => [
+                'search' => $search,
                 'sortBy' => $sortBy,
                 'status' => $status,
                 'featured' => $featured,
