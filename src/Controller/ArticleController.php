@@ -7,9 +7,11 @@ ini_set('display_errors', 1);
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Media;
+use App\Entity\Category;
 use App\Service\MediaUploader;
 use App\Form\ArticleFormType;
 use App\Form\ArticleFilterType;
+use App\Form\CategoryFormType;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
 use App\Enum\MediaType;
@@ -528,6 +530,69 @@ class ArticleController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Article featured status successfully updated.');
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+    // ============= CATEGORY MANAGEMENT =============
+
+    #[Route('/admin/blog/categories/new', name: 'category_new')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function newCategory(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $category = new Category();
+        $form = $this->createForm(CategoryFormType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category->setSlug($slugger->slug($category->getName())->lower());
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success', 'Category created successfully.');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('admin/blog/category_form.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'Create Category',
+        ]);
+    }
+
+    #[Route('/admin/blog/categories/{id}/edit', name: 'category_edit')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function editCategory(Category $category, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $form = $this->createForm(CategoryFormType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category->setSlug($slugger->slug($category->getName())->lower());
+            $em->flush();
+
+            $this->addFlash('success', 'Category updated successfully.');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('admin/blog/category_form.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'Edit Category',
+            'category' => $category,
+        ]);
+    }
+
+    #[Route('/admin/blog/categories/{id}/delete', name: 'category_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function deleteCategory(Category $category, EntityManagerInterface $em): Response
+    {
+        // Check if category has articles
+        if (count($category->getArticles()) > 0) {
+            $this->addFlash('error', 'Cannot delete this category because it has ' . count($category->getArticles()) . ' article(s) linked to it. Please reassign or delete the articles first.');
+        } else {
+            $em->remove($category);
+            $em->flush();
+            $this->addFlash('success', 'Category deleted successfully.');
+        }
+
         return $this->redirectToRoute('admin_blog_index');
     }
 
