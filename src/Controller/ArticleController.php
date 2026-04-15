@@ -349,6 +349,26 @@ class ArticleController extends AbstractController
         return $this->redirectToRoute('admin_blog_index');
     }
 
+    #[Route('/admin/article/{id}/status', name: 'article_update_status', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function updateStatus(Article $article, Request $request, EntityManagerInterface $em): Response
+    {
+        if (!$this->isGranted('ROLE_PHOTOGRAPHER')) {
+            throw $this->createAccessDeniedException('You cannot delete this article');
+        }
 
+        $newStatus = $request->request->get('status');
+        
+        try {
+            $status = \App\Enum\ArticleType::from($newStatus);
+            $article->setStatus($status);
+            $em->flush();
+            $this->addFlash('success', 'Article status successfully updated.');
+        } catch (\ValueError $e) {
+            $this->addFlash('danger', 'Invalid Status.');
+        }
+
+        return $this->redirectToRoute('admin_blog_index');
+    }
 
 }
