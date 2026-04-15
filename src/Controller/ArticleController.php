@@ -86,7 +86,19 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/blog/new', name: 'article_new')]
+    // liste article pour partie dashboard pour admin
+    #[Route('/admin/blog', name: 'admin_blog_index')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function adminIndex(ArticleRepository $articleRepo): Response
+    {
+        $articles = $articleRepo->findAll();
+        return $this->render('admin/blog/index.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
+
+    #[Route('/admin/blog/new', name: 'article_new')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MediaUploader $mediaUploader): Response
     {
@@ -321,5 +333,22 @@ class ArticleController extends AbstractController
         $this->addFlash('success', 'Commentaire approuvé avec succès.');
         return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
+
+    #[Route('/admin/article/{id}/delete', name: 'article_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function delete(Article $article, EntityManagerInterface $em): Response
+    {
+        if (!$this->isGranted('ROLE_PHOTOGRAPHER')) {
+            throw $this->createAccessDeniedException('You cannot delete this article');
+        }
+
+        $em->remove($article);
+        $em->flush();
+
+        $this->addFlash('success', 'This article and its comments have been deleted successfully.');
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+
 
 }
