@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Blog | Dashboard{% endblock %}
+
+{% block body %}
+
+    {# list of articles #}
+    <h1>Blog Management</h1>
+    <section>
+        {# add an article #}
+        <a href="{{ path('article_new') }}" class="button button--medium button--accent">Add New Article</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Created At</th>
+                    <th>Nb comments</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                {# {{dump(article)}} #}
+                    <tr>
+                        <td>{{ article.title }}</td>
+                        <td>{{ article.author.username }}</td>
+                        <td>{{ article.createdAt|date('Y-m-d') }}</td>
+                        <td>TEST: {{ article.comments.count() }} </td>
+                        <td>{{ article.status.value }}</td>
+                        <td>
+                            <form method="POST" action="{{ path('article_toggle_featured', {'id': article.id}) }}" style="display:inline;">
+                                <input type="checkbox" {% if article.isFeatured() %}checked{% endif %} onchange="this.form.submit()" class="featured-checkbox">
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{{ path('article_show', {'slug': article.slug}) }}">View</a>
+                            <a href="{{ path('article_edit', {'id': article.id}) }}">Edit</a>
+                            
+                            {# Dropdown pour changer le status #}
+                            <form method="POST" action="{{ path('article_update_status', {'id': article.id}) }}" style="display:inline-flex; gap:0.5rem; align-items:center;">
+                                <select name="status" class="status-select">
+                                    <option value="published" {% if article.status.value == 'published' %}selected{% endif %}>Published</option>
+                                    <option value="draft" {% if article.status.value == 'draft' %}selected{% endif %}>Draft</option>
+                                    <option value="archived" {% if article.status.value == 'archived' %}selected{% endif %}>Archived</option>
+                                </select>
+                                <button type="submit" class="button button--small">Update</button>
+                            </form>
+                            
+                            <button class="button button--small button--danger" onclick="document.getElementById('deleteModal{{ article.id }}').showModal()">Delete</button>
+                            
+                            {# Confirmation modale #}
+                            <dialog id="deleteModal{{ article.id }}" class="admin-blog delete-modal">
+                                <div class="modal-content">
+                                    <h2>Confirm deletion</h2>
+                                    <p>Are you sure you want to delete this article (<strong>{{ article.title }}</strong>) and all tis comments ? This action cannot be undone.</p>
+                                    
+                                    <div class="modal-actions">
+                                        <form method="POST" action="{{ path('article_delete', {'id': article.id}) }}" style="display:inline;">
+                                            <button type="submit" class="button button--small button--danger">DELETE</button>
+                                        </form>
+                                        <button type="button" class="button button--small" onclick="document.getElementById('deleteModal{{ article.id }}').close()">CANCEL</button>
+                                    </div>
+                                </div>
+                            </dialog>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7">No articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+{% endblock %}
