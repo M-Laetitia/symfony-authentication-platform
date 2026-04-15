@@ -119,16 +119,21 @@ class ArticleController extends AbstractController
         $featured = $filterData['featured'];
         $categoryId = $filterData['category'];
         
+        // Get filtered articles for pagination and display
         $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured, $categoryId, $search);
         
+        // Get ALL articles (without filters) for global statistics
+        $allArticlesForStats = $articleRepo->findAllForAdmin();
+        
+        // Calculate stats based on ALL articles, not filtered ones
         $stats = [
-            'total' => count($allArticles),
+            'total' => count($allArticlesForStats),
             'published' => 0,
             'draft' => 0,
             'archived' => 0,
         ];
         
-        foreach ($allArticles as $article) {
+        foreach ($allArticlesForStats as $article) {
             $articleStatus = $article->getStatus()->value;
             if ($articleStatus === 'published') {
                 $stats['published']++;
