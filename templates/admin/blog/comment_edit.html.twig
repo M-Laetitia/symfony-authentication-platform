@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Comment | Blog{% endblock %}
+
+{% block body %}
+
+    <div class="comment-edit-wrapper">
+        <h1>Edit Comment</h1>
+
+        <div class="comment-info">
+            <p><strong>Article:</strong> <a href="{{ path('article_show', {'slug': comment.article.slug}) }}">{{ comment.article.title }}</a></p>
+            <p><strong>Author:</strong> {{ comment.authorName ?: comment.author.username }}</p>
+            <p><strong>Created:</strong> {{ comment.createdAt|date('Y-m-d H:i') }}</p>
+            {% if comment.editedAt %}<p><strong>Last edited:</strong> {{ comment.editedAt|date('Y-m-d H:i') }}</p>{% endif %}
+        </div>
+
+        {{ form_start(form, {'attr': {'class': 'comment-edit-form'}}) }}
+            {{ form_widget(form) }}
+            
+            <div class="form-actions">
+                <button type="submit" class="button button--medium button--accent">Save Changes</button>
+                <a href="{{ path('admin_blog_index') }}" class="button button--medium">Cancel</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+
+
+{% endblock %}
