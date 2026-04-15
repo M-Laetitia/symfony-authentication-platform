@@ -61,6 +61,16 @@
                     </select>
                 </div>
 
+                <div class="filter-group">
+                    <label for="category">Category:</label>
+                    <select name="category" id="category" class="filter-select">
+                        <option value="">All</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if filters.category == category.id %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <button type="submit" class="button button--small">Apply Filters</button>
                 <a href="{{ path('admin_blog_index') }}" class="button button--small">Reset</a>
             </form>
