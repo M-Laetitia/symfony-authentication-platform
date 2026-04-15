@@ -91,9 +91,12 @@ class ArticleController extends AbstractController
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function adminIndex(ArticleRepository $articleRepo, PaginatorInterface $paginator, Request $request): Response
     {
-        $allArticles = $articleRepo->findAllForAdmin();
+        $sortBy = $request->query->get('sortBy', 'date_desc'); 
+        $status = $request->query->get('status', ''); 
+        $featured = $request->query->get('featured', ''); 
         
-        // Calcul des stats (sur tous les articles)
+        $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured);
+        
         $stats = [
             'total' => count($allArticles),
             'published' => 0,
@@ -102,17 +105,17 @@ class ArticleController extends AbstractController
         ];
         
         foreach ($allArticles as $article) {
-            $status = $article->getStatus()->value;
-            if ($status === 'published') {
+            $articleStatus = $article->getStatus()->value;
+            if ($articleStatus === 'published') {
                 $stats['published']++;
-            } elseif ($status === 'draft') {
+            } elseif ($articleStatus === 'draft') {
                 $stats['draft']++;
-            } elseif ($status === 'archived') {
+            } elseif ($articleStatus === 'archived') {
                 $stats['archived']++;
             }
         }
         
-        // Pagination
+
         $pagination = $paginator->paginate(
             $allArticles,
             $request->query->getInt('page', 1),
@@ -122,6 +125,11 @@ class ArticleController extends AbstractController
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $pagination,
             'stats' => $stats,
+            'filters' => [
+                'sortBy' => $sortBy,
+                'status' => $status,
+                'featured' => $featured,
+            ],
         ]);
     }
 
