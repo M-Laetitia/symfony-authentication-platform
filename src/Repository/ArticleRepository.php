@@ -166,6 +166,41 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllForAdminFiltered(string $sortBy = 'date_desc', string $status = '', string $featured = ''): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.comments', 'c')
+            ->addSelect('c')
+            ->leftJoin('a.category', 'cat')
+            ->addSelect('cat');
+
+        // Status filter
+        if ($status !== '') {
+            $qb->andWhere('a.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        // Featured filter
+        if ($featured === 'yes') {
+            $qb->andWhere('a.isFeatured = true');
+        } elseif ($featured === 'no') {
+            $qb->andWhere('a.isFeatured = false OR a.isFeatured IS NULL');
+        }
+
+        // Sorting
+        switch ($sortBy) {
+            case 'date_asc':
+                $qb->orderBy('a.createdAt', 'ASC');
+                break;
+            case 'date_desc':
+            default:
+                $qb->orderBy('a.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
     
     //    /**
     //     * @return Article[] Returns an array of Article objects
