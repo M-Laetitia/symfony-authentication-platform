@@ -20,7 +20,6 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
 
-
     public function findPublishedArticlesWithCover(?int $limit = null): array
     {
         $qb = $this->createQueryBuilder('a')
@@ -158,7 +157,15 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-
+    public function findAllForAdmin(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.comments', 'c')
+            ->addSelect('c')
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
     
     //    /**
     //     * @return Article[] Returns an array of Article objects
@@ -177,6 +184,8 @@ class ArticleRepository extends ServiceEntityRepository
 
     //    public function findOneBySomeField($value): ?Article
     //    {
+
+
     //        return $this->createQueryBuilder('a')
     //            ->andWhere('a.exampleField = :val')
     //            ->setParameter('val', $value)
