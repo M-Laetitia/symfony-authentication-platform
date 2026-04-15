@@ -86,16 +86,16 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    // liste article pour partie dashboard pour admin
     #[Route('/admin/blog', name: 'admin_blog_index')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
-    public function adminIndex(ArticleRepository $articleRepo, PaginatorInterface $paginator, Request $request): Response
+    public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
     {
         $sortBy = $request->query->get('sortBy', 'date_desc'); 
         $status = $request->query->get('status', ''); 
-        $featured = $request->query->get('featured', ''); 
+        $featured = $request->query->get('featured', '');
+        $categoryId = $request->query->get('category', '');
         
-        $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured);
+        $allArticles = $articleRepo->findAllForAdminFiltered($sortBy, $status, $featured, $categoryId);
         
         $stats = [
             'total' => count($allArticles),
@@ -122,6 +122,8 @@ class ArticleController extends AbstractController
             8
         );
         
+        $categories = $categoryRepo->findAll();
+        
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $pagination,
             'stats' => $stats,
@@ -129,7 +131,9 @@ class ArticleController extends AbstractController
                 'sortBy' => $sortBy,
                 'status' => $status,
                 'featured' => $featured,
+                'category' => $categoryId,
             ],
+            'categories' => $categories,
         ]);
     }
 
