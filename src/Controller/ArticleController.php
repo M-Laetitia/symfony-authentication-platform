@@ -92,8 +92,29 @@ class ArticleController extends AbstractController
     public function adminIndex(ArticleRepository $articleRepo): Response
     {
         $articles = $articleRepo->findAllForAdmin();
+        
+
+        $stats = [
+            'total' => count($articles),
+            'published' => 0,
+            'draft' => 0,
+            'archived' => 0,
+        ];
+        
+        foreach ($articles as $article) {
+            $status = $article->getStatus()->value;
+            if ($status === 'published') {
+                $stats['published']++;
+            } elseif ($status === 'draft') {
+                $stats['draft']++;
+            } elseif ($status === 'archived') {
+                $stats['archived']++;
+            }
+        }
+        
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $articles,
+            'stats' => $stats,
         ]);
     }
 
