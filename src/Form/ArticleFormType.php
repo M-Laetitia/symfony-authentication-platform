@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use App\Enum\ArticleType;
 
 class ArticleFormType extends AbstractType
@@ -35,6 +36,10 @@ class ArticleFormType extends AbstractType
                 ],
                 'expanded' => false,
                 'multiple' => false,
+            ])
+            ->add('isFeatured', CheckboxType::class, [
+                'label' => 'Article mis en avant',
+                'required' => false,
             ])
             ->add('content', HiddenType::class, [
                 'mapped' => false, 
