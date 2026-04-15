@@ -33,47 +33,16 @@
         
         {# Filtres #}
         <div class="filters-container">
-            <form method="GET" action="{{ path('admin_blog_index') }}" class="filters-form">
-                <div class="filter-group">
-                    <label for="sortBy">Sort by:</label>
-                    <select name="sortBy" id="sortBy" class="filter-select">
-                        <option value="date_desc" {% if filters.sortBy == 'date_desc' %}selected{% endif %}>Date (Newest)</option>
-                        <option value="date_asc" {% if filters.sortBy == 'date_asc' %}selected{% endif %}>Date (Oldest)</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="status">Status:</label>
-                    <select name="status" id="status" class="filter-select">
-                        <option value="">All</option>
-                        <option value="published" {% if filters.status == 'published' %}selected{% endif %}>Published</option>
-                        <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>Draft</option>
-                        <option value="archived" {% if filters.status == 'archived' %}selected{% endif %}>Archived</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="featured">Featured:</label>
-                    <select name="featured" id="featured" class="filter-select">
-                        <option value="">All</option>
-                        <option value="yes" {% if filters.featured == 'yes' %}selected{% endif %}>Featured Only</option>
-                        <option value="no" {% if filters.featured == 'no' %}selected{% endif %}>Not Featured</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="category">Category:</label>
-                    <select name="category" id="category" class="filter-select">
-                        <option value="">All</option>
-                        {% for category in categories %}
-                            <option value="{{ category.id }}" {% if filters.category == category.id %}selected{% endif %}>{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
+            {{ form_start(filterForm, {'attr': {'class': 'filters-form'}}) }}
+                {{ form_row(filterForm.search, {'attr': {'style': 'flex: 1;'}, 'label': 'Search:'}) }}
+                {{ form_row(filterForm.sortBy, {'label': 'Sort by:'}) }}
+                {{ form_row(filterForm.status, {'label': 'Status:'}) }}
+                {{ form_row(filterForm.featured, {'label': 'Featured:'}) }}
+                {{ form_row(filterForm.category, {'label': 'Category:'}) }}
+                
                 <button type="submit" class="button button--small">Apply Filters</button>
                 <a href="{{ path('admin_blog_index') }}" class="button button--small">Reset</a>
-            </form>
+            {{ form_end(filterForm) }}
         </div>
         
         <table>
@@ -150,6 +119,7 @@
     </section>
 
 {% endblock %}
+
 
 
 
