@@ -5,28 +5,33 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 use App\Entity\Article;
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Media;
-use App\Entity\Category;
-use App\Service\MediaUploader;
-use App\Form\ArticleFormType;
+use App\Entity\Tag;
+use App\Enum\MediaType;
 use App\Form\ArticleFilterType;
+use App\Form\ArticleFormType;
 use App\Form\CategoryFormType;
 use App\Form\CommentFormType;
+use App\Form\SearchArticleFormType;
+use App\Form\TagFormType;
+use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
-use App\Enum\MediaType;
+use App\Repository\TagRepository;
+use App\Service\CommentSecurityService;
+use App\Service\MediaUploader;
+use App\Service\SeoService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use App\Repository\ArticleRepository;
-use App\Repository\CategoryRepository;
-use App\Service\CommentSecurityService;
-use App\Service\SeoService;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
+
 
 
 
@@ -90,10 +95,11 @@ class ArticleController extends AbstractController
 
     #[Route('/admin/blog', name: 'admin_blog_index')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
-    public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, PaginatorInterface $paginator, Request $request): Response
+    public function adminIndex(ArticleRepository $articleRepo, CategoryRepository $categoryRepo, TagRepository $tagRepo, PaginatorInterface $paginator, Request $request): Response
     {
         // Get all categories for the filter dropdown
         $categories = $categoryRepo->findAll();
+        $tags = $tagRepo->findAll();
         
         // create choices array for the form
         $categoryChoices = [];
@@ -165,6 +171,7 @@ class ArticleController extends AbstractController
                 'category' => $categoryId,
             ],
             'categories' => $categories,
+            'tags' => $tags,
         ]);
     }
 
@@ -591,6 +598,69 @@ class ArticleController extends AbstractController
             $em->remove($category);
             $em->flush();
             $this->addFlash('success', 'Category deleted successfully.');
+        }
+
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+    // ============= TAG MANAGEMENT =============
+
+    #[Route('/admin/blog/tags/new', name: 'tag_new')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function newTag(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $tag = new Tag();
+        $form = $this->createForm(TagFormType::class, $tag);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tag->setSlug($slugger->slug($tag->getName())->lower());
+            $em->persist($tag);
+            $em->flush();
+
+            $this->addFlash('success', 'Tag created successfully.');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('admin/blog/tag_form.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'Create Tag',
+        ]);
+    }
+
+    #[Route('/admin/blog/tags/{id}/edit', name: 'tag_edit')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function editTag(Tag $tag, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $form = $this->createForm(TagFormType::class, $tag);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tag->setSlug($slugger->slug($tag->getName())->lower());
+            $em->flush();
+
+            $this->addFlash('success', 'Tag updated successfully.');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('admin/blog/tag_form.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'Edit Tag',
+            'tag' => $tag,
+        ]);
+    }
+
+    #[Route('/admin/blog/tags/{id}/delete', name: 'tag_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function deleteTag(Tag $tag, EntityManagerInterface $em): Response
+    {
+        // Check if tag has articles
+        if (count($tag->getArticles()) > 0) {
+            $this->addFlash('error', 'Cannot delete this tag because it has ' . count($tag->getArticles()) . ' article(s) linked to it. Please remove the tag from articles first.');
+        } else {
+            $em->remove($tag);
+            $em->flush();
+            $this->addFlash('success', 'Tag deleted successfully.');
         }
 
         return $this->redirectToRoute('admin_blog_index');
