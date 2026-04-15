@@ -89,19 +89,19 @@ class ArticleController extends AbstractController
     // liste article pour partie dashboard pour admin
     #[Route('/admin/blog', name: 'admin_blog_index')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
-    public function adminIndex(ArticleRepository $articleRepo): Response
+    public function adminIndex(ArticleRepository $articleRepo, PaginatorInterface $paginator, Request $request): Response
     {
-        $articles = $articleRepo->findAllForAdmin();
+        $allArticles = $articleRepo->findAllForAdmin();
         
-
+        // Calcul des stats (sur tous les articles)
         $stats = [
-            'total' => count($articles),
+            'total' => count($allArticles),
             'published' => 0,
             'draft' => 0,
             'archived' => 0,
         ];
         
-        foreach ($articles as $article) {
+        foreach ($allArticles as $article) {
             $status = $article->getStatus()->value;
             if ($status === 'published') {
                 $stats['published']++;
@@ -112,8 +112,15 @@ class ArticleController extends AbstractController
             }
         }
         
+        // Pagination
+        $pagination = $paginator->paginate(
+            $allArticles,
+            $request->query->getInt('page', 1),
+            8
+        );
+        
         return $this->render('admin/blog/index.html.twig', [
-            'articles' => $articles,
+            'articles' => $pagination,
             'stats' => $stats,
         ]);
     }
