@@ -91,7 +91,7 @@ class ArticleController extends AbstractController
     #[IsGranted('ROLE_PHOTOGRAPHER')]
     public function adminIndex(ArticleRepository $articleRepo): Response
     {
-        $articles = $articleRepo->findAll();
+        $articles = $articleRepo->findAllForAdmin();
         return $this->render('admin/blog/index.html.twig', [
             'articles' => $articles,
         ]);
@@ -212,6 +212,82 @@ class ArticleController extends AbstractController
             'article' => $article,
         ]);
 
+    }
+
+    #[Route('/admin/article/{id}/edit', name: 'article_edit')]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function edit(Article $article, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MediaUploader $mediaUploader): Response
+    {
+        if (!$this->isGranted('ROLE_PHOTOGRAPHER')) {
+                throw $this->createAccessDeniedException('You cannot delete this article');
+        }
+
+
+        $form = $this->createForm(ArticleFormType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $article->setSlug($slugger->slug($article->getTitle())->lower());
+            
+            $editorContent = $form->get('content')->getData();
+            if ($editorContent) {
+                $contentData = json_decode($editorContent, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    
+                    $file = $form->get('coverFile')->getData();
+                    if ($file) {
+                        $oldCover = $article->getMedias()->filter(fn($m) => $m->getType() === MediaType::ARTICLE_COVER)->first();
+                        if ($oldCover) {
+                            $em->remove($oldCover);
+                        }
+
+                        $altText = $form->get('coverAlt')->getData();
+                        $media = $mediaUploader->upload(
+                            $file,
+                            '',
+                            $altText,
+                            MediaType::ARTICLE_COVER,
+                            '/articles/' . $article->getId()
+                        );
+                        $media->setArticle($article);
+                        $em->persist($media);
+                    }
+
+                    foreach ($contentData['blocks'] as &$block) {
+                        if ($block['type'] === 'image' && isset($block['data']['file']['id'])) {
+                            $fileData = $block['data']['file'];
+                            $block['data']['file'] = [
+                                'id' => $fileData['id'],
+                                'width' => $fileData['width'],
+                                'height' => $fileData['height'],
+                            ];
+
+                            $media = $em->getRepository(Media::class)->find($fileData['id']);
+                            if ($media) {
+                                $media->setArticle($article);
+                                $media->setAltText($block['data']['alt'] ?? '');
+                                $media->setCaption($block['data']['caption'] ?? '');
+                                $em->persist($media);
+                            }
+                        }
+                    }
+
+                    $article->setContent($contentData);
+                }
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Article mis à jour avec succès !');
+            return $this->redirectToRoute('admin_blog_index');
+        }
+
+        return $this->render('blog/article/new.html.twig', [
+            'form' => $form->createView(),
+            'article' => $article,
+            'isEdit' => true,
+        ]);
     }
 
     #[Route('/article/{slug}', name: 'article_show')]
@@ -368,6 +444,21 @@ class ArticleController extends AbstractController
             $this->addFlash('danger', 'Invalid Status.');
         }
 
+        return $this->redirectToRoute('admin_blog_index');
+    }
+
+    #[Route('/admin/article/{id}/toggle-featured', name: 'article_toggle_featured', methods: ['POST'])]
+    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    public function toggleFeatured(Article $article, EntityManagerInterface $em): Response
+    {
+        if (!$this->isGranted('ROLE_PHOTOGRAPHER')) {
+            throw $this->createAccessDeniedException('You cannot update this article');
+        }
+
+        $article->setIsFeatured(!$article->isFeatured());
+        $em->flush();
+
+        $this->addFlash('success', 'Article featured status successfully updated.');
         return $this->redirectToRoute('admin_blog_index');
     }
 
