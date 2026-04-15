@@ -6,6 +6,27 @@
 
     {# list of articles #}
     <h1>Blog Management</h1>
+    
+    {# Statistics #}
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card stat-published">
+            <div class="stat-value">{{ stats.published }}</div>
+            <div class="stat-label">Published</div>
+        </div>
+        <div class="stat-card stat-draft">
+            <div class="stat-value">{{ stats.draft }}</div>
+            <div class="stat-label">Draft</div>
+        </div>
+        <div class="stat-card stat-archived">
+            <div class="stat-value">{{ stats.archived }}</div>
+            <div class="stat-label">Archived</div>
+        </div>
+    </div>
+    
     <section>
         {# add an article #}
         <a href="{{ path('article_new') }}" class="button button--medium button--accent">Add New Article</a>
@@ -76,3 +97,4 @@
     </section>
 
 {% endblock %}
+
