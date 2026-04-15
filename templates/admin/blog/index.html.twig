@@ -30,12 +30,49 @@
     <section>
         {# add an article #}
         <a href="{{ path('article_new') }}" class="button button--medium button--accent">Add New Article</a>
+        
+        {# Filtres #}
+        <div class="filters-container">
+            <form method="GET" action="{{ path('admin_blog_index') }}" class="filters-form">
+                <div class="filter-group">
+                    <label for="sortBy">Sort by:</label>
+                    <select name="sortBy" id="sortBy" class="filter-select">
+                        <option value="date_desc" {% if filters.sortBy == 'date_desc' %}selected{% endif %}>Date (Newest)</option>
+                        <option value="date_asc" {% if filters.sortBy == 'date_asc' %}selected{% endif %}>Date (Oldest)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="status">Status:</label>
+                    <select name="status" id="status" class="filter-select">
+                        <option value="">All</option>
+                        <option value="published" {% if filters.status == 'published' %}selected{% endif %}>Published</option>
+                        <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>Draft</option>
+                        <option value="archived" {% if filters.status == 'archived' %}selected{% endif %}>Archived</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="featured">Featured:</label>
+                    <select name="featured" id="featured" class="filter-select">
+                        <option value="">All</option>
+                        <option value="yes" {% if filters.featured == 'yes' %}selected{% endif %}>Featured Only</option>
+                        <option value="no" {% if filters.featured == 'no' %}selected{% endif %}>Not Featured</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="button button--small">Apply Filters</button>
+                <a href="{{ path('admin_blog_index') }}" class="button button--small">Reset</a>
+            </form>
+        </div>
+        
         <table>
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
                     <th>Created At</th>
+                    <th>Category</th>
                     <th>Nb comments</th>
                     <th>Status</th>
                     <th>Featured</th>
@@ -49,6 +86,7 @@
                         <td>{{ article.title }}</td>
                         <td>{{ article.author.username }}</td>
                         <td>{{ article.createdAt|date('Y-m-d') }}</td>
+                        <td>{{ article.category ? article.category.name : '-' }}</td>
                         <td>TEST: {{ article.comments.count() }} </td>
                         <td>{{ article.status.value }}</td>
                         <td>
@@ -89,12 +127,19 @@
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="7">No articles found.</td></tr>
+                    <tr><td colspan="8">No articles found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
+        
+        {# Pagination #}
+        <div class="pagination-container">
+            {{ knp_pagination_render(articles) }}
+        </div>
 
     </section>
 
 {% endblock %}
+
+
 
