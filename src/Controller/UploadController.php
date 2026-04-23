@@ -27,13 +27,23 @@ class UploadController extends AbstractController
             $caption = $request->request->get('caption', '');
             $altText = $request->request->get('alt', '');
 
+            // Contraintes pour EditorJS
+            $constraints = [
+                'max_size' => '2M',         
+                'min_width' => 400,           
+                'min_height' => 400,          
+                'max_width' => 1200,         
+                'max_height' => 800,        
+            ];
+
             // Upload via MediaUploader dans articles_content avec Media entity
             $media = $this->mediaUploader->upload(
                 $file, 
                 $caption, 
                 $altText, 
                 MediaType::ARTICLE_IMAGE,
-                'articles_content'  // Sous-dossier pour EditorJS
+                'articles_content',  // Sous-dossier pour EditorJS
+                $constraints
             );
 
             // 4. Renvoie la réponse au format EditorJS
@@ -48,11 +58,10 @@ class UploadController extends AbstractController
             ]);
 
         } catch (\Exception $e) {
-            // Log l'erreur pour le débogage
             error_log($e->getMessage());
             return new JsonResponse([
                 'success' => 0,
-                'message' => 'Erreur lors de l\'upload : ' . $e->getMessage()
+                'message' => $e->getMessage()
             ]);
         }
     }
