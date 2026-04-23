@@ -1,9 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Media;
 use App\Enum\MediaType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MediaUploaderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,8 +10,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UploadController extends AbstractController
 {
+    public function __construct(
+        private MediaUploaderInterface $mediaUploader
+    ) {}
+
     #[Route('/uploadFile', name: 'upload_file', methods: ['POST'])]
-    public function uploadFile(Request $request, EntityManagerInterface $em): JsonResponse
+    public function uploadFile(Request $request): JsonResponse
     {
         try {
             $file = $request->files->get('image');
@@ -23,36 +26,18 @@ class UploadController extends AbstractController
             // Récupère le caption et le altText
             $caption = $request->request->get('caption', '');
             $altText = $request->request->get('alt', '');
-            // 1. Upload du fichier
-            $filename = uniqid() . '.' . $file->guessExtension();
-            $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-            $file->move($uploadsDir, $filename);
-            $relativePath = '/uploads/' . $filename;
 
-            // 2. Récupère les dimensions
-            $imageInfo = @getimagesize($uploadsDir . '/' . $filename);
-            $width = $imageInfo[0] ?? 800;
-            $height = $imageInfo[1] ?? 400;
+            // Upload via MediaUploader pour WebP generation et Media entity
+            $media = $this->mediaUploader->upload($file, $caption, $altText, MediaType::ARTICLE_IMAGE);
 
-            // 3. Crée et enregistre le média
-            $media = new Media();
-            $media->setPath($relativePath);
-            $media->setCaption($caption);
-            $media->setAltText($altText);
-            // $media->setType('article_image');
-            $media->setType(MediaType::ARTICLE_IMAGE);
-
-            $em->persist($media);
-            $em->flush();
-
-            // 4. Renvoie la réponse
+            // 4. Renvoie la réponse au format EditorJS
             return new JsonResponse([
                 'success' => 1,
                 'file' => [
                     'url' => $media->getPath(),
                     'id' => $media->getId(),
-                    'width' => $width,
-                    'height' => $height,
+                    'width' => $media->getWidth(),
+                    'height' => $media->getHeight(),
                 ]
             ]);
 
