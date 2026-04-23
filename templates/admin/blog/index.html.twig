@@ -4,300 +4,381 @@
 
 {% block body %}
 
-    {# list of articles #}
-    <h1>Blog Management</h1>
-    
-    {# Statistics #}
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-value">{{ stats.total }}</div>
-            <div class="stat-label">Total</div>
+<div class="admin-page admin-blog">
+    <div class="admin-blog__header">
+        <h1 class="admin-blog__title">Blog Management Dashboard</h1>
+
+        <div class="admin-blog__stats">
+            <div class="admin-blog__stat-card">
+                <p class="admin-blog__stat-label">Total :
+                <span class="admin-blog__stat-value">{{ stats.total }}</span></p>
+            </div>
+
+            <div class="admin-blog__stat-card admin-blog__stat-card--published">
+                <p class="admin-blog__stat-label">Published :
+                <span class="admin-blog__stat-value">{{ stats.published }}</span></p>
+            </div>
+
+            <div class="admin-blog__stat-card admin-blog__stat-card--draft">
+                <p class="admin-blog__stat-label">Draft :
+                <span class="admin-blog__stat-value">{{ stats.draft }}</span></p>
+            </div>
+
+            <div class="admin-blog__stat-card admin-blog__stat-card--archived">
+                <p class="admin-blog__stat-label">Archived :
+                <span class="admin-blog__stat-value">{{ stats.archived }}</span></p>
+            </div>
         </div>
-        <div class="stat-card stat-published">
-            <div class="stat-value">{{ stats.published }}</div>
-            <div class="stat-label">Published</div>
-        </div>
-        <div class="stat-card stat-draft">
-            <div class="stat-value">{{ stats.draft }}</div>
-            <div class="stat-label">Draft</div>
-        </div>
-        <div class="stat-card stat-archived">
-            <div class="stat-value">{{ stats.archived }}</div>
-            <div class="stat-label">Archived</div>
+
+        <div class="admin-blog__button">
+            <a href="{{ path('article_new') }}" class="button button--small button--accent">Add New Article</a>
         </div>
     </div>
-    
-    <section>
-        {# add an article #}
-        <a href="{{ path('article_new') }}" class="button button--medium button--accent">Add New Article</a>
-        
-        {# Filtres #}
-        <div class="filters-container">
-            {{ form_start(filterForm, {'attr': {'class': 'filters-form'}}) }}
-                {{ form_row(filterForm.search, {'attr': {'style': 'flex: 1;'}, 'label': 'Search:'}) }}
-                {{ form_row(filterForm.sortBy, {'label': 'Sort by:'}) }}
-                {{ form_row(filterForm.status, {'label': 'Status:'}) }}
-                {{ form_row(filterForm.featured, {'label': 'Featured:'}) }}
-                {{ form_row(filterForm.category, {'label': 'Category:'}) }}
-                
-                <button type="submit" class="button button--small">Apply Filters</button>
-                <a href="{{ path('admin_blog_index') }}" class="button button--small">Reset</a>
+
+
+    <div class="admin-blog__filters">
+        <h2>FILTERS</h2>
+        <div class="admin-blog__filters-container">
+            {{ form_start(filterForm, {'attr': {'class': 'admin-blog__filters-form'}}) }}
+            
+                <div class="admin-blog__filters-row">
+                    {{ form_row(filterForm.search, {
+                        'attr': {'class': 'admin-blog__filters-input admin-blog__filters-input--search'},
+                        'label': 'Search:'
+                    }) }}
+                </div>
+
+                <div class="admin-blog__filters-row">
+                    {{ form_row(filterForm.sortBy, {'label': 'Sort by:'}) }}
+                    {{ form_row(filterForm.status, {'label': 'Status:'}) }}
+                    {{ form_row(filterForm.featured, {'label': 'Featured:'}) }}
+                    {{ form_row(filterForm.category, {'label': 'Category:'}) }}
+                </div>
+
+                <div class="admin-blog__filters-actions">
+                    <button type="submit" class="button button--small">
+                        Apply Filters
+                    </button>
+                    <a href="{{ path('admin_blog_index') }}" class="button button--small">
+                        Reset
+                    </a>
+                </div>
             {{ form_end(filterForm) }}
         </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Created At</th>
-                    <th>Category</th>
-                    <th>Nb comments</th>
-                    <th>Status</th>
-                    <th>Featured</th>
-                    <th>Actions</th>
+    </div>
+    <div class="admin-blog__articles">
+        <h2>ARTICLES</h2>
+           <table class="admin-blog__table">
+            <thead class="admin-blog__table-head">
+                <tr class="admin-blog__table-row admin-blog__table-row--head">
+                    <th class="admin-blog__table-header title">Title</th>
+                    <th class="admin-blog__table-header">Author</th>
+                    <th class="admin-blog__table-header">Created At</th>
+                    <th class="admin-blog__table-header">Category</th>
+                    <th class="admin-blog__table-header">Comments</th>
+                    <th class="admin-blog__table-header">Status</th>
+                    <th class="admin-blog__table-header">Featured</th>
+                    <th class="admin-blog__table-header">Status</th>
+                    <th class="admin-blog__table-header">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+
+            <tbody class="admin-blog__table-body">
                 {% for article in articles %}
-                {# {{dump(article)}} #}
-                    <tr>
-                        <td>{{ article.title }}</td>
-                        <td>{{ article.author.username }}</td>
-                        <td>{{ article.createdAt|date('Y-m-d') }}</td>
-                        <td>{{ article.category ? article.category.name : '-' }}</td>
-                        <td>TEST: {{ article.comments.count() }} </td>
-                        <td>{{ article.status.value }}</td>
-                        <td>
-                            <form method="POST" action="{{ path('article_toggle_featured', {'id': article.id}) }}" style="display:inline;">
-                                <input type="checkbox" {% if article.isFeatured() %}checked{% endif %} onchange="this.form.submit()" class="featured-checkbox">
+                    <tr class="admin-blog__table-row">
+                        <td class="admin-blog__table-cell">{{ article.title }}</td>
+
+                        <td class="admin-blog__table-cell">
+                            {{ article.author.username }}
+                        </td>
+
+                        <td class="admin-blog__table-cell">
+                            {{ article.createdAt|date('Y-m-d') }}
+                        </td>
+
+                        <td class="admin-blog__table-cell">
+                            {{ article.category ? article.category.name : '-' }}
+                        </td>
+
+                        <td class="admin-blog__table-cell">
+                            {{ article.comments.count() }}
+                        </td>
+
+                        <td class="admin-blog__table-cell admin-blog__table-cell--status">
+                            {{ article.status.value }}
+                        </td>
+
+                        <td class="admin-blog__table-cell admin-blog__table-cell--featured">
+                            <form method="POST"
+                                action="{{ path('article_toggle_featured', {'id': article.id}) }}"
+                                class="admin-blog__featured-form">
+                                <input type="checkbox"
+                                    {% if article.isFeatured() %}checked{% endif %}
+                                    onchange="this.form.submit()"
+                                    class="admin-blog__featured-checkbox">
                             </form>
                         </td>
-                        <td>
-                            <a href="{{ path('article_show', {'slug': article.slug}) }}">View</a>
-                            <a href="{{ path('article_edit', {'id': article.id}) }}">Edit</a>
-                            
-                            {# Dropdown pour changer le status #}
-                            <form method="POST" action="{{ path('article_update_status', {'id': article.id}) }}" style="display:inline-flex; gap:0.5rem; align-items:center;">
-                                <select name="status" class="status-select">
-                                    <option value="published" {% if article.status.value == 'published' %}selected{% endif %}>Published</option>
-                                    <option value="draft" {% if article.status.value == 'draft' %}selected{% endif %}>Draft</option>
-                                    <option value="archived" {% if article.status.value == 'archived' %}selected{% endif %}>Archived</option>
+
+                        <td class="admin-blog__table-cell">
+                             <form method="POST"
+                                action="{{ path('article_update_status', {'id': article.id}) }}"
+                                class="admin-blog__status-form">
+                                
+                                <select name="status" class="admin-blog__status-select">
+                                    <option value="published" {% if article.status.value == 'published' %}selected{% endif %}>
+                                        Published
+                                    </option>
+                                    <option value="draft" {% if article.status.value == 'draft' %}selected{% endif %}>
+                                        Draft
+                                    </option>
+                                    <option value="archived" {% if article.status.value == 'archived' %}selected{% endif %}>
+                                        Archived
+                                    </option>
                                 </select>
-                                <button type="submit" class="button button--small">Update</button>
+
+
+                                <button type="submit" class="">
+                                    Update
+                                </button>
                             </form>
-                            
-                            <button class="button button--small button--danger" onclick="document.getElementById('deleteModal{{ article.id }}').showModal()">Delete</button>
-                            
-                            {# Confirmation modale #}
-                            <dialog id="deleteModal{{ article.id }}" class="admin-blog delete-modal">
-                                <div class="modal-content">
-                                    <h2>Confirm deletion</h2>
-                                    <p>Are you sure you want to delete this article (<strong>{{ article.title }}</strong>) and all tis comments ? This action cannot be undone.</p>
-                                    
-                                    <div class="modal-actions">
-                                        <form method="POST" action="{{ path('article_delete', {'id': article.id}) }}" style="display:inline;">
-                                            <button type="submit" class="button button--small button--danger">DELETE</button>
+                        </td>
+
+                        <td class="admin-blog__table-cell admin-blog__table-cell--actions">
+                            <div class="actions">
+                                <a class="admin-blog__link"
+                                href="{{ path('article_show', {'slug': article.slug}) }}">
+                                    View
+                                </a>
+    
+                                <a class="admin-blog__link"
+                                href="{{ path('article_edit', {'id': article.id}) }}">
+                                    Edit
+                                </a>
+    
+                                <button class=" admin-blog__delete-button"
+                                    onclick="document.getElementById('deleteModal{{ article.id }}').showModal()">
+                                        Delete
+                                </button>
+                            </div>
+
+                            <dialog id="deleteModal{{ article.id }}" class="admin-blog__modal delete-modal">
+                                <div class="admin-blog__modal-content">
+                                    <h2 class="admin-blog__modal-title">Confirm deletion</h2>
+
+                                    <p class="admin-blog__modal-text">
+                                        Are you sure you want to delete this article
+                                        <strong>{{ article.title }}</strong>
+                                        and all its comments ? This action cannot be undone.
+                                    </p>
+
+                                    <div class="admin-blog__modal-actions">
+                                        <form method="POST"
+                                            action="{{ path('article_delete', {'id': article.id}) }}"
+                                            class="admin-blog__modal-form">
+                                            <button type="submit" class="button button--small button--danger">
+                                                DELETE
+                                            </button>
                                         </form>
-                                        <button type="button" class="button button--small" onclick="document.getElementById('deleteModal{{ article.id }}').close()">CANCEL</button>
+
+                                        <button type="button"
+                                                class="button button--white button--small"
+                                                onclick="document.getElementById('deleteModal{{ article.id }}').close()">
+                                            CANCEL
+                                        </button>
                                     </div>
                                 </div>
                             </dialog>
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="8">No articles found.</td></tr>
+                    <tr class="admin-blog__table-row admin-blog__table-row--empty">
+                        <td colspan="8" class="admin-blog__table-cell">
+                            No articles found.
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-        {# Pagination #}
-        <div class="pagination-container">
+            <div class="pagination-container">
             {{ knp_pagination_render(articles) }}
         </div>
-
-    </section>
+    </div>
 
     {# CATEGORIES MANAGEMENT #}
-    <section class="categories-section">
-        <h3>Categories Management</h3>
+    <section class="admin-categories">
+        <h2 class="admin-categories__title">Categories Management</h2>
         
-        <a href="{{ path('category_new') }}" class="button button--medium button--accent">Add New Category</a>
+        <a href="{{ path('category_new') }}" class="button button--small button--accent">Add New Category</a>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Slug</th>
-                    <th>Description</th>
-                    <th>Articles Count</th>
-                    <th>Actions</th>
+        <table class="admin-categories__table">
+            <thead class="admin-categories__table-head">
+                <tr class="admin-categories__table-row admin-categories__table-row--head">
+                    <th class="admin-categories__table-header">Name</th>
+                    <th class="admin-categories__table-header">Slug</th>
+                    <th class="admin-categories__table-header">Description</th>
+                    <th class="admin-categories__table-header">Articles Count</th>
+                    <th class="admin-categories__table-header">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="admin-categories__table-body">
                 {% for category in categories %}
-                    <tr>
-                        <td><strong>{{ category.name }}</strong></td>
-                        <td><code>{{ category.slug }}</code></td>
-                        <td>{{ category.description ? category.description[:100] ~ '...' : '-' }}</td>
-                        <td>
+                    <tr class="admin-categories__table-row">
+                        <td class="admin-categories__table-cell"><strong>{{ category.name }}</strong></td>
+                        <td class="admin-categories__table-cell"><code>{{ category.slug }}</code></td>
+                        <td class="admin-categories__table-cell">{{ category.description ? category.description[:100] ~ '...' : '-' }}</td>
+                        <td class="admin-categories__table-cell">
                             <span class="badge">{{ category.articles|length }}</span>
                         </td>
-                        <td>
-                            <a href="{{ path('category_edit', {'id': category.id}) }}" class="button button--small">Edit</a>
+                        <td class="admin-categories__table-cell admin-categories__table-cell--actions">
+                            <a href="{{ path('category_edit', {'id': category.id}) }}" class="">Edit</a>
                             
-                            <button class="button button--small button--danger" 
+                            <button type="button" class="{% if category.articles|length > 0 %}disabled{% endif %}" 
                                     onclick="document.getElementById('deleteCategoryModal{{ category.id }}').showModal()"
                                     {% if category.articles|length > 0 %}disabled{% endif %}>
                                 Delete
                             </button>
                             
                             {# Delete Modal #}
-                            <dialog id="deleteCategoryModal{{ category.id }}" class="admin-blog delete-modal">
-                                <div class="modal-content">
-                                    <h2>Confirm Category Deletion</h2>
-                                    <p>Are you sure you want to delete the category <strong>{{ category.name }}</strong>?</p>
+                            <dialog id="deleteCategoryModal{{ category.id }}" class="admin-categories__modal delete-modal">
+                                <div class="admin-categories__modal-content">
+                                    <h2 class="admin-categories__modal-title">Confirm Category Deletion</h2>
+                                    <p class="admin-categories__modal-text">Are you sure you want to delete the category <strong>{{ category.name }}</strong>?</p>
                                     
-                                    <div class="modal-actions">
-                                        <form method="POST" action="{{ path('category_delete', {'id': category.id}) }}" style="display:inline;">
+                                    <div class="admin-categories__modal-actions">
+                                        <form method="POST" action="{{ path('category_delete', {'id': category.id}) }}" class="admin-categories__modal-form">
                                             <button type="submit" class="button button--small button--danger">DELETE</button>
                                         </form>
-                                        <button type="button" class="button button--small" onclick="document.getElementById('deleteCategoryModal{{ category.id }}').close()">CANCEL</button>
+                                        <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteCategoryModal{{ category.id }}').close()">CANCEL</button>
                                     </div>
                                 </div>
                             </dialog>
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="5">No categories found.</td></tr>
+                    <tr class="admin-categories__table-row admin-categories__table-row--empty"><td colspan="5" class="admin-categories__table-cell">No categories found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </section>
 
     {# TAGS MANAGEMENT #}
-    <section class="tags-section">
-        <h3>Tags Management</h3>
+    <section class="admin-tags">
+        <h2 class="admin-tags__title">Tags Management</h2>
         
-        <a href="{{ path('tag_new') }}" class="button button--medium button--accent">Add New Tag</a>
+        <a href="{{ path('tag_new') }}" class="button button--small button--accent">Add New Tag</a>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Slug</th>
-                    <th>Articles Count</th>
-                    <th>Actions</th>
+        <table class="admin-tags__table">
+            <thead class="admin-tags__table-head">
+                <tr class="admin-tags__table-row admin-tags__table-row--head">
+                    <th class="admin-tags__table-header name">Name</th>
+                    <th class="admin-tags__table-header slug">Slug</th>
+                    <th class="admin-tags__table-header count">Articles Count</th>
+                    <th class="admin-tags__table-header actions">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="admin-tags__table-body">
                 {% for tag in tags %}
-                    <tr>
-                        <td><strong>{{ tag.name }}</strong></td>
-                        <td><code>{{ tag.slug }}</code></td>
-                        <td>
+                    <tr class="admin-tags__table-row">
+                        <td class="admin-tags__table-cell"><strong>{{ tag.name }}</strong></td>
+                        <td class="admin-tags__table-cell"><code>{{ tag.slug }}</code></td>
+                        <td class="admin-tags__table-cell">
                             <span class="badge">{{ tag.articles|length }}</span>
                         </td>
-                        <td>
-                            <a href="{{ path('tag_edit', {'id': tag.id}) }}" class="button button--small">Edit</a>
+                        <td class="admin-tags__table-cell admin-tags__table-cell--actions">
+                            <a href="{{ path('tag_edit', {'id': tag.id}) }}" class="">Edit</a>
                             
-                            <button class="button button--small button--danger" 
+                            <button type="button" class="{% if tag.articles|length > 0 %}disabled{% endif %}" 
                                     onclick="document.getElementById('deleteTagModal{{ tag.id }}').showModal()"
                                     {% if tag.articles|length > 0 %}disabled{% endif %}>
                                 Delete
                             </button>
                             
                             {# Delete Modal #}
-                            <dialog id="deleteTagModal{{ tag.id }}" class="admin-blog delete-modal">
-                                <div class="modal-content">
-                                    <h2>Confirm Tag Deletion</h2>
-                                    <p>Are you sure you want to delete the tag <strong>{{ tag.name }}</strong>?</p>
+                            <dialog id="deleteTagModal{{ tag.id }}" class="admin-tags__modal delete-modal">
+                                <div class="admin-tags__modal-content">
+                                    <h2 class="admin-tags__modal-title">Confirm Tag Deletion</h2>
+                                    <p class="admin-tags__modal-text">Are you sure you want to delete the tag <strong>{{ tag.name }}</strong>?</p>
                                     
-                                    <div class="modal-actions">
-                                        <form method="POST" action="{{ path('tag_delete', {'id': tag.id}) }}" style="display:inline;">
+                                    <div class="admin-tags__modal-actions">
+                                        <form method="POST" action="{{ path('tag_delete', {'id': tag.id}) }}" class="admin-tags__modal-form">
                                             <button type="submit" class="button button--small button--danger">DELETE</button>
                                         </form>
-                                        <button type="button" class="button button--small" onclick="document.getElementById('deleteTagModal{{ tag.id }}').close()">CANCEL</button>
+                                        <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteTagModal{{ tag.id }}').close()">CANCEL</button>
                                     </div>
                                 </div>
                             </dialog>
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="4">No tags found.</td></tr>
+                    <tr class="admin-tags__table-row admin-tags__table-row--empty"><td colspan="4" class="admin-tags__table-cell">No tags found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </section>
 
     {# COMMENTS MANAGEMENT #}
-    <section class="comments-section">
-        <h2>Comments Management</h2>
+    <section class="admin-comments">
+        <h2 class="admin-comments__title">Comments Management</h2>
         
-        <div class="comments-header">
-            <span class="unapproved-count">
+        <div class="admin-comments__header">
+            <span class="admin-comments__unapproved-count">
                 <strong>Unapproved Messages: {{ unapprovedComments|length }}</strong>
             </span>
         </div>
 
         {% if unapprovedComments|length > 0 %}
-            <div class="comments-table-wrapper">
-                <table class="comments-table">
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Article</th>
-                            <th>Content</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <table class="admin-comments__table">
+                <thead class="admin-comments__table-head">
+                    <tr class="admin-comments__table-row admin-comments__table-row--head">
+                        <th class="admin-comments__table-header">Author</th>
+                        <th class="admin-comments__table-header">Article</th>
+                        <th class="admin-comments__table-header">Content</th>
+                        <th class="admin-comments__table-header">Created</th>
+                        <th class="admin-comments__table-header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="admin-comments__table-body">
                         {% for comment in unapprovedComments %}
                         
-                            <tr>
-                                <td>
+                            <tr class="admin-comments__table-row">
+                                <td class="admin-comments__table-cell">
                                     <strong>{{ comment.authorName ?: comment.author.username }}</strong>
                                 </td>
-                                <td>
-                                    <a href="{{ path('article_show', {'slug': comment.article.slug}) }}" target="_blank">
+                                <td class="admin-comments__table-cell">
+                                    <a href="{{ path('article_show', {'slug': comment.article.slug}) }}" target="_blank" class="admin-comments__link">
                                         {{ comment.article.title[:50] }}...
                                     </a>
                                 </td>
-                                <td>
-                                    <div class="comment-preview">
-                                        {{ comment.content[:100] }}...
+                                <td class="admin-comments__table-cell">
+                                    <div class="admin-comments__comment-preview">
+                                        {{ comment.content }}
                                     </div>
                                 </td>
-                                <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
-                                <td>
-                                    <div class="comment-actions">
-                                        {# Approve Button #}
-                                        <form method="POST" action="{{ path('comment_approve', {'id': comment.id}) }}" style="display:inline;">
-                                            <button type="submit" class="button button--small button--success">Approve</button>
+                                <td class="admin-comments__table-cell">{{ comment.createdAt|date('Y-m-d H:i') }}</td>
+                                <td class="admin-comments__table-cell admin-comments__table-cell--actions">
+                                    <div class="admin-comments__actions">
+                                        <form method="POST" action="{{ path('comment_approve', {'id': comment.id}) }}" class="admin-comments__approve-form">
+                                            <button type="submit" class="">Approve</button>
                                         </form>
 
-                                        {# Edit Button #}
-                                        <a href="{{ path('comment_edit', {'id': comment.id}) }}" class="button button--small">Edit</a>
+                                        <a href="{{ path('comment_edit', {'id': comment.id}) }}" class="">Edit</a>
 
-                                        {# Delete Button #}
-                                        <button class="button button--small button--danger" 
+                                        <button class="" 
                                                 onclick="document.getElementById('deleteCommentModal{{ comment.id }}').showModal()">
                                             Delete
                                         </button>
 
-                                        {# Delete Modal #}
-                                        <dialog id="deleteCommentModal{{ comment.id }}" class="admin-blog delete-modal">
-                                            <div class="modal-content">
-                                                <h2>Confirm Comment Deletion</h2>
-                                                <p>Are you sure you want to delete this comment?</p>
-                                                <p class="comment-preview"><em>"{{ comment.content[:200] }}..."</em></p>
+                                        <dialog id="deleteCommentModal{{ comment.id }}" class="admin-comments__modal delete-modal">
+                                            <div class="admin-comments__modal-content">
+                                                <h2 class="admin-comments__modal-title">Confirm Comment Deletion</h2>
+                                                <p class="admin-comments__modal-text">Are you sure you want to delete this comment?</p>
+                                                <p class="admin-comments__modal-text admin-comments__modal-text--preview"><em>"{{ comment.content[:200] }}..."</em></p>
                                                 
-                                                <div class="modal-actions">
-                                                    <form method="POST" action="{{ path('comment_delete', {'id': comment.id}) }}" style="display:inline;">
+                                                <div class="admin-comments__modal-actions">
+                                                    <form method="POST" action="{{ path('comment_delete', {'id': comment.id}) }}" class="admin-comments__modal-form">
                                                         <button type="submit" class="button button--small button--danger">DELETE</button>
                                                     </form>
-                                                    <button type="button" class="button button--small" onclick="document.getElementById('deleteCommentModal{{ comment.id }}').close()">CANCEL</button>
+                                                    <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteCommentModal{{ comment.id }}').close()">CANCEL</button>
                                                 </div>
                                             </div>
                                         </dialog>
@@ -305,13 +386,15 @@
                                 </td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         {% else %}
-            <div class="no-comments-message">
+            <div class="admin-comments__message admin-comments__message--empty">
                 <p>✓ All comments have been approved!</p>
             </div>
         {% endif %}
     </section>
+
+</div>
+
 {% endblock %}
