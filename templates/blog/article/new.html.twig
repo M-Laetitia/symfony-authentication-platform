@@ -21,19 +21,25 @@
         <div class="admin-article-form__field">
             {{ form_label(form.title) }}
             {{ form_widget(form.title) }}
-            {{ form_errors(form.title) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.title) }}
+            </div>
         </div>
 
         <div class="admin-article-form__field">
             {{ form_label(form.introduction) }}
             {{ form_widget(form.introduction) }}
-            {{ form_errors(form.introduction) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.introduction) }}
+            </div>
         </div>
 
         <div class="admin-article-form__field">
             {{ form_label(form.excerpt) }}
             {{ form_widget(form.excerpt) }}
-            {{ form_errors(form.excerpt) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.excerpt) }}
+            </div>
         </div>
     </section>
 
@@ -44,13 +50,17 @@
         <div class="admin-article-form__field">
             {{ form_label(form.metaTitle) }}
             {{ form_widget(form.metaTitle) }}
-            {{ form_errors(form.metaTitle) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.metaTitle) }}
+            </div>
         </div>
 
         <div class="admin-article-form__field">
             {{ form_label(form.metaDescription) }}
             {{ form_widget(form.metaDescription) }}
-            {{ form_errors(form.metaDescription) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.metaDescription) }}
+            </div>
         </div>
     </section>
 
@@ -61,16 +71,20 @@
         <div class="admin-article-form__field taxonomy-field">
             {{ form_label(form.category) }}
             {{ form_widget(form.category) }}
-            {{ form_errors(form.category) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.category) }}
+            </div>
         </div>
 
         <fieldset class="admin-article-form__field admin-article-form__field--tags">
             <legend class="admin-article-form__label">
                 {{ form_label(form.tags) }}
             </legend>
-
+            {{ form_help(form.tags) }}
             {{ form_widget(form.tags) }}
-            {{ form_errors(form.tags) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.tags) }}
+            </div>
         </fieldset>
     </section>
 
@@ -81,13 +95,18 @@
         <div class="admin-article-form__field">
             {{ form_label(form.coverFile) }}
             {{ form_widget(form.coverFile) }}
-            {{ form_errors(form.coverFile) }}
+            {{ form_help(form.coverFile) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.coverFile) }}
+            </div>
         </div>
 
         <div class="admin-article-form__field">
             {{ form_label(form.coverAlt) }}
             {{ form_widget(form.coverAlt) }}
-            {{ form_errors(form.coverAlt) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.coverAlt) }}
+            </div>
         </div>
     </section>
 
@@ -98,13 +117,18 @@
         <div class="admin-article-form__field admin-article-form__field--checkbox">
             {{ form_label(form.isFeatured) }}
             {{ form_widget(form.isFeatured) }}
-            {{ form_errors(form.isFeatured) }}
+            {{ form_help(form.isFeatured) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.isFeatured) }}
+            </div>
         </div>
 
         <div class="admin-article-form__field">
             {{ form_label(form.status) }}
-            {{ form_widget(form.status) }}
-            {{ form_errors(form.status) }}
+            {{ form_widget(form.status) }}           
+            <div class="field-error article-form-error">
+                {{ form_errors(form.status) }}
+            </div>
         </div>
     </section>
 
@@ -115,14 +139,16 @@
         <div class="admin-article-form__field admin-article-form__field--editor">
             <div id="editorjs" class="admin-article-form__editor"></div>
             {{ form_widget(form.content, {'attr': {'id': 'article_content'}}) }}
-            {{ form_errors(form.content) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.content) }}
+            </div>
         </div>
     </section>
 
     <!-- Form Actions -->
     <div class="admin-article-form__actions">
         {{ form_row(form.submit, {'attr': {'class': 'button button--accent button--small'}}) }}
-        <a href="{{ path('admin_blog_index') }}" class="button button--small button--black">Back to Blog Dashboard</a>
+        <a href="{{ path('admin_blog_index') }}" class="button button--small button--black-variant">Back to Dashboard</a>
     </div>
 
     {{ form_end(form) }}
