@@ -133,7 +133,7 @@ class MediaUploader implements MediaUploaderInterface
             }
     
             if ($file->getSize() > $maxSize) {
-                throw new \RuntimeException(sprintf('The file is too large (max: %s).', $constraints['max_size']));
+                throw new \RuntimeException(sprintf('Le fichier est trop volumineux (max: %s).', $constraints['max_size']));
             }
         }
 
@@ -145,14 +145,39 @@ class MediaUploader implements MediaUploaderInterface
         $allowedExtensions = ['png', 'jpeg', 'jpg', 'webp'];
         $fileExtension = strtolower($file->getClientOriginalExtension());
         if (!in_array($fileExtension, $allowedExtensions)) {
-            throw new \Exception('Unsupported file extensions');
+            throw new \Exception('Format de fichier non supporté. Formats acceptés: JPG, PNG, WebP');
         }
 
         // Check MIME type
         $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         $fileMimeType = $file->getMimeType();
         if (!in_array($fileMimeType, $allowedMimeTypes)) {
-            throw new \Exception('Unsupported file type.');
+            throw new \Exception('Type MIME non accepté.');
+        }
+
+        // Check image dimensions if constraints are specified
+        $imageInfo = @getimagesize($file->getPathname());
+        if ($imageInfo === false) {
+            throw new \Exception('Impossible de lire l\'image. Vérifiez qu\'il s\'agit bien d\'une image valide.');
+        }
+
+        $width = $imageInfo[0];
+        $height = $imageInfo[1];
+
+        // Check min dimensions
+        if (isset($constraints['min_width']) && $width < $constraints['min_width']) {
+            throw new \Exception(sprintf('La largeur minimale est %dpx (actuellement: %dpx).', $constraints['min_width'], $width));
+        }
+        if (isset($constraints['min_height']) && $height < $constraints['min_height']) {
+            throw new \Exception(sprintf('La hauteur minimale est %dpx (actuellement: %dpx).', $constraints['min_height'], $height));
+        }
+
+        // Check max dimensions
+        if (isset($constraints['max_width']) && $width > $constraints['max_width']) {
+            throw new \Exception(sprintf('La largeur maximale est %dpx (actuellement: %dpx).', $constraints['max_width'], $width));
+        }
+        if (isset($constraints['max_height']) && $height > $constraints['max_height']) {
+            throw new \Exception(sprintf('La hauteur maximale est %dpx (actuellement: %dpx).', $constraints['max_height'], $height));
         }
     }
 
