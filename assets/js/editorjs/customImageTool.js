@@ -10,7 +10,7 @@ export default class CustomImageTool extends ImageTool {
         altTextWrapper.classList.add('cdx-input', 'image-tool__alt-text');
         
         const altTextInput = document.createElement('input');
-        altTextInput.placeholder = 'Texte descriptif de l\'image (alt text)';
+        altTextInput.placeholder = 'Image short description (alt text)';
         altTextInput.value = this.data.alt || '';
         altTextInput.classList.add('cdx-input');
         altTextInput.setAttribute('name', 'alt');
@@ -27,10 +27,9 @@ export default class CustomImageTool extends ImageTool {
     }
     save(blockContent) {
         // console.log('Avant modification:', blockContent); 
-        debugger; 
         if (blockContent.file && blockContent.file.url) {
-            const { id, width, height } = blockContent.file;
-            blockContent.file = { id, width, height };
+            const { url, id, width, height } = blockContent.file;
+            blockContent.file = { url, id, width, height };
         }
         // console.log('Après modification:', blockContent); 
         return super.save(blockContent);
