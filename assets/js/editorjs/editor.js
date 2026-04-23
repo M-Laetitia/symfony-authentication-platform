@@ -33,29 +33,18 @@ document.addEventListener('DOMContentLoaded', function() {
             header: Header,
             list: List,
             quote: Quote,
-            // image: SimpleImage,
-            // image: {
-            //     class: ImageTool,
-            //     config: {
-            //         endpoints: {
-            //             byFile: 'http://localhost:8080/uploadFile',
-            //             // byUrl: 'http://localhost:8008/fetchUrl', 
-            //         }
-            //     }
-            // }
             image: {
-                class: CustomImageTool, // utlisation plugin personnalisé
+                class: CustomImageTool,
                 config: {
                     endpoints: {
                         byFile: '/uploadFile',
                     },
-                    // Adaptation de la réponse du backend pour utiliser l'ID
                     onUpload: (response) => {
                         return {
                             success: 1,
                             file: {
                                 url: response.file.url,
-                                id: response.file.id, // ID du média
+                                id: response.file.id,
                                 width: response.file.width,
                                 height: response.file.height,
                                 caption: response.file.caption,
@@ -66,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         },
-        placeholder: 'Commencez à écrire votre article...',
+        placeholder: 'Start to write your article...',
         data: window.articleContent || {},
         onReady: () => {
             console.log('EditorJS prêt');
