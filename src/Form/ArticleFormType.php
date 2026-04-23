@@ -25,7 +25,7 @@ class ArticleFormType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Title',
+                'label' => 'Title*',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
@@ -42,7 +42,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('excerpt', TextareaType::class, [
-                'label' => 'Excerpt',
+                'label' => 'Excerpt*',
                 'required' => false,
                 'constraints' => [
                     new Assert\Length([
@@ -57,7 +57,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('metaTitle', TextType::class, [
-                'label' => 'Meta Title (SEO)',
+                'label' => 'Meta Title (SEO)*',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
@@ -74,7 +74,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('metaDescription', TextType::class, [
-                'label' => 'Meta Description (SEO)',
+                'label' => 'Meta Description (SEO)*',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
@@ -92,7 +92,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('introduction', TextareaType::class, [
-                'label' => 'Introduction',
+                'label' => 'Introduction*',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
@@ -112,7 +112,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'Status*',
                 'choices' => [
                     'Draft' => ArticleType::DRAFT,
                     'Published' => ArticleType::PUBLISHED,
@@ -139,9 +139,9 @@ class ArticleFormType extends AbstractType
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
-                'label' => 'Category',
+                'label' => 'Category*',
                 'placeholder' => 'Select a category',
-                'required' => false,
+                'required' => true,
                 'constraints' => [
                     new Assert\NotNull([
                         'message' => 'Please select a category',
@@ -165,7 +165,7 @@ class ArticleFormType extends AbstractType
                 'attr' => ['accept' => 'image/*'],
                 'constraints' => [
                     new Assert\File([
-                        'maxSize' => '5M',
+                        'maxSize' => '2M',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/jpg',
@@ -175,8 +175,11 @@ class ArticleFormType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, WebP)',
                         'maxSizeMessage' => 'The image must not exceed {{ limit }} {{ suffix }}',
                     ]),
+                    new Assert\Image([
+                        'maxWidth' => 1800,
+                    ]),
                 ],
-                'help' => 'Accepted formats: JPEG, PNG, WebP (max 5 MB)',
+                'help' => 'Accepted formats: JPEG, PNG, WebP (max 2 MB) - Recommended image size: 1500px width x 800px height - Max width: 1800px ',
             ])
             ->add('coverAlt', TextType::class, [
                 'mapped' => false,
