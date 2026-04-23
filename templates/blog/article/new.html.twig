@@ -136,6 +136,17 @@
     <section class="admin-article-form__section admin-article-form__section--content">
         <h2 class="admin-article-form__section-title">Article Content</h2>
         
+        <!-- Image Upload Constraints -->
+        <div class="admin-article-from__constraints" >
+            <p>Image Upload Requirements:</p>
+            <ul>
+                <li>Minimum size: 400 x 400 pixels</li>
+                <li>Maximum size: 1200 x 800 pixels</li>
+                <li>Accepted formats: JPG, PNG, WebP</li>
+                <li>Maximum file size: 2 MB</li>
+            </ul>
+        </div>
+        
         <div class="admin-article-form__field admin-article-form__field--editor">
             <div id="editorjs" class="admin-article-form__editor"></div>
             {{ form_widget(form.content, {'attr': {'id': 'article_content'}}) }}
