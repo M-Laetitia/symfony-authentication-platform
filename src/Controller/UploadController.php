@@ -27,8 +27,14 @@ class UploadController extends AbstractController
             $caption = $request->request->get('caption', '');
             $altText = $request->request->get('alt', '');
 
-            // Upload via MediaUploader pour WebP generation et Media entity
-            $media = $this->mediaUploader->upload($file, $caption, $altText, MediaType::ARTICLE_IMAGE);
+            // Upload via MediaUploader dans articles_content avec Media entity
+            $media = $this->mediaUploader->upload(
+                $file, 
+                $caption, 
+                $altText, 
+                MediaType::ARTICLE_IMAGE,
+                'articles_content'  // Sous-dossier pour EditorJS
+            );
 
             // 4. Renvoie la réponse au format EditorJS
             return new JsonResponse([
