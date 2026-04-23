@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
-
+use Symfony\Component\Form\FormError;
 
 
 
@@ -156,7 +156,7 @@ class ArticleController extends AbstractController
         $pagination = $paginator->paginate(
             $allArticles,
             $request->query->getInt('page', 1),
-            8
+            12
         );
         
         // Get unapproved comments
@@ -185,20 +185,32 @@ class ArticleController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MediaUploader $mediaUploader): Response
     {
         $article = new Article();
-        $user = $this->getUser();
  
-
         $form = $this->createForm(ArticleFormType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Le status vient du formulaire - c'est tout!
             $article->setAuthor($this->getUser());
-            $article->setSlug($slugger->slug($article->getTitle())->lower());
+            // $article->setSlug($slugger->slug($article->getTitle())->lower());
+
+            // unique slug generation
+            $baseSlug = $slugger->slug($article->getTitle())->lower();
+            $slug = $baseSlug;
+            $i = 1;
+            while ($em->getRepository(Article::class)->findOneBy(['slug' => $slug])) {
+                $slug = $baseSlug . '-' . $i++;
+            }
+            $article->setSlug($slug);
             
             $em->persist($article);
-            $em->flush(); // Génère l'ID de l'article
+            $em->flush(); 
+
+            // try {
+            //     $em->flush();
+            // } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            //     $form->get('title')->addError(new FormError('This title is already used.'));
+            // }
 
             // EDITOR JS
             $editorContent = $form->get('content')->getData();
@@ -207,7 +219,7 @@ class ArticleController extends AbstractController
                 if (json_last_error() === JSON_ERROR_NONE) {
                     
                     $file = $form->get('coverFile')->getData();
-                    $altText = $form->get('coverAlt')->getData();
+                    $altText = $form->get('coverAlt')->getData() ?? '';
 
                     if ($file) {
                         $media = $mediaUploader->upload(
@@ -239,55 +251,25 @@ class ArticleController extends AbstractController
                             if ($media) {
                                 $media->setArticle($article);
                                 $media->setAltText($block['data']['alt'] ?? '');
-                                $media->setCaption($block['data']['caption'] ?? ''); // Stocke le caption
+                                $media->setCaption($block['data']['caption'] ?? ''); 
                                 $em->persist($media);
                         }
                     }
                     }
-                    // var_dump($editorContent);die;
-                    $em->flush(); // Met à jour les médias
+                    $em->flush();
         
-                    $article->setContent($contentData); // Enregistre le contenu
-                    $em->flush(); // Sauvegarde finale
+                    $article->setContent($contentData); 
+                    $em->flush(); 
                 }
             }
 
-
-
-
-            // var_dump([
-            //     'id' => $article->getId(),
-            //     'title' => $article->getTitle(),
-            //     'metaTitle' => $article->getMetaTitle(),
-            //     'metaDescription' => $article->getMetaDescription(),
-            //     'excerpt' => $article->getExcerpt(),
-            //     'status' => $article->getStatus(),
-            //     'createdAt' => $article->getCreatedAt(),
-            //     'slug' => $article->getSlug(),
-            //     'category' => $article->getCategory() ? $article->getCategory()->getName() : null,
-            // ]);
-            // die;
-            
-            
-            // dd($article); // Décommentez cette ligne pour voir l'objet final
-            // var_dump(get_object_vars($article));die;
-            // dump($form->getErrors(true));die;
-            // dump($article->getContent());
-            // die('Contenu sauvegardé (voir dump ci-dessus)');
-     
-            // var_dump($article);die;
-            // var_dump(get_object_vars($article));die;
-
-            // Simple: message selon le status
             if ($article->getStatus() === \App\Enum\ArticleType::PUBLISHED) {
-                $this->addFlash('success', 'Article publié avec succès !');
+                $this->addFlash('success', 'Article published successfully!');
             } else {
-                $this->addFlash('success', 'Article enregistré en brouillon !');
+                $this->addFlash('success', 'Article saved as draft!');
             }
-            return $this->redirectToRoute('blog_index');
-            //     $em->flush();
-            //     $this->addFlash('success', 'Article sauvegardé en brouillon.');
-            // }
+            return $this->redirectToRoute('admin_blog_index');
+
         }
         return $this->render('blog/article/new.html.twig', [
             'form' => $form->createView(),
@@ -324,7 +306,7 @@ class ArticleController extends AbstractController
                             $em->remove($oldCover);
                         }
 
-                        $altText = $form->get('coverAlt')->getData();
+                        $altText = $form->get('coverAlt')->getData() ?? '';
                         $media = $mediaUploader->upload(
                             $file,
                             '',
@@ -361,7 +343,7 @@ class ArticleController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', 'Article mis à jour avec succès !');
+            $this->addFlash('success', 'Article successfully updated!');
             return $this->redirectToRoute('admin_blog_index');
         }
 
