@@ -36,10 +36,10 @@ class Article
     #[ORM\Column(type: Types::STRING, length: 160, nullable: true)]
     private ?string $excerpt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 60)]
     private ?string $metaTitle = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::STRING, length: 160, nullable: true)]
     private ?string $metaDescription = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
