@@ -84,6 +84,8 @@ class MediaUploader implements MediaUploaderInterface
         $height = $imageInfo[1] ?? 400;
 
         $relativeWebpPath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+        // Ajouter le préfixe /uploads/ pour que le path soit absolu du serveur
+        $relativeWebpPath = '/uploads/' . $relativeWebpPath;
 
         $this->em->beginTransaction(); // démarre la transaction 
         // démarre une transaction de base de données, ce qui signifie que toutes les opérations suivantes (insert, update, delete) ne seront pas réellement validées tant que que commit n'est pas appelé.
