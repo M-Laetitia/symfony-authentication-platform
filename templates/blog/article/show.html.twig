@@ -131,8 +131,13 @@
                 <div class="article__author">
                     <div class="article__author-image">
                         <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" >
+                            {% if article.author.avatar %}
                             <img src="{{ asset('uploads/' ~ article.author.avatar.path) }}" alt="Picture of {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}" class="article__author-photo u-img-cover"
                             loading="lazy">
+                            {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ article.author.photographer.firstName|url_encode }}+{{ article.author.photographer.lastName|url_encode }}&background=random" alt="Picture of {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}" class="article__author-photo u-img-cover"
+                            loading="lazy">
+                            {% endif %}
                         </a>
                     </div>
                     <div class="article__author-info">
@@ -298,9 +303,5 @@
     {% endif %}
         
 </section>
-
-
-
-
 
 {% endblock %}
