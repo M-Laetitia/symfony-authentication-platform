@@ -37,7 +37,7 @@ class ArticleFormType extends AbstractType
                     ]),
                 ],
                 'attr' => [
-                    'placeholder' => 'Article title',
+                    'placeholder' => 'Article title (max 150 characters)',
                     'maxlength' => 150,
                 ],
             ])
@@ -64,16 +64,16 @@ class ArticleFormType extends AbstractType
                         'message' => 'The meta title is required',
                     ]),
                     new Assert\Length([
-                        'max' => 255,
+                        'max' => 60,
                         'maxMessage' => 'The meta title cannot exceed {{ limit }} characters',
                     ]),
                 ],
                 'attr' => [
-                    'placeholder' => 'Title for search engines',
-                    'maxlength' => 255,
+                    'placeholder' => 'Title for search engines (usually between 50 and 60 characters)',
+                    'maxlength' => 60,
                 ],
             ])
-            ->add('metaDescription', TextareaType::class, [
+            ->add('metaDescription', TextType::class, [
                 'label' => 'Meta Description (SEO)',
                 'required' => true,
                 'constraints' => [
@@ -81,14 +81,14 @@ class ArticleFormType extends AbstractType
                         'message' => 'The meta description is required',
                     ]),
                     new Assert\Length([
-                        'max' => 500,
+                        'max' => 160,
                         'maxMessage' => 'The meta description cannot exceed {{ limit }} characters',
                     ]),
                 ],
                 'attr' => [
-                    'placeholder' => 'Description for search engines',
+                    'placeholder' => 'Description for search engines (usually between 150 and 160 characters)',
                     'rows' => 3,
-                    'maxlength' => 500,
+                    'maxlength' => 160,
                 ],
             ])
             ->add('introduction', TextareaType::class, [
@@ -107,7 +107,8 @@ class ArticleFormType extends AbstractType
                 ],
                 'attr' => [
                     'placeholder' => 'Article introduction (between 50 and 1000 characters)',
-                    'rows' => 4,
+                    'rows' => 8,
+                    'maxlength' => 1000,
                 ],
             ])
             ->add('status', ChoiceType::class, [
@@ -183,18 +184,18 @@ class ArticleFormType extends AbstractType
                 'label' => 'Cover image short description (alt text)',
                 'constraints' => [
                     new Assert\Length([
-                        'max' => 255,
+                        'max' => 150,
                         'maxMessage' => 'The alt text cannot exceed {{ limit }} characters',
                     ]),
                 ],
                 'attr' => [
-                    'placeholder' => 'Image description for accessibility',
-                    'maxlength' => 255,
+                    'placeholder' => 'Image description for accessibility (usually between 80 and 150 characters)',
+                    'maxlength' => 150,
                 ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Create article',
-                'attr' => ['class' => 'btn btn-primary']
+                'attr' => ['class' => 'button button--accent button--small']
             ]);
     }
 
