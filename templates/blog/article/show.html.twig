@@ -144,7 +144,7 @@
                         <p class="article__author-name">
                             <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" > {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}</a>
                         </p>
-                        <p class="article__author-bio">{{article.author.photographer.profile.biography}}</p>
+                        <p class="article__author-bio">{{article.author.photographer.profile.bio.short}}</p>
                     </div>
                 </div>
 
@@ -199,6 +199,25 @@
                         <h5 class="article__comment-form-title">LEAVE A COMMENT</h5>
                         <span class="line" aria-hidden="true"></span>
                     </div>
+
+                    {% if app.user %}
+                        <div class="article__comment-form-user-info">
+                            <p class="comment-form__user-info">
+                                You are commenting as <strong>{{ app.user.username }}</strong>
+                                —
+                                <a href="{{ path('app_logout') }}" class="comment-form__logout-link">
+                                    Not you? Log out
+                                </a>
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="article__comment-form-user-info">
+                            <p class="comment-form__login-hint">
+                                Already have an account?
+                                <a href="{{ path('app_login') }}">Log in</a>
+                            </p>
+                        </div>
+                    {% endif %}
 
                     <div class="article__comment-form-body">
                         <form name="comment_form" method="post">
