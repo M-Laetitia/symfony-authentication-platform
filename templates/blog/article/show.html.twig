@@ -162,10 +162,60 @@
                         <div class="article__comment">
                             <div class="article__comment-header">
                                 <div class="article__comment-meta">
-                                    <span class="article__comment-author">{{ comment.authorName }}</span>
+                                    <span class="article__comment-author">
+                                        {% if comment.author %}
+                                            {{ comment.author.firstName ? comment.author.firstName ~ ' ' ~ comment.author.lastName : comment.author.username }}
+                                        {% else %}
+                                            {{ comment.authorName }}
+                                        {% endif %}
+                                    </span>
                                     <span class="article__comment-date">{{ comment.createdAt|date('d F Y') }}</span>
+                                    
+                                    {% if comment.editedAt %}
+                                        <span class="article__comment-edited">
+                                            (edited {{ comment.editedAt|date('d F Y') }}
+                                            {% if comment.lastEditBy %}
+                                                by {{ comment.lastEditBy.username }}
+                                            {% endif %})
+                                        </span>
+                                    {% endif %}
                                 </div>
-                                {# <button class="article__comment-reply">REPLY</button> #}
+
+                                <!-- Comment Actions -->
+                                {% if app.user and ('ROLE_ADMIN' in app.user.roles or app.user == comment.author) %}
+                                    <div class="article__comment-actions">
+                                        {% if 'ROLE_ADMIN' in app.user.roles %}
+                                            <a href="{{ path('comment_edit', {'id': comment.id, 'redirect_to': 'article'}) }}" class="article__comment-btn article__comment-btn--edit" title="Edit comment">
+                                                {% include 'components/icons/edit.html.twig' %} 
+                                            </a>
+                                        {% endif %}
+
+                                        {% if app.user == comment.author or 'ROLE_ADMIN' in app.user.roles %}
+                                            <button class="article__comment-btn article__comment-btn--delete" title="Delete comment" onclick="document.getElementById('modal-delete-{{ comment.id }}').showModal()">
+                                                {% include 'components/icons/delete.html.twig' %} 
+                                            </button>
+
+                                            <!-- Delete Confirmation Modal -->
+                                            <dialog id="modal-delete-{{ comment.id }}" class="article__modal">
+                                                <div class="article__modal-content">
+                                                    <h4 class="article__modal-title">Delete Comment</h4>
+                                                    <p class="article__modal-text">Are you sure you want to delete this comment? This action cannot be undone.</p>
+                                                    
+                                                    <div class="article__modal-actions">
+                                                        <form method="post" action="{{ path('comment_delete', {'id': comment.id, 'redirect_to': 'article'}) }}" style="display: inline;">
+                                                            <button type="submit" class="article__modal-btn button button--small button--danger">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                        <button type="button" class="article__modal-btn button button--small button--black-variant" onclick="document.getElementById('modal-delete-{{ comment.id }}').close()">
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </dialog>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="article__comment-body">
@@ -175,11 +225,11 @@
                             <div class="article__comment-pending">
                                 {% if not comment.isApproved %}
                                     <p >
-                                        This comment has not yet been approved by moderation.
+                                        This comment has not yet been approved by moderation -   
                                     </p>
                                     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
                                         <form method="post" action="{{ path('comment_approve', {'id': comment.id}) }}">
-                                            <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                            <button type="submit" class="btn btn-success btn-sm"> Approve</button>
                                         </form>
                                     {% endif %}
                                 {% endif %}
@@ -247,11 +297,8 @@
                             {{ form_rest(form) }}
                         </form>
                     </div>
-
                 </div>
-            
             </article>
-
         </div>
         
     <section class="article__nav">
