@@ -533,6 +533,17 @@ button.disabled {
     }
 }
 
+.button--black-variant {
+    transition: var(--transition-base);
+    background-color: var(--color-grey-900);
+    color: var(--color-white);
+    border: 1px solid var(--color-grey-900);
+    &:hover {
+        background-color: var(--color-white);
+        color: var(--color-grey-900);
+    }
+}
+
 .button--border-accent {
     border: 1px solid var(--color-accent);
     background-color: var(--color-grey-900);
