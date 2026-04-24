@@ -86,7 +86,10 @@
             <tbody class="admin-blog__table-body">
                 {% for article in articles %}
                     <tr class="admin-blog__table-row">
-                        <td class="admin-blog__table-cell">{{ article.title }}</td>
+                        <td class="admin-blog__table-cell">
+                            <a class="admin-blog__link"
+                                href="{{ path('article_show', {'slug': article.slug}) }}">
+                            {{ article.title }}</a></td>
 
                         <td class="admin-blog__table-cell">
                             {{ article.author.username }}
@@ -316,84 +319,90 @@
         </table>
     </section>
 
-    {# COMMENTS MANAGEMENT #}
-    <section class="admin-comments">
-        <h2 class="admin-comments__title">Comments Management</h2>
-        
-        <div class="admin-comments__header">
-            <span class="admin-comments__unapproved-count">
-                <strong>Unapproved Messages: {{ unapprovedComments|length }}</strong>
-            </span>
-        </div>
 
-        {% if unapprovedComments|length > 0 %}
-            <table class="admin-comments__table">
-                <thead class="admin-comments__table-head">
-                    <tr class="admin-comments__table-row admin-comments__table-row--head">
-                        <th class="admin-comments__table-header">Author</th>
-                        <th class="admin-comments__table-header">Article</th>
-                        <th class="admin-comments__table-header">Content</th>
-                        <th class="admin-comments__table-header">Created</th>
-                        <th class="admin-comments__table-header">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="admin-comments__table-body">
-                        {% for comment in unapprovedComments %}
-                        
-                            <tr class="admin-comments__table-row">
-                                <td class="admin-comments__table-cell">
-                                    <strong>{{ comment.authorName ?: comment.author.username }}</strong>
-                                </td>
-                                <td class="admin-comments__table-cell">
-                                    <a href="{{ path('article_show', {'slug': comment.article.slug}) }}" target="_blank" class="admin-comments__link">
-                                        {{ comment.article.title[:50] }}...
-                                    </a>
-                                </td>
-                                <td class="admin-comments__table-cell">
-                                    <div class="admin-comments__comment-preview">
-                                        {{ comment.content }}
-                                    </div>
-                                </td>
-                                <td class="admin-comments__table-cell">{{ comment.createdAt|date('Y-m-d H:i') }}</td>
-                                <td class="admin-comments__table-cell admin-comments__table-cell--actions">
-                                    <div class="admin-comments__actions">
-                                        <form method="POST" action="{{ path('comment_approve', {'id': comment.id}) }}" class="admin-comments__approve-form">
-                                            <button type="submit" class="">Approve</button>
-                                        </form>
-
-                                        <a href="{{ path('comment_edit', {'id': comment.id}) }}" class="">Edit</a>
-
-                                        <button class="" 
-                                                onclick="document.getElementById('deleteCommentModal{{ comment.id }}').showModal()">
-                                            Delete
-                                        </button>
-
-                                        <dialog id="deleteCommentModal{{ comment.id }}" class="admin-comments__modal delete-modal">
-                                            <div class="admin-comments__modal-content">
-                                                <h2 class="admin-comments__modal-title">Confirm Comment Deletion</h2>
-                                                <p class="admin-comments__modal-text">Are you sure you want to delete this comment?</p>
-                                                <p class="admin-comments__modal-text admin-comments__modal-text--preview"><em>"{{ comment.content[:200] }}..."</em></p>
-                                                
-                                                <div class="admin-comments__modal-actions">
-                                                    <form method="POST" action="{{ path('comment_delete', {'id': comment.id}) }}" class="admin-comments__modal-form">
-                                                        <button type="submit" class="button button--small button--danger">DELETE</button>
-                                                    </form>
-                                                    <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteCommentModal{{ comment.id }}').close()">CANCEL</button>
-                                                </div>
-                                            </div>
-                                        </dialog>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="admin-comments__message admin-comments__message--empty">
-                <p>✓ All comments have been approved!</p>
+    
+    {% if is_granted('ROLE_ADMIN') %}
+        {# COMMENTS MANAGEMENT #}
+        <section class="admin-comments">
+            <h2 class="admin-comments__title">Comments Management</h2>
+            
+            <div class="admin-comments__header">
+                <span class="admin-comments__unapproved-count">
+                    <strong>Unapproved Messages: {{ unapprovedComments|length }}</strong>
+                </span>
             </div>
-        {% endif %}
-    </section>
+
+            {% if unapprovedComments|length > 0 %}
+                <table class="admin-comments__table">
+                    <thead class="admin-comments__table-head">
+                        <tr class="admin-comments__table-row admin-comments__table-row--head">
+                            <th class="admin-comments__table-header">Author</th>
+                            <th class="admin-comments__table-header">Article</th>
+                            <th class="admin-comments__table-header">Content</th>
+                            <th class="admin-comments__table-header">Created</th>
+                            <th class="admin-comments__table-header">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="admin-comments__table-body">
+                            {% for comment in unapprovedComments %}
+                            
+                                <tr class="admin-comments__table-row">
+                                    <td class="admin-comments__table-cell">
+                                        <strong>{{ comment.authorName ?: comment.author.username }}</strong>
+                                    </td>
+                                    <td class="admin-comments__table-cell">
+                                        <a href="{{ path('article_show', {'slug': comment.article.slug}) }}" target="_blank" class="admin-comments__link">
+                                            {{ comment.article.title[:50] }}...
+                                        </a>
+                                    </td>
+                                    <td class="admin-comments__table-cell">
+                                        <div class="admin-comments__comment-preview">
+                                            {{ comment.content }}
+                                        </div>
+                                    </td>
+                                    <td class="admin-comments__table-cell">{{ comment.createdAt|date('Y-m-d H:i') }}</td>
+                                    <td class="admin-comments__table-cell admin-comments__table-cell--actions">
+                                        <div class="admin-comments__actions">
+                                            <form method="POST" action="{{ path('comment_approve', {'id': comment.id}) }}" class="admin-comments__approve-form">
+                                                <button type="submit" class="">Approve</button>
+                                            </form>
+
+                                            <a href="{{ path('comment_edit', {'id': comment.id}) }}" class="">Edit</a>
+
+                                            <button class="" 
+                                                    onclick="document.getElementById('deleteCommentModal{{ comment.id }}').showModal()">
+                                                Delete
+                                            </button>
+
+                                            <dialog id="deleteCommentModal{{ comment.id }}" class="admin-comments__modal delete-modal">
+                                                <div class="admin-comments__modal-content">
+                                                    <h2 class="admin-comments__modal-title">Confirm Comment Deletion</h2>
+                                                    <p class="admin-comments__modal-text">Are you sure you want to delete this comment?</p>
+                                                    <p class="admin-comments__modal-text admin-comments__modal-text--preview"><em>"{{ comment.content[:200] }}..."</em></p>
+                                                    
+                                                    <div class="admin-comments__modal-actions">
+                                                        <form method="POST" action="{{ path('comment_delete', {'id': comment.id}) }}" class="admin-comments__modal-form">
+                                                            <button type="submit" class="button button--small button--danger">DELETE</button>
+                                                        </form>
+                                                        <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteCommentModal{{ comment.id }}').close()">CANCEL</button>
+                                                    </div>
+                                                </div>
+                                            </dialog>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="admin-comments__message admin-comments__message--empty">
+                    <p>✓ All comments have been approved!</p>
+                </div>
+            {% endif %}
+        </section>
+        
+    {% endif %}
+
 
 </div>
 
