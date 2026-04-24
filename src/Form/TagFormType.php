@@ -16,7 +16,7 @@ class TagFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'required' => true,
-                'label' => 'Tag Name',
+                'label' => 'Tag Name*',
                 'attr' => [
                     'placeholder' => 'Enter tag name...',
                     'maxlength' => 30,
