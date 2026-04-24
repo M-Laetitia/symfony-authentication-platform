@@ -52,7 +52,7 @@ class Article
     /**
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'articles')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'articles', orphanRemoval: true)]
     private Collection $tags;
 
     /**
