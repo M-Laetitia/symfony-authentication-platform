@@ -8,7 +8,7 @@ import CustomImageTool from './customImageTool';
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(' DOMContentLoaded déclenché');
+    console.log('DOMContentLoaded déclenché');
     
     // Vérifier que le holder existe
     const holder = document.getElementById('editorjs');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Éléments manquants !');
         return;
     }
-    
+
     const editor = new EditorJS({
         holder: 'editorjs',
         tools: {
