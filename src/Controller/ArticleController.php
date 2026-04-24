@@ -446,7 +446,7 @@ class ArticleController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
-            $this->addFlash('success', 'Votre commentaire a été ajouté !');
+            $this->addFlash('success', 'Your comment has been successfully posted !');
             return $this->redirectToRoute('article_show', ['slug' => $article->getSlug()]);
         }
 
@@ -654,8 +654,9 @@ class ArticleController extends AbstractController
 
     // ============= COMMENT MANAGEMENT =============
 
+
     #[Route('/admin/blog/comments/{id}/approve', name: 'comment_approve', methods: ['POST'])]
-    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function approveComment(Comment $comment, EntityManagerInterface $em): Response
     {
         $comment->setIsApproved(true);
@@ -666,7 +667,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/admin/blog/comments/{id}/edit', name: 'comment_edit')]
-    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function editComment(Comment $comment, Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(AdminCommentFormType::class, $comment);
@@ -688,7 +689,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/admin/blog/comments/{id}/delete', name: 'comment_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_PHOTOGRAPHER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function deleteComment(Comment $comment, EntityManagerInterface $em): Response
     {
         $em->remove($comment);
