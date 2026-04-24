@@ -4,26 +4,49 @@
 
 {% block body %}
 
-    <div class="comment-edit-wrapper">
-        <h1>Edit Comment</h1>
+<div class="admin-page admin-form admin-form--comment">
+    <div class="admin-form__wrapper">
+        <h1 class="admin-form__title">Edit Comment</h1>
 
-        <div class="comment-info">
-            <p><strong>Article:</strong> <a href="{{ path('article_show', {'slug': comment.article.slug}) }}">{{ comment.article.title }}</a></p>
-            <p><strong>Author:</strong> {{ comment.authorName ?: comment.author.username }}</p>
-            <p><strong>Created:</strong> {{ comment.createdAt|date('Y-m-d H:i') }}</p>
-            {% if comment.editedAt %}<p><strong>Last edited:</strong> {{ comment.editedAt|date('Y-m-d H:i') }}</p>{% endif %}
+        <div class="admin-form__info">
+            <p class="admin-form__info-item">
+                <strong>Article:</strong>
+                <a href="{{ path('article_show', {'slug': comment.article.slug}) }}">
+                    {{ comment.article.title }}
+                </a>
+            </p>
+
+            <p class="admin-form__info-item">
+                <strong>Author:</strong>
+                {{ comment.authorName ?: comment.author.username }}
+            </p>
+
+            <p class="admin-form__info-item">
+                <strong>Created:</strong>
+                {{ comment.createdAt|date('Y-m-d H:i') }}
+            </p>
+
+            {% if comment.editedAt %}
+                <p class="admin-form__info-item">
+                    <strong>Last edited:</strong>
+                    {{ comment.editedAt|date('Y-m-d H:i') }} by {{ comment.lastEditBy.username ? comment.lastEditBy.username : 'Unknown' }}
+                </p>
+            {% endif %}
         </div>
 
-        {{ form_start(form, {'attr': {'class': 'comment-edit-form'}}) }}
+        {{ form_start(form, {'attr': {'class': 'admin-form__form'}}) }}
             {{ form_widget(form) }}
             
-            <div class="form-actions">
-                <button type="submit" class="button button--medium button--accent">Save Changes</button>
-                <a href="{{ path('admin_blog_index') }}" class="button button--medium">Cancel</a>
+            <div class="admin-form__actions">
+                <button type="submit" class="button button--medium button--accent">
+                    Save Changes
+                </button>
+                <a href="{{ path('admin_blog_index') }}" class="button button--black-variant button--medium">
+                    Cancel
+                </a>
             </div>
         {{ form_end(form) }}
     </div>
-
-
+</div>
 
 {% endblock %}
