@@ -23,6 +23,9 @@ class ArticleFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isEdit = $options['is_edit'] ?? false;
+        $buttonLabel = $isEdit ? 'Update article' : 'Create article';
+        
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Title*',
@@ -197,7 +200,7 @@ class ArticleFormType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Create article',
+                'label' => $buttonLabel,
                 'attr' => ['class' => 'button button--accent button--small']
             ]);
     }
@@ -209,6 +212,7 @@ class ArticleFormType extends AbstractType
             'csrf_protection' => true, 
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'article_form',
+            'is_edit' => false,
         ]);
     }
 }
