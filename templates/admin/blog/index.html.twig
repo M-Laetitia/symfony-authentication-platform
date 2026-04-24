@@ -381,7 +381,7 @@
                                                     <p class="admin-comments__modal-text admin-comments__modal-text--preview"><em>"{{ comment.content[:200] }}..."</em></p>
                                                     
                                                     <div class="admin-comments__modal-actions">
-                                                        <form method="POST" action="{{ path('comment_delete', {'id': comment.id}) }}" class="admin-comments__modal-form">
+                                                        <form method="POST" action="{{ path('comment_delete', {'id': comment.id, 'redirect_to': 'admin'}) }}" class="admin-comments__modal-form">
                                                             <button type="submit" class="button button--small button--danger">DELETE</button>
                                                         </form>
                                                         <button type="button" class="button button--white button--small" onclick="document.getElementById('deleteCommentModal{{ comment.id }}').close()">CANCEL</button>
