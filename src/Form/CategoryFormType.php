@@ -17,7 +17,7 @@ class CategoryFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'required' => true,
-                'label' => 'Category Name',
+                'label' => 'Category Name*',
                 'attr' => [
                     'placeholder' => 'Enter category name...',
                     'maxlength' => 50,
@@ -34,10 +34,10 @@ class CategoryFormType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
-                'label' => 'Description',
+                'label' => 'Description (max 500 characters)',
                 'attr' => [
                     'placeholder' => 'Enter category description (optional)...',
-                    'rows' => 4,
+                    'rows' => 6,
                 ],
                 'constraints' => [
                     new Assert\Length([
