@@ -679,6 +679,16 @@ class ArticleController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Comment updated successfully.');
+            
+            // Redirection based on context (check both query AND request)
+            $redirectTo = $request->request->get('redirect_to') ?? $request->query->get('redirect_to');
+            
+            if ($redirectTo === 'article') {
+                return $this->redirectToRoute('article_show', [
+                    'slug' => $comment->getArticle()->getSlug()
+                ]);
+            }
+            
             return $this->redirectToRoute('admin_blog_index');
         }
 
@@ -690,12 +700,19 @@ class ArticleController extends AbstractController
 
     #[Route('/admin/blog/comments/{id}/delete', name: 'comment_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function deleteComment(Comment $comment, EntityManagerInterface $em): Response
+    public function deleteComment(Comment $comment, EntityManagerInterface $em, Request $request): Response
     {
+        $redirectTo = $request->query->get('redirect_to', 'admin');
         $em->remove($comment);
         $em->flush();
 
         $this->addFlash('success', 'Comment deleted successfully.');
+            
+        // Redirection selon le contexte (chercher dans query ET request)
+        if ($redirectTo === 'article') {
+            return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
+        }
+        
         return $this->redirectToRoute('admin_blog_index');
     }
 
