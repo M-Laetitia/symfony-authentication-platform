@@ -37,6 +37,11 @@
         {{ form_start(form, {'attr': {'class': 'admin-form__form'}}) }}
             {{ form_widget(form) }}
             
+            {# Preserve the redirect_to parameter  #}
+            {% if app.request.query.get('redirect_to') %}
+                <input type="hidden" name="redirect_to" value="{{ app.request.query.get('redirect_to') }}" />
+            {% endif %}
+            
             <div class="admin-form__actions">
                 <button type="submit" class="button button--medium button--accent">
                     Save Changes
