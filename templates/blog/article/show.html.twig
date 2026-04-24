@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="article__media">
-                    {% set cover = article.medias|first %}
+                    {% set cover = article.medias|filter(m => m.type.value == 'article_cover')|first %}
                     {% if cover %}
                         <img
                             src="{{ cover.path | imagine_filter('article_cover') }}"
@@ -92,6 +92,22 @@
                                     {{ block.data.text|raw }}
                                 </h4>
                             {% endif %}
+                        {% endif %}
+
+                        {% if block.type == 'image' %}
+                            <figure class="article__figure">
+                                <img 
+                                    src="{{ asset('uploads/' ~ article.medias|filter(m => m.id == block.data.file.id)|first.path) }}"
+                                    alt="{{ block.data.alt ?? '' }}"
+                                    width="{{ block.data.file.width }}"
+                                    height="{{ block.data.file.height }}"
+                                    class="article__content-image"
+                                    loading="lazy"
+                                />
+                                {% if block.data.caption %}
+                                    <figcaption class="article__figure-caption">{{ block.data.caption }}</figcaption>
+                                {% endif %}
+                            </figure>
                         {% endif %}
 
                     {% endfor %}
