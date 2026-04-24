@@ -25,13 +25,12 @@ export default class CustomImageTool extends ImageTool {
         
         return wrapper;
     }
+
     save(blockContent) {
-        // console.log('Avant modification:', blockContent); 
         if (blockContent.file && blockContent.file.url) {
             const { url, id, width, height } = blockContent.file;
             blockContent.file = { url, id, width, height };
         }
-        // console.log('Après modification:', blockContent); 
         return super.save(blockContent);
     }
 }
