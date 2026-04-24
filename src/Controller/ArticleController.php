@@ -186,7 +186,9 @@ class ArticleController extends AbstractController
     {
         $article = new Article();
  
-        $form = $this->createForm(ArticleFormType::class, $article);
+        $form = $this->createForm(ArticleFormType::class, $article, [
+            'is_edit' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -246,15 +248,15 @@ class ArticleController extends AbstractController
                                 'height' => $fileData['height'],
                             ];
 
-                            // Lie le média à l'article
+                            // Bind media to article
                             $media = $em->getRepository(Media::class)->find($fileData['id']);
                             if ($media) {
                                 $media->setArticle($article);
                                 $media->setAltText($block['data']['alt'] ?? '');
                                 $media->setCaption($block['data']['caption'] ?? ''); 
                                 $em->persist($media);
+                            }
                         }
-                    }
                     }
                     $em->flush();
         
@@ -286,8 +288,9 @@ class ArticleController extends AbstractController
                 throw $this->createAccessDeniedException('You cannot delete this article');
         }
 
-
-        $form = $this->createForm(ArticleFormType::class, $article);
+        $form = $this->createForm(ArticleFormType::class, $article, [
+            'is_edit' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
