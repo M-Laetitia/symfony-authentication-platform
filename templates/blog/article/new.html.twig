@@ -167,7 +167,20 @@
     <!-- Pass existing content to EditorJS -->
     {% if article.content is not null %}
     <script>
-        window.articleContent = {{ article.content|json_encode|raw }};
+        window.articleContent = {{ (editContent ?? article.content)|json_encode|raw }};
+        const mediaMap = {{ mediaMap|json_encode|raw }};
+        
+        // Add full URLs to image blocks for existing images
+        if (window.articleContent && window.articleContent.blocks) {
+            window.articleContent.blocks.forEach(block => {
+                if (block.type === 'image' && block.data.file && block.data.file.id) {
+                    const mediaId = block.data.file.id;
+                    if (mediaMap[mediaId]) {
+                        block.data.file.url = '/uploads/' + mediaMap[mediaId];
+                    }
+                }
+            });
+        }
     </script>
     {% endif %}
 
