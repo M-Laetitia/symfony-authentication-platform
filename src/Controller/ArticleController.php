@@ -276,6 +276,8 @@ class ArticleController extends AbstractController
         return $this->render('blog/article/new.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
+            'mediaMap' => [],
+            'editContent' => null,
         ]);
 
     }
@@ -321,22 +323,32 @@ class ArticleController extends AbstractController
                         $em->persist($media);
                     }
 
-                    foreach ($contentData['blocks'] as &$block) {
+                    foreach ($contentData['blocks'] as $block) {
                         if ($block['type'] === 'image' && isset($block['data']['file']['id'])) {
-                            $fileData = $block['data']['file'];
-                            $block['data']['file'] = [
-                                'id' => $fileData['id'],
-                                'width' => $fileData['width'],
-                                'height' => $fileData['height'],
-                            ];
-
-                            $media = $em->getRepository(Media::class)->find($fileData['id']);
+                            $mediaId = $block['data']['file']['id'];
+                            $media = $em->getRepository(Media::class)->find($mediaId);
                             if ($media) {
                                 $media->setArticle($article);
                                 $media->setAltText($block['data']['alt'] ?? '');
                                 $media->setCaption($block['data']['caption'] ?? '');
                                 $em->persist($media);
                             }
+                        }
+                    }
+
+                    // Collect remaining image IDs in the article content
+                    $remainingImageIds = [];
+                    foreach ($contentData['blocks'] as $block) {
+                        if ($block['type'] === 'image' && isset($block['data']['file']['id'])) {
+                            $remainingImageIds[] = $block['data']['file']['id'];
+                        }
+                    }
+
+                    // Remove medias that are no longer in the article content
+                    foreach ($article->getMedias() as $media) {
+                        if ($media->getType() !== MediaType::ARTICLE_COVER && !in_array($media->getId(), $remainingImageIds)) {
+                            $mediaUploader->deleteMediaFile($media);
+                            $em->remove($media);
                         }
                     }
 
@@ -347,12 +359,36 @@ class ArticleController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Article successfully updated!');
-            return $this->redirectToRoute('admin_blog_index');
+            return $this->redirectToRoute('article_edit', ['id' => $article->getId()]);
+        }
+
+        // Build media mapping and enrich content with alt/caption for EditorJS display in edit mode
+        $mediaMap = [];
+        $editContent = $article->getContent();
+        
+        foreach ($article->getMedias() as $media) {
+            $mediaMap[$media->getId()] = $media->getPath();
+        }
+        
+        // Reconstruct content with alt and caption from Media entities for editing
+        if ($editContent && isset($editContent['blocks'])) {
+            foreach ($editContent['blocks'] as &$block) {
+                if ($block['type'] === 'image' && isset($block['data']['file']['id'])) {
+                    $mediaId = $block['data']['file']['id'];
+                    $media = $em->getRepository(Media::class)->find($mediaId);
+                    if ($media) {
+                        $block['data']['alt'] = $media->getAltText() ?? '';
+                        $block['data']['caption'] = $media->getCaption() ?? '';
+                    }
+                }
+            }
         }
 
         return $this->render('blog/article/new.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
+            'editContent' => $editContent,
+            'mediaMap' => $mediaMap,
             'isEdit' => true,
         ]);
     }
@@ -466,14 +502,21 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/comment/{id}/approve', name: 'comment_approve', methods: ['POST'])]
-    public function approve(Comment $comment, EntityManagerInterface $em): Response
+    public function approve(Comment $comment, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $comment->setIsApproved(true);
         $em->flush();
 
-        $this->addFlash('success', 'Commentaire approuvé avec succès.');
+        $this->addFlash('success', 'Comment approved successfully.');
+        
+        // Redirect based on context
+        $redirectTo = $request->query->get('redirect_to', 'article');
+        if ($redirectTo === 'admin') {
+            return $this->redirectToRoute('admin_blog_index');
+        }
+        
         return $this->redirectToRoute('article_show', ['slug' => $comment->getArticle()->getSlug()]);
     }
 
@@ -746,7 +789,7 @@ class ArticleController extends AbstractController
 
     // ============= COMMENT MANAGEMENT =============
 
-    #[Route('/admin/blog/comments/{id}/approve', name: 'comment_approve', methods: ['POST'])]
+    #[Route('/admin/blog/comments/{id}/approve', name: 'comment_approve_admin', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function approveComment(Comment $comment, EntityManagerInterface $em): Response
     {
