@@ -1,11 +1,18 @@
 // Scroll to top button
 const scrollBtn = document.getElementById('scrollTopBtn');
 
+// Check initial state
+if (window.scrollY > 300) { 
+    scrollBtn.classList.add('visible');
+} else {
+    scrollBtn.classList.remove('visible');
+}
+
 window.addEventListener('scroll', () => {
-    if (window.scrollY > window.innerHeight) { 
-        scrollBtn.style.display = 'block';
+    if (window.scrollY > 300) { 
+        scrollBtn.classList.add('visible');
     } else {
-        scrollBtn.style.display = 'none';
+        scrollBtn.classList.remove('visible');
     }
 });
 
@@ -361,4 +368,28 @@ document.addEventListener('click', function(e) {
                 toggleEditBtn.textContent = 'Edit Info';
             }
         });
+    }
+
+
+    // hero parallax
+
+        const parallaxImage = document.querySelector('[data-parallax]');
+    
+    if (parallaxImage) {
+        let scrollY = 0;
+        let ticking = false;
+        
+        function updateParallax() {
+            parallaxImage.style.transform = `translateY(${scrollY * 0.3}px)`;
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
     }
