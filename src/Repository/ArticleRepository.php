@@ -20,7 +20,6 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
 
-
     public function findPublishedArticlesWithCover(?int $limit = null): array
     {
         $qb = $this->createQueryBuilder('a')
@@ -158,7 +157,62 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
+    public function findAllForAdmin(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.comments', 'c')
+            ->addSelect('c')
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
+    public function findAllForAdminFiltered(string $sortBy = 'date_desc', string $status = '', string $featured = '', string $categoryId = '', string $search = ''): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.comments', 'c')
+            ->addSelect('c')
+            ->leftJoin('a.category', 'cat')
+            ->addSelect('cat');
+
+        // Search filter 
+        if ($search !== '' && strlen($search) >= 3) {
+            $qb->andWhere('a.title LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        // Status filter
+        if ($status !== '') {
+            $qb->andWhere('a.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        // Category filter
+        if ($categoryId !== '') {
+            $qb->andWhere('a.category = :categoryId')
+               ->setParameter('categoryId', (int)$categoryId);
+        }
+
+        // Featured filter
+        if ($featured === 'yes') {
+            $qb->andWhere('a.isFeatured = true');
+        } elseif ($featured === 'no') {
+            $qb->andWhere('a.isFeatured = false OR a.isFeatured IS NULL');
+        }
+
+        // Sorting
+        switch ($sortBy) {
+            case 'date_asc':
+                $qb->orderBy('a.createdAt', 'ASC');
+                break;
+            case 'date_desc':
+            default:
+                $qb->orderBy('a.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
     
     //    /**
     //     * @return Article[] Returns an array of Article objects
@@ -177,6 +231,8 @@ class ArticleRepository extends ServiceEntityRepository
 
     //    public function findOneBySomeField($value): ?Article
     //    {
+
+
     //        return $this->createQueryBuilder('a')
     //            ->andWhere('a.exampleField = :val')
     //            ->setParameter('val', $value)

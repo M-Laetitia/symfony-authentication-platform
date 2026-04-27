@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\ArticleType;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -16,7 +17,7 @@ class Article
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 150, unique: true, nullable: false)]
+    #[ORM\Column(length: 150, nullable: false)]
     // private string $title;
     private string $title = '';
 
@@ -24,10 +25,10 @@ class Article
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 150, unique: true, nullable: false)]
-    private string $slug;
+    private string $slug = '';
 
-    #[ORM\Column(length: 20, nullable: false)]
-    private string $status;
+    #[ORM\Column(type: 'string', enumType: ArticleType::class)]
+    private ArticleType $status;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $content = null;
@@ -35,10 +36,10 @@ class Article
     #[ORM\Column(type: Types::STRING, length: 160, nullable: true)]
     private ?string $excerpt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 60)]
     private ?string $metaTitle = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::STRING, length: 160, nullable: true)]
     private ?string $metaDescription = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
@@ -51,7 +52,7 @@ class Article
     /**
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'articles')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'articles', orphanRemoval: true)]
     private Collection $tags;
 
     /**
@@ -83,7 +84,7 @@ class Article
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->articleEditHistories = new ArrayCollection();
-        $this->status = 'unsaved';
+        $this->status = ArticleType::DRAFT;
         $this->createdAt = new \DateTimeImmutable();
         $this->medias = new ArrayCollection();
     }
@@ -130,15 +131,14 @@ class Article
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ArticleType
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ArticleType $status): self
     {
         $this->status = $status;
-
         return $this;
     }
 

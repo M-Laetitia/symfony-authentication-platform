@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} | Blog{% endblock %}
+
+{% block body %}
+
+<div class="admin-page admin-form admin-form--tag">
+    <div class="admin-form__wrapper">
+        <h1 class="admin-form__title">{{ title }}</h1>
+
+        {{ form_start(form, {'attr': {'class': 'admin-form__form'}}) }}
+            {{ form_widget(form) }}
+            
+            <div class="admin-form__actions">
+                <button type="submit" class="button button--medium button--accent">
+                    {% if tag is defined and tag.id %}
+                        Update Tag
+                    {% else %}
+                        Create Tag
+                    {% endif %}
+                </button>
+                <a href="{{ path('admin_blog_index') }}" class="button button--black-variant button--medium">
+                    Cancel
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{% endblock %}

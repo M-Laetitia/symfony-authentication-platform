@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block meta_description %}{{article.excerpt}}{% endblock %}
 
-{% block title %}{{ article.title }} | Photography Tips & Inspiration{% endblock %}
+{% block title %}{{ article.metaTitle }} | Photography Tips & Inspiration{% endblock %}
 
 {% block body %}
 
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="article__media">
-                    {% set cover = article.medias|first %}
+                    {% set cover = article.medias|filter(m => m.type.value == 'article_cover')|first %}
                     {% if cover %}
                         <img
                             src="{{ cover.path | imagine_filter('article_cover') }}"
@@ -59,14 +59,6 @@
                         />
                     {% endif %}
                 </div>
-{# 
-                <div class="article__media">
-                    {% set cover = article.medias|first %}
-                    {% if cover %}
-                        <img src="{{ asset('uploads/' ~ cover.path) }}" alt="{{ cover.altText ?? article.title }}" class="article__image u-img-cover"
-                        loading="lazy">
-                    {% endif %}
-                </div> #}
 
             
                 <div class="article__body">
@@ -92,6 +84,22 @@
                                     {{ block.data.text|raw }}
                                 </h4>
                             {% endif %}
+                        {% endif %}
+
+                        {% if block.type == 'image' %}
+                            <figure class="article__figure">
+                                <img 
+                                    src="{{ asset('uploads/' ~ article.medias|filter(m => m.id == block.data.file.id)|first.path) }}"
+                                    alt="{{ block.data.alt ?? '' }}"
+                                    width="{{ block.data.file.width }}"
+                                    height="{{ block.data.file.height }}"
+                                    class="article__content-image u-img-cover"
+                                    loading="lazy"
+                                />
+                                {% if block.data.caption %}
+                                    <figcaption class="article__figure-caption">{{ block.data.caption }}</figcaption>
+                                {% endif %}
+                            </figure>
                         {% endif %}
 
                     {% endfor %}
@@ -122,24 +130,34 @@
 
                     </div>
 
-                    {# <div class="article__actions">
-                        picto coeur
-                    </div> #}
+                    <button>
+                        {% if app.user and 'ROLE_PHOTOGRAPHER' in app.user.roles %}
+                            <a href="{{ path('article_edit', {'id': article.id}) }}" class="article__edit-btn">
+                                {% include 'components/icons/edit.html.twig' %} 
+                                Edit Article
+                            </a>
+                        {% endif %}
+                    </button>
 
                 </div>
                 
                 <div class="article__author">
                     <div class="article__author-image">
                         <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" >
+                            {% if article.author.avatar %}
                             <img src="{{ asset('uploads/' ~ article.author.avatar.path) }}" alt="Picture of {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}" class="article__author-photo u-img-cover"
                             loading="lazy">
+                            {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ article.author.photographer.firstName|url_encode }}+{{ article.author.photographer.lastName|url_encode }}&background=random" alt="Picture of {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}" class="article__author-photo u-img-cover"
+                            loading="lazy">
+                            {% endif %}
                         </a>
                     </div>
                     <div class="article__author-info">
                         <p class="article__author-name">
                             <a href="{{ path('team_show', { 'slug': article.author.photographer.slug }) }}" > {{article.author.photographer.firstName}} {{article.author.photographer.lastName}}</a>
                         </p>
-                        <p class="article__author-bio">{{article.author.photographer.profile.biography}}</p>
+                        <p class="article__author-bio">{{article.author.photographer.profile.bio.short}}</p>
                     </div>
                 </div>
 
@@ -157,10 +175,60 @@
                         <div class="article__comment">
                             <div class="article__comment-header">
                                 <div class="article__comment-meta">
-                                    <span class="article__comment-author">{{ comment.authorName }}</span>
+                                    <span class="article__comment-author">
+                                        {% if comment.author %}
+                                            {{ comment.author.firstName ? comment.author.firstName ~ ' ' ~ comment.author.lastName : comment.author.username }}
+                                        {% else %}
+                                            {{ comment.authorName }}
+                                        {% endif %}
+                                    </span>
                                     <span class="article__comment-date">{{ comment.createdAt|date('d F Y') }}</span>
+                                    
+                                    {% if comment.editedAt %}
+                                        <span class="article__comment-edited">
+                                            (edited {{ comment.editedAt|date('d F Y') }}
+                                            {% if comment.lastEditBy %}
+                                                by {{ comment.lastEditBy.username }}
+                                            {% endif %})
+                                        </span>
+                                    {% endif %}
                                 </div>
-                                {# <button class="article__comment-reply">REPLY</button> #}
+
+                                <!-- Comment Actions -->
+                                {% if app.user and ('ROLE_ADMIN' in app.user.roles or app.user == comment.author) %}
+                                    <div class="article__comment-actions">
+                                        {% if 'ROLE_ADMIN' in app.user.roles %}
+                                            <a href="{{ path('comment_edit', {'id': comment.id, 'redirect_to': 'article'}) }}" class="article__comment-btn article__comment-btn--edit" title="Edit comment">
+                                                {% include 'components/icons/edit.html.twig' %} 
+                                            </a>
+                                        {% endif %}
+
+                                        {% if app.user == comment.author or 'ROLE_ADMIN' in app.user.roles %}
+                                            <button class="article__comment-btn article__comment-btn--delete" title="Delete comment" onclick="document.getElementById('modal-delete-{{ comment.id }}').showModal()">
+                                                {% include 'components/icons/delete.html.twig' %} 
+                                            </button>
+
+                                            <!-- Delete Confirmation Modal -->
+                                            <dialog id="modal-delete-{{ comment.id }}" class="article__modal">
+                                                <div class="article__modal-content">
+                                                    <h4 class="article__modal-title">Delete Comment</h4>
+                                                    <p class="article__modal-text">Are you sure you want to delete this comment? This action cannot be undone.</p>
+                                                    
+                                                    <div class="article__modal-actions">
+                                                        <form method="post" action="{{ path('comment_delete', {'id': comment.id, 'redirect_to': 'article'}) }}" style="display: inline;">
+                                                            <button type="submit" class="article__modal-btn button button--small button--danger">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                        <button type="button" class="article__modal-btn button button--small button--black-variant" onclick="document.getElementById('modal-delete-{{ comment.id }}').close()">
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </dialog>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="article__comment-body">
@@ -170,11 +238,11 @@
                             <div class="article__comment-pending">
                                 {% if not comment.isApproved %}
                                     <p >
-                                        This comment has not yet been approved by moderation.
+                                        This comment has not yet been approved by moderation -   
                                     </p>
                                     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-                                        <form method="post" action="{{ path('comment_approve', {'id': comment.id}) }}">
-                                            <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                        <form method="post" action="{{ path('comment_approve', {'id': comment.id, 'redirect_to': 'article'}) }}">
+                                            <button type="submit" class="btn btn-success btn-sm"> Approve</button>
                                         </form>
                                     {% endif %}
                                 {% endif %}
@@ -194,6 +262,25 @@
                         <h5 class="article__comment-form-title">LEAVE A COMMENT</h5>
                         <span class="line" aria-hidden="true"></span>
                     </div>
+
+                    {% if app.user %}
+                        <div class="article__comment-form-user-info">
+                            <p class="comment-form__user-info">
+                                You are commenting as <strong>{{ app.user.username }}</strong>
+                                —
+                                <a href="{{ path('app_logout') }}" class="comment-form__logout-link">
+                                    Not you? Log out
+                                </a>
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="article__comment-form-user-info">
+                            <p class="comment-form__login-hint">
+                                Already have an account?
+                                <a href="{{ path('app_login') }}">Log in</a>
+                            </p>
+                        </div>
+                    {% endif %}
 
                     <div class="article__comment-form-body">
                         <form name="comment_form" method="post">
@@ -223,11 +310,8 @@
                             {{ form_rest(form) }}
                         </form>
                     </div>
-
                 </div>
-            
             </article>
-
         </div>
         
     <section class="article__nav">
@@ -298,9 +382,5 @@
     {% endif %}
         
 </section>
-
-
-
-
 
 {% endblock %}

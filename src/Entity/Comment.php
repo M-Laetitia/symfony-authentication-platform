@@ -203,7 +203,7 @@ class Comment
         return $this;
     }
 
-    public function getlLstEditBy(): ?User
+    public function getLastEditBy(): ?User
     {
         return $this->lastEditBy;
     }

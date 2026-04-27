@@ -24,6 +24,9 @@ p {
   font-weight: 400;
   line-height: 1.2rem;
 }
+input {
+  line-height: 1.2rem;
+}
 address {
   font-style: normal;
 }
@@ -67,7 +70,7 @@ textarea:not([rows]) {
   scroll-margin-block: 5ex;
 }
 h1, h2, h3, h4,
-button, input, label {
+button,label {
   line-height: 1.1;
 }
 /* body {
@@ -97,4 +100,30 @@ html {
 ::-moz-selection {
   background-color: var(--color-accent);
   color: var(--color-grey-900);
+}
+
+/* largeur */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* fond */
+::-webkit-scrollbar-track {
+    background: var(--color-grey-900); 
+}
+
+/* barre */
+::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 0px;
+}
+
+/* hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+}
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) var(--color-grey-900); 
 }
