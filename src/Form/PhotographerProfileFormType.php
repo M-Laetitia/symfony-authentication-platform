@@ -196,9 +196,9 @@ class PhotographerProfileFormType extends AbstractType
                 'label' => 'Portfolio Banner Image Description',
                 'mapped' => false,
                 'required' => false,
-                'constraints' => [new Assert\Length(['max' => 255])],
+                'constraints' => [new Assert\Length(['max' => 150])],
                 'attr' => ['class' => 'form-control', 'rows' => 2],
-                'help' => 'Short description of your portfolio banner image (for accessibility)',
+                'help' => 'Short description of your portfolio banner image (for accessibility) - 150 characters max.',
             ])
 
             // Specialities
@@ -208,6 +208,7 @@ class PhotographerProfileFormType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
+                'help' => 'Select your photography specialities (you can select multiple options by holding Ctrl or Cmd key).',
             ])
         ;
     }
