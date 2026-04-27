@@ -265,112 +265,27 @@
             title="Our lastest works"
             subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             buttonText="Explore more"
-            linkBtn="#"
+            linkBtn="/team"
             />
 
             <div class="section-works__content scroll-text-section__content">
 
                 <div class="section-works__gallery">
-                    <figure class="gallery__item gallery__item--landscape">
-                        <img class="gallery__image  u-img-cover" src="media/images/concert_photography.jpg" alt="">
+                    {% for portfolio in latestPhotographies %}
+                    <figure class="gallery__item {% if loop.first or loop.last %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}"></a>
                         <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
+                            <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}" class="gallery__detail-link">
                                 <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
+                                    <span class="gallery__name">{{ portfolio.photographer.firstName }} {{ portfolio.photographer.lastName }}</span>
+                                    <span class="separator" aria-hidden="true"></span>
+                                    <span class="gallery__service">{{ portfolio.gallerySeries.name }}</span>
                                 </div>
-                              </a>
+                            </a>
                         </div>
                     </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                  
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--landscape">
-                        <img class=" gallery__image u-img-cover" src="media/images/wedding.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-
+                    {% endfor %}
                 </div>
-
 
             </div>
         </div>
@@ -441,7 +356,7 @@
                 title="Articles & blog"
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Learn more"
-                linkBtn="#"
+                linkBtn="/blog"
                 />
 
                 <div class="section-articles__container">

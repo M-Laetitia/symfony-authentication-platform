@@ -1,66 +1,191 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}New article{% endblock %}
+{% block title %}{% if isEdit is defined and isEdit %}Edit Article{% else %}Create Article{% endif %}{% endblock %}
 
 {% block body %}
-            {# Voir toutes les variables disponibles #}
-    {# <pre>{{ dump(_context|keys) }}</pre> #}
 
-    {# Voir le contenu de form si disponible #}
-    {# {% if form is defined %}
-        <pre>{{ dump(form.vars) }}</pre>
-    {% endif %} #}
-    <h1>créer un article</h1>
-
-    {{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_row(form.metaTitle) }}
-    {{ form_row(form.metaDescription) }}
-    {{ form_row(form.category) }}
-    {{ form_row(form.excerpt) }}
-    <div class="form-group">
-        {{ form_label(form.coverFile) }}
-        {{ form_widget(form.coverFile) }}
+<div class="admin-page admin-article-form">
+    <div class="admin-article-form__header">
+        <h1 class="admin-article-form__title">
+            {% if isEdit is defined and isEdit %}Edit Article{% else %}Create Article{% endif %}
+        </h1>
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.coverAlt) }}
-        {{ form_widget(form.coverAlt) }}
-    </div>
-    
-    <div class="form-group">
-        <label>Tags</label>
-        <div class="checkboxes">
-            {{ form_widget(form.tags) }}
+    {{ form_start(form, {'attr': {'class': 'admin-article-form__form'}}) }}
+
+    <!-- Basic Information Section -->
+    <section class="admin-article-form__section admin-article-form__section--basic">
+        <h2 class="admin-article-form__section-title">Basic Information</h2>
+        
+        <div class="admin-article-form__field">
+            {{ form_label(form.title) }}
+            {{ form_widget(form.title) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.title) }}
+            </div>
         </div>
+
+        <div class="admin-article-form__field">
+            {{ form_label(form.introduction) }}
+            {{ form_widget(form.introduction) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.introduction) }}
+            </div>
+        </div>
+
+        <div class="admin-article-form__field">
+            {{ form_label(form.excerpt) }}
+            {{ form_widget(form.excerpt) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.excerpt) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- SEO Section -->
+    <section class="admin-article-form__section admin-article-form__section--seo">
+        <h2 class="admin-article-form__section-title">SEO</h2>
+        
+        <div class="admin-article-form__field">
+            {{ form_label(form.metaTitle) }}
+            {{ form_widget(form.metaTitle) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.metaTitle) }}
+            </div>
+        </div>
+
+        <div class="admin-article-form__field">
+            {{ form_label(form.metaDescription) }}
+            {{ form_widget(form.metaDescription) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.metaDescription) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories & Tags Section -->
+    <section class="admin-article-form__section admin-article-form__section--taxonomy">
+        <h2 class="admin-article-form__section-title">Categories & Tags</h2>
+        
+        <div class="admin-article-form__field taxonomy-field">
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.category) }}
+            </div>
+        </div>
+
+        <fieldset class="admin-article-form__field admin-article-form__field--tags">
+            <legend class="admin-article-form__label">
+                {{ form_label(form.tags) }}
+            </legend>
+            {{ form_help(form.tags) }}
+            {{ form_widget(form.tags) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.tags) }}
+            </div>
+        </fieldset>
+    </section>
+
+    <!-- Cover Image Section -->
+    <section class="admin-article-form__section admin-article-form__section--cover">
+        <h2 class="admin-article-form__section-title">Cover Image</h2>
+        
+        <div class="admin-article-form__field">
+            {{ form_label(form.coverFile) }}
+            {{ form_widget(form.coverFile) }}
+            {{ form_help(form.coverFile) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.coverFile) }}
+            </div>
+        </div>
+
+        <div class="admin-article-form__field">
+            {{ form_label(form.coverAlt) }}
+            {{ form_widget(form.coverAlt) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.coverAlt) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Options Section -->
+    <section class="admin-article-form__section admin-article-form__section--options">
+        <h2 class="admin-article-form__section-title">Options</h2>
+        
+        <div class="admin-article-form__field admin-article-form__field--checkbox">
+            {{ form_label(form.isFeatured) }}
+            {{ form_widget(form.isFeatured) }}
+            {{ form_help(form.isFeatured) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.isFeatured) }}
+            </div>
+        </div>
+
+        <div class="admin-article-form__field">
+            {{ form_label(form.status) }}
+            {{ form_widget(form.status) }}           
+            <div class="field-error article-form-error">
+                {{ form_errors(form.status) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="admin-article-form__section admin-article-form__section--content">
+        <h2 class="admin-article-form__section-title">Article Content</h2>
+        
+        <!-- Image Upload Constraints -->
+        <div class="admin-article-from__constraints" >
+            <p>Image Upload Requirements:</p>
+            <ul>
+                <li>Minimum size: 400 x 400 pixels</li>
+                <li>Maximum size: 1200 x 800 pixels</li>
+                <li>Accepted formats: JPG, PNG, WebP</li>
+                <li>Maximum file size: 2 MB</li>
+            </ul>
+        </div>
+        
+        <div class="admin-article-form__field admin-article-form__field--editor">
+            <div id="editorjs" class="admin-article-form__editor"></div>
+            {{ form_widget(form.content, {'attr': {'id': 'article_content'}}) }}
+            <div class="field-error article-form-error">
+                {{ form_errors(form.content) }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Actions -->
+    <div class="admin-article-form__actions">
+        {{ form_row(form.submit, {'attr': {'class': 'button button--accent button--small'}}) }}
+        <a href="{{ path('admin_blog_index') }}" class="button button--small button--black-variant">Back to Dashboard</a>
     </div>
-    {# {{ form_row(form._token) }} #}
-
-    <div class="form-group">
-        <label>Contenu de l'article</label>
-        <div id="editorjs"></div>
-        {{ form_row(form.content, { 'attr': { 'id': 'article_content' } }) }}
-    </div>
-
-    <button type="submit">Enregistrer</button>
-
-
-    {# <div class="form-buttons">
-        <button type="submit" name="action" value="publish" >Publier</button>
-        <button type="submit" name="action" value="draft" >Enregistrer comme brouillon</button>
-    </div> #}
-
-    {# Modifie le libellé du bouton en fonction du statut #}
-    {# {% if article.status == 'draft' %}
-        {{ form_row(form.save, { 'label': 'Publier' }) }}
-    {% endif %} #}
-
 
     {{ form_end(form) }}
-    <a href="{{ path('blog_index') }}" >Retour à la liste</a>
+
+    <!-- Pass existing content to EditorJS -->
+    {% if article.content is not null %}
+    <script>
+        window.articleContent = {{ (editContent ?? article.content)|json_encode|raw }};
+        const mediaMap = {{ mediaMap|json_encode|raw }};
+        
+        // Add full URLs to image blocks for existing images
+        if (window.articleContent && window.articleContent.blocks) {
+            window.articleContent.blocks.forEach(block => {
+                if (block.type === 'image' && block.data.file && block.data.file.id) {
+                    const mediaId = block.data.file.id;
+                    if (mediaMap[mediaId]) {
+                        block.data.file.url = '/uploads/' + mediaMap[mediaId];
+                    }
+                }
+            });
+        }
+    </script>
+    {% endif %}
+
     {{ encore_entry_script_tags('editor') }}
 
+</div>
 
 {% endblock %}
-
