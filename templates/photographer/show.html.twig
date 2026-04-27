@@ -183,6 +183,7 @@
       </section>
 
       <!-- SECTION: Gallery -->
+      {% if featuredMedias is not empty %}
       <section class="photographer-gallery gallery-glightbox-isotope">
         {# <h2 class="photographer-gallery__title">GALLERY</h2> #}
         <div class="gallery">
@@ -220,15 +221,16 @@
         </div>
       </div>
 
-
       </section>
+      {% endif %}
   
-
       <!-- SECTION: Testimonials -->
+      {% if testimonials is defined and testimonials is not empty %}
       <section class="photographer-testimonials">
         <h2 class="photographer-testimonials__title">TESTIMONIALS</h2>
-        <p>Testimonials will be added here...</p>
+        <p></p>
       </section>
+      {% endif %}
     </div>
   </div>
 </section>
