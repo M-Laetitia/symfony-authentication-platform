@@ -50,7 +50,7 @@ class UploadController extends AbstractController
             return new JsonResponse([
                 'success' => 1,
                 'file' => [
-                    'url' => $media->getPath(),
+                    'url' => '/uploads/' . $media->getPath(),
                     'id' => $media->getId(),
                     'width' => $media->getWidth(),
                     'height' => $media->getHeight(),
