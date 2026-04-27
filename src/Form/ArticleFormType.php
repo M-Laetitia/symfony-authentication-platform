@@ -179,10 +179,10 @@ class ArticleFormType extends AbstractType
                         'maxSizeMessage' => 'The image must not exceed {{ limit }} {{ suffix }}',
                     ]),
                     new Assert\Image([
-                        'maxWidth' => 1800,
+                        'maxWidth' => 1600,
                     ]),
                 ],
-                'help' => 'Accepted formats: JPEG, PNG, WebP (max 2 MB) - Recommended image size: 1500px width x 800px height - Max width: 1800px ',
+                'help' => 'Accepted formats: JPEG, PNG, WebP (max 2 MB) - Recommended image size: 1400px width x 600px height - Max width: 1600px ',
             ])
             ->add('coverAlt', TextType::class, [
                 'mapped' => false,
