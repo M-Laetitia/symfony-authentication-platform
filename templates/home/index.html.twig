@@ -1,10 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Home | MOSAIC {% endblock %}
 
 {% block body %}
-    <section class="hero">
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__container">
+            <!-- Left decorative sidebar -->
+            <div class="hero__sidebar hero__sidebar--left"></div>
 
+            <!-- Main hero content -->
+            <div class="hero__main">
+                <figure class="hero__figure">
+                    <img 
+                        src="{{ asset('uploads/media/hero-image.webp') }}" 
+                        alt="MOSAIC Photography Studio" 
+                        class="hero__image u-img-cover"
+                        data-parallax
+                    >
+                </figure>
+                <div class="hero__content">
+                    <h1 id="hero-title" class="hero__title">MOSAIC</h1>
+                    <p class="hero__subtitle">Capturing your most precious moments with passion and artistry</p>
+                    <a href="{{ path('team_index') }}" class="hero__cta">
+                         Discover our work   <span>></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right decorative sidebar -->
+            <div class="hero__sidebar hero__sidebar--right"></div>
+        </div>
     </section>
 
     <section class="section section-about" aria-labelledby="about-title">
@@ -25,6 +50,7 @@
                     subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                     buttonText="Discover more"
                     linkBtn="#"
+                    titleId="about-title"
                 />
 
                 <div class="section-about__text-image">
@@ -134,6 +160,7 @@
                 subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Discover more"
                 linkBtn="#"
+                titleId="services-title"
                 />
                 
                 <div class="section-services__list">
@@ -188,6 +215,7 @@
             buttonText="Discover more"
             linkBtn="/team"
             variant="light"
+            titleId="photographs-title"
             />
             <div class="section-photographs__content scroll-text-section__content" >
                 <div class="section-photographs__list">
@@ -236,7 +264,8 @@
                     <div
                         class="carousel-nav__dots embla__dots"
                         data-carousel-target="dots"
-                        aria-label="Carousel navigation"
+                        role="tablist"
+                        aria-label="Photographer carousel navigation"
                     ></div>
                 </div>
             </div>
@@ -249,7 +278,7 @@
 
     <div class="u-divider-medium"></div>
 
-    <section class="section section-works " aria-labelledby="works-title">
+    <section class="section section-works" aria-labelledby="works-title">
 
         <div class="scroll-text-section">
             <div class="bg-text--scroll  bg-text--works" aria-hidden="true">
@@ -266,6 +295,7 @@
             subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             buttonText="Explore more"
             linkBtn="/team"
+            titleId="works-title"
             />
 
             <div class="section-works__content scroll-text-section__content">
@@ -312,6 +342,7 @@
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Discover more"
                 linkBtn="#"
+                titleId="testimonials-title"
                 />
 
                 <div class="section-testimonials__container">
@@ -389,5 +420,6 @@
 
 
     {% include 'layout/subscribe.html.twig' %}
+
 
 {% endblock %}
