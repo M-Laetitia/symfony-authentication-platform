@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Photo - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Add Photo to {{ gallery.name }}"
+    subtitle="Upload a new photo to your gallery"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Galleries', url: path('photographer_gallery_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: gallery.name, url: path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Add Photo', type: 'current' }
+    ]"
+    variant="dark"
+/>
+
+<section class="main-section-page media-add u-display-center">
+    <div class="media-add__container section-centered" style="max-width: 800px;">
+
+        <h2 class="media-add__title">Add Photo to {{ gallery.name }}</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="media-form">
+            
+            <div class="form-group">
+                <label for="media" class="form-label">Photo File*</label>
+                <input 
+                    type="file" 
+                    id="media" 
+                    name="media" 
+                    accept="image/jpeg,image/png,image/jpg,image/webp"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="altText" class="form-label">Image Description (Alt Text)*</label>
+                <textarea 
+                    id="altText" 
+                    name="altText" 
+                    class="form-control" 
+                    rows="3"
+                    required
+                    placeholder="Describe what's in the photo for accessibility..."
+                ></textarea>
+                <small class="form-help">This is important for accessibility and SEO. Be descriptive about the content.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="caption" class="form-label">Caption (Optional)</label>
+                <textarea 
+                    id="caption" 
+                    name="caption" 
+                    class="form-control" 
+                    rows="2"
+                    placeholder="Add a caption or details about this photo..."
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input 
+                        type="checkbox" 
+                        name="featured" 
+                        value="1"
+                    >
+                    Make this a featured image
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button button--accent button--medium">Upload Photo</button>
+                <a href="{{ path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--black-variant button--medium">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+
+
+{% endblock %}
