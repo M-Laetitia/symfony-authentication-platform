@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Studio Dashboard - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Studio Dashboard"
+    subtitle="Manage your photography studio"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', type: 'current' }
+    ]"
+    variant="dark"
+/>
+
+<section class="main-section-page dashboard u-display-center" aria-labelledby="dashboard-title">
+    <div class="dashboard__container section-centered">
+
+        <h2 id="dashboard-title" class="dashboard__title">
+            Welcome, {{ photographer.user.firstName }}!
+        </h2>
+
+        <div class="dashboard__content">
+
+            <!-- Profile Section -->
+            <div class="dashboard__card">
+                <h3 class="dashboard__card-title">Profile Settings</h3>
+                <p class="dashboard__card-description">Manage your photographer profile and information</p>
+                <a href="{{ path('photographer_dashboard_profile_edit', { slug: photographer.slug }) }}" class="button button--accent button--small">Edit Profile</a>
+            </div>
+
+            <!-- Galleries Section -->
+            <div class="dashboard__card">
+                <h3 class="dashboard__card-title">My Galleries</h3>
+                <p class="dashboard__card-description">Create and manage your portfolio galleries</p>
+                <a href="#" class="button button--accent button--small">Manage Galleries</a>
+            </div>
+
+            <!-- Services Section -->
+            <div class="dashboard__card">
+                <h3 class="dashboard__card-title">Services & Rates</h3>
+                <p class="dashboard__card-description">Update your services and pricing information</p>
+                <a href="#" class="button button--accent button--small">Edit Services</a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
