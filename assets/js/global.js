@@ -334,3 +334,31 @@ document.addEventListener('click', function(e) {
         }
     }
 });
+
+
+// EDIT BOX - dashboard media edit
+    const toggleEditBtn = document.getElementById('toggleEditBtn');
+    const editFormContainer = document.getElementById('editFormContainer');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+    if (toggleEditBtn && editFormContainer) {
+        toggleEditBtn.addEventListener('click', function() {
+            if (editFormContainer.style.display === 'none') {
+                editFormContainer.style.display = 'block';
+                this.textContent = 'Hide Edit';
+                editFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                editFormContainer.style.display = 'none';
+                this.textContent = 'Edit Info';
+            }
+        });
+    }
+
+    if (cancelEditBtn && editFormContainer) {
+        cancelEditBtn.addEventListener('click', function() {
+            editFormContainer.style.display = 'none';
+            if (toggleEditBtn) {
+                toggleEditBtn.textContent = 'Edit Info';
+            }
+        });
+    }
