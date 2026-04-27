@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ gallery.name }} - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="{{ gallery.name }}"
+    subtitle="Manage photos in this gallery"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Galleries', url: path('photographer_gallery_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: gallery.name, type: 'current' }
+    ]"
+    variant="dark"
+/>
+
+<section class="main-section-page gallery-edit u-display-center">
+    <div class="gallery-edit__container section-centered">
+
+        <!-- Gallery Info Edit Form -->
+        <div class="gallery-edit__info-section" id="editFormContainer" style="display: none;">
+            <h3 class="gallery-edit__section-title">Edit Gallery Information</h3>
+            <form method="POST" class="gallery-info-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('gallery_edit') }}">
+                
+                <div class="form-group">
+                    <label for="name" class="form-label">Gallery Name*</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        value="{{ gallery.name }}"
+                        class="form-control" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        class="form-control" 
+                        rows="4"
+                    >{{ gallery.description ?? '' }}</textarea>
+                </div>
+
+                <div class="form-actions-inline">
+                    <button type="submit" class="button button--small button--accent">Save Changes</button>
+                    <button type="button" id="cancelEditBtn" class="button button--small button--black-variant">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="gallery-edit__header">
+            <div>
+                <h2 class="gallery-edit__title">{{ gallery.name }}</h2>
+                {% if gallery.description %}
+                    <p class="gallery-edit__description">{{ gallery.description }}</p>
+                {% endif %}
+            </div>
+            <div class="gallery-edit__header-actions">
+                <button type="button" id="toggleEditBtn" class="button button--small button--secondary">
+                     Edit Info
+                </button>
+                <a href="{{ path('photographer_gallery_media_add', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--small button--accent">
+                    + Add Photos
+                </a>
+            </div>
+        </div>
+
+        {% if gallery.medias is empty %}
+            <div class="gallery-edit__empty">
+                <p>No photos in this gallery yet.</p>
+                <a href="{{ path('photographer_gallery_media_add', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--accent">
+                    Add Your First Photo
+                </a>
+            </div>
+        {% else %}
+            <div class="gallery-edit__photos">
+                <h3 class="gallery-edit__photos-title">Photos ({{ gallery.medias|length }})</h3>
+                
+                <div class="photos-grid">
+                    {% for media in gallery.medias %}
+                        <div class="photo-card">
+                            <div class="photo-card__image-wrapper">
+                                <img 
+                                    src="{{ asset('uploads/' ~ media.path) }}" 
+                                    alt="{{ media.altText }}"
+                                    class="photo-card__image"
+                                >
+                                {% if media.type.value == 'portfolio_featured' %}
+                                    <div class="photo-card__featured-badge">★ Featured</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="photo-card__info">
+                                {% if media.caption %}
+                                    <p class="photo-card__caption">{{ media.caption }}</p>
+                                {% endif %}
+                                <p class="photo-card__alt-text">
+                                    <strong>Alt text:</strong> {{ media.altText }}
+                                </p>
+                            </div>
+
+                            <div class="photo-card__actions">
+                                <a href="{{ path('photographer_gallery_media_edit', { slug: photographer.slug, galleryId: gallery.id, mediaId: media.id }) }}" class="button button--small button--accent">
+                                    Edit
+                                </a>
+                                <a href="{{ path('photographer_gallery_media_delete', { slug: photographer.slug, galleryId: gallery.id, mediaId: media.id }) }}" class="button button--small button--danger" onclick="return confirm('Remove this photo?');">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="gallery-edit__footer">
+            <a href="{{ path('photographer_gallery_index', { slug: photographer.slug }) }}" class="button button--black-variant button--small">
+                Back to Galleries
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+
+{% endblock %}
