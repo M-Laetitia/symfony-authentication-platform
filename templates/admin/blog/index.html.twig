@@ -363,7 +363,7 @@
                                     <td class="admin-comments__table-cell">{{ comment.createdAt|date('Y-m-d H:i') }}</td>
                                     <td class="admin-comments__table-cell admin-comments__table-cell--actions">
                                         <div class="admin-comments__actions">
-                                            <form method="POST" action="{{ path('comment_approve', {'id': comment.id}) }}" class="admin-comments__approve-form">
+                                            <form method="POST" action="{{ path('comment_approve_admin', {'id': comment.id}) }}" class="admin-comments__approve-form">
                                                 <button type="submit" class="">Approve</button>
                                             </form>
 
