@@ -28,9 +28,10 @@
             <!-- Image Preview -->
             <div class="media-edit__preview">
                 <img 
-                    src="{{ asset('uploads/' ~ media.path) }}" 
+                    src="{{ media.path | imagine_filter('gallery_thumb_edit') }}" 
                     alt="{{ media.altText }}"
                     class="media-edit__image"
+                    loading="lazy"
                 >
             </div>
 
