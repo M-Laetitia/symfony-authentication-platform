@@ -175,6 +175,7 @@
     }
 }
 
+
 /* &------------ SERVICES ----------- */
 /* &--------------------------------- */
 
@@ -197,7 +198,12 @@
     }
 }
 
-
+.section-about__feature-title.icon-box__link {
+    font-size:20px ;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    font-weight: 500;
+}
 /* &------------ PHOTOGRAPH ---------- */
 /* &---------------------------------- */
 
