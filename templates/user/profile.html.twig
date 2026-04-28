@@ -18,13 +18,6 @@
     id="blog-title"
 />
 
-{% if app.user and 'ROLE_PHOTOGRAPHER' in app.user.roles and app.user.photographer %}
-<div class="">
-    <a href="{{ path('photographer_dashboard_index', { slug: app.user.photographer.slug }) }}" class="button button--small button--black">
-        Go to My Studio Dashboard
-    </a>
-</div>
-{% endif %}
 
 <section
     class="main-section-page profile account account--profile u-display-center"
