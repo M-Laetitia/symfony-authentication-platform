@@ -18,6 +18,7 @@
         { label: 'separator', type: 'separator' },
         { label: photographer.firstName ~ ' ' ~ photographer.lastName, type: 'current' }
     ]"
+    id="portfolio-title"
 />
 
 
@@ -162,11 +163,23 @@
             </div>
 
             <div class="photographer-info__actions">
-              <a href=""
-                 class="photographer-info__button button button--accent button--medium"
-                 aria-label="Send a message to {{ photographer.firstName }} {{ photographer.lastName }}">
-                SEND ME A MESSAGE
-              </a>
+            {% if not is_granted('ROLE_PHOTOGRAPHER') %}
+                {% if app.user and app.user.id != photographer.id %}
+                    <a href="{{ path('chat_start', {'id': photographer.id}) }}"
+                      class="photographer-info__button button button--accent button--medium"
+                      aria-label="Send a message to {{ photographer.firstName }} {{ photographer.lastName }}">
+                      SEND ME A MESSAGE
+                    </a>
+                {% else %}
+                <div class="photographer-info__actions-disabled" aria-hidden="true">
+                  <button disabled class="photographer-info__button button  button--medium button--disabled" 
+                      aria-label="Send a message to {{ photographer.firstName }} {{ photographer.lastName }}">
+                    SEND ME A MESSAGE
+                  </button>
+                  <p>Please <a href="{{ path('app_login') }}">log in</a> or <a href="{{ path('app_register') }}">create an account</a> to contact this photographer</p>
+                </div>
+                {% endif %}
+            {% endif %}
               <a href=""
                  class="photographer-info__button button button--black button--medium"
                  aria-label="Discover more details about {{ photographer.firstName }} {{ photographer.lastName }}'s services">
@@ -207,9 +220,22 @@
                   <a href="{{ asset('uploads/' ~ media.path) }}"
                     class="gallery__link js-gallery-lightbox"
                     data-gallery="portfolio">
-                      <img src="{{ asset('uploads/' ~ media.path) }}" 
-                          alt="{{ media.altText ?? 'photography' }}" 
-                          class="gallery__image u-img-cover">
+                      <picture>
+                          <source 
+                              media="(min-width: 1024px)" 
+                              srcset="{{ media.path | imagine_filter('gallery_thumb_desktop') }} 1x"
+                          >
+                          <source 
+                              media="(max-width: 1023px)" 
+                              srcset="{{ media.path | imagine_filter('gallery_thumb_mobile') }} 1x"
+                          >
+                          <img 
+                              src="{{ media.path | imagine_filter('gallery_thumb_desktop') }}" 
+                              alt="{{ media.altText ?? 'photography' }}" 
+                              class="gallery__image u-img-cover"
+                              loading="lazy"
+                          >
+                      </picture>
                   </a>
               </div>
           {% endfor %}
