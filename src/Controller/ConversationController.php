@@ -6,9 +6,11 @@ use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Entity\Photographer;
 use App\Entity\ServiceProposal;
+use App\Entity\ConversationReport;
 use App\Enum\ConversationType;
 use App\Enum\MessageType;
 use App\Enum\ServiceProposalType;
+use App\Enum\ConversationReportType;
 use App\Form\MessageFormType;
 use App\Form\ReportMessageFormType;
 use App\Form\ServiceProposalFormType;
@@ -278,9 +280,11 @@ class ConversationController extends AbstractController
             $update = new Update(
                 '/conversation/'.$conversation->getId(),
                 json_encode([
-                    'author' => $user->getUserIdentifier(),
+                    'author' => $user->getUsername(),
+                    'senderId' => $user->getId(),
+                    'id' => $message->getId(),
                     'content' => $message->getContent(),
-                    'date' => $message->getCreationDate()->format('H:i'),
+                    'date' => $message->getCreationDate()->format('H:i d/m/Y'),
                 ])
             );
             $hub->publish($update);
@@ -291,54 +295,54 @@ class ConversationController extends AbstractController
         return new JsonResponse(['status' => 'error', 'errors' => (string) $form->getErrors(true)], 400);
     }
 
-    // ^ REPORT MESSAGE
-    #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
-    #[IsGranted('ROLE_PHOTOGRAPHER')]
-    public function report(
-        Request $request,
-        EntityManagerInterface $em,
-        MailerService $mailerService,
-        MessageRepository $messageRepo,
-    ): Response {
-        $user = $this->getUser();
-        $form = $this->createForm(ReportMessageFormType::class);
-        $form->handleRequest($request);
+    // // ^ REPORT MESSAGE
+    // #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
+    // #[IsGranted('ROLE_PHOTOGRAPHER')]
+    // public function report(
+    //     Request $request,
+    //     EntityManagerInterface $em,
+    //     MailerService $mailerService,
+    //     MessageRepository $messageRepo,
+    // ): Response {
+    //     $user = $this->getUser();
+    //     $form = $this->createForm(ReportMessageFormType::class);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $reason = $data['reason'];
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $data = $form->getData();
+    //         $reason = $data['reason'];
 
-            $messageId = $request->request->get('messageId');
-            $message = $messageRepo->find($messageId);
+    //         $messageId = $request->request->get('messageId');
+    //         $message = $messageRepo->find($messageId);
 
-            if (!$message) {
-                throw $this->createNotFoundException('Message none found.');
-            }
+    //         if (!$message) {
+    //             throw $this->createNotFoundException('Message none found.');
+    //         }
 
-            if ($message->getSender() === $user) {
-                throw $this->createAccessDeniedException('You cannot report your own message.');
-            }
+    //         if ($message->getSender() === $user) {
+    //             throw $this->createAccessDeniedException('You cannot report your own message.');
+    //         }
 
-            $message->setIsReported(true);
-            $message->setReportReason($reason);
-            $message->getConversation()->setIsFrozen(true);
+    //         $message->setIsReported(true);
+    //         $message->setReportReason($reason);
+    //         $message->getConversation()->setIsFrozen(true);
 
-            $em->flush();
+    //         $em->flush();
 
-            // Send emails to both the user and the admin
-            $mailerService->sendMessageReportedEmail($message, $user, $reason);
-            $mailerService->sendAdminMessageReportNotification($message, $user, $reason);
+    //         // Send emails to both the user and the admin
+    //         $mailerService->sendMessageReportedEmail($message, $user, $reason);
+    //         $mailerService->sendAdminMessageReportNotification($message, $user, $reason);
 
-            $this->addFlash('success', 'The message has been successfully reported. Emails have been sent to the user and the admin.');
+    //         $this->addFlash('success', 'The message has been successfully reported. Emails have been sent to the user and the admin.');
 
-            return $this->redirectToRoute('chat_conversation_show', [
-                'id' => $message->getConversation()->getId(),
-            ]);
-        }
+    //         return $this->redirectToRoute('chat_conversation_show', [
+    //             'id' => $message->getConversation()->getId(),
+    //         ]);
+    //     }
 
-        // If the form is not valid, redirect back with an error message
-        return new Response('Invalid form', 400);
-    }
+    //     // If the form is not valid, redirect back with an error message
+    //     return new Response('Invalid form', 400);
+    // }
 
     // ^ CREATE PROPOSAL
     #[Route('/conversation/{id}/proposal/new', name: 'proposal_new')]
@@ -509,6 +513,52 @@ class ConversationController extends AbstractController
     {
         return $proposal->getConversation()->getClient() === $this->getUser()
             && ServiceProposalType::PENDING === $proposal->getStatus();
+    }
+
+    // ^ REPORT CONVERSATION
+    #[Route('/chat/conversation/{id}/report', name: 'chat_conversation_report', methods: ['POST'])]
+    public function reportConversation(
+        Conversation $conversation,
+        Request $request,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('ROLE_PHOTOGRAPHER');
+        
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        
+        // Check if the photographer is part of this conversation
+        if ($conversation->getPhotographer()->getUser()->getId() !== $user->getId()) {
+            return new JsonResponse(['error' => 'Unauthorized'], 403);
+        }
+        
+        $data = json_decode($request->getContent(), true);
+        $reason = $data['reason'] ?? 'No reason provided';
+        $messageReference = $data['message_reference'] ?? null;
+    
+        $report = new ConversationReport();
+        $report->setConversation($conversation);
+        $report->setReportedBy($user);
+        $report->setReason($reason);
+        $report->setMessageReference($messageReference);
+        $report->setCreatedAt(new \DateTimeImmutable());
+        $report->setStatus([ConversationReportType::PENDING]);
+        
+
+        $conversation->setIsFrozen(true);
+        
+        $em->persist($report);
+        $em->flush();
+        
+        $this->messagesLogger->warning('Conversation reported and frozen', [
+            'conversationId' => $conversation->getId(),
+            'reportedBy' => $user->getUserIdentifier(),
+            'reason' => $reason,
+            'messageReference' => $messageReference,
+            'timestamp' => new \DateTimeImmutable(),
+        ]);
+        
+        return new JsonResponse(['status' => 'ok', 'message' => 'Conversation reported and frozen successfully']);
     }
 
 }
