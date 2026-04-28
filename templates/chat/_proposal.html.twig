@@ -102,6 +102,7 @@
         <form
             method="post"
             action="{{ path('proposal_accept', {'id': proposal.id}) }}"
+            class="proposal-accept-form"
             style="flex: 1;"
         >
             <input type="hidden" name="_token" value="{{ csrf_token('accept_proposal_' ~ proposal.id) }}">
@@ -114,6 +115,7 @@
         <form
             method="post"
             action="{{ path('proposal_refuse', {'id': proposal.id}) }}"
+            class="proposal-refuse-form"
             style="flex: 1;"
         >
             <input type="hidden" name="_token" value="{{ csrf_token('refuse_proposal_' ~ proposal.id) }}">
