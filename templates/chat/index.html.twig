@@ -1,44 +1,95 @@
 {% extends 'base.html.twig' %}
 
-
-{% block title %}My chats{% endblock %}
-
-{# {% block body_class %}page--profile{% endblock %} #}
+{% block title %}My Conversations{% endblock %}
 
 {% block body %}
 
 <twig:Banner
-title="My blabla page"
-subtitle="Aut fuga culpa ab quibusdam"
-variant="dark"
+    title="Ongoing Exhanges"
+    subtitle="Where ideas spark and collaborations flourish"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Conversations', type: 'current' }
+    ]"
+    variant="dark"
 />
 
-<section class="conversation">
-    <h1>CHats: </h1>
+<section class="main-section-page conversations-page">
+    <div class="conversations-page__container section-centered">
 
-    <p>Tous les msg non lus: {{unreadMessages}} </p>
-    <br>
-    <br>
-    <ul>
-        {% for conv in conversationData %}
-        <li>
-            <a href="{{ path('chat_conversation_show', {'id': conv.id}) }}">
-                Conversation ID : {{ conv.id }} - Avec : {{ conv.otherParticipant }}<br>
-                Dernier message : {{ conv.lastMessage }}
-                {% if conv.lastMessageDate %}
-                    - {{ conv.lastMessageDate|date('H:i d/m/Y') }}
-                {% endif %}
-                {% if conv.unreadCount > 0 %}
-                    <span class="chat-badge">
-                      <p>Message non lus: {{ conv.unreadCount }}</p> 
-                    </span>
-                {% endif %}
+        <!-- Page Title -->
+        <div class="conversations-page__header">
+            <h2 class="conversations-page__title">Conversations List</h2>
+            <p class="conversations-page__unread-counter">Messages ({{ unreadMessages }})</p>
+        </div>
+
+        <!-- Conversations List -->
+        {% if conversationData|length > 0 %}
+        <div class="conversations-page__list">
+            {% for conv in conversationData %}
+            <article class="conversation-row {% if conv.unreadCount > 0 %}conversation-row--unread{% endif %}">
+                
+                <!-- Avatar & Main Info -->
+                <div class="conversation-row__header">
+                    {% if conv.hasAvatar %}
+                        <img 
+                            src="{{ asset(conv.otherParticipantAvatar) }}" 
+                            alt="{{ conv.otherParticipant }}" 
+                            class="conversation-row__avatar-img"
+                        >
+                    {% else %}
+                        <img 
+                            src="{{ asset('media/avatar-profile.jpg') }}" 
+                            alt="Default avatar" 
+                            class="conversation-row__avatar-img"
+                        >
+                    {% endif %}
+                    
+                    <div class="conversation-row__title-section">
+                        <h2 class="conversation-row__title">Conversation with <strong>{{ conv.otherParticipant }}</strong></h2>
+                    </div>
+
+                    {% if conv.unreadCount > 0 %}
+                    <span class="conversation-row__badge">{{ conv.unreadCount }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Message & Metadata -->
+                <div class="conversation-row__content">
+                    <div class="conversation-row__message-info">
+                        <p class="conversation-row__message">
+                            {{ conv.lastMessage|slice(0, 100) }}{% if conv.lastMessage|length > 100 %}...{% endif %}
+                        </p>
+                        <div class="conversation-row__meta">
+                            <span class="conversation-row__sender">By {{ conv.otherParticipant }}</span>
+                            <span class="conversation-row__separator">•</span>
+                            {% if conv.lastMessageDate %}
+                            <time class="conversation-row__date">{{ conv.lastMessageDate|date('d M Y - H:i') }}</time>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <a href="{{ path('chat_conversation_show', {'id': conv.id}) }}" class="conversation-row__action">
+                        {% include 'components/icons/message.html.twig' %}
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="conversations-page__empty">
+            <div class="conversations-page__empty-icon">📭</div>
+            <h2 class="conversations-page__empty-title">No Conversations</h2>
+            <p class="conversations-page__empty-text">Start a conversation with someone to get started!</p>
+            <a href="{{ path('home') }}" class="button button--primary">
+                Browse Photographers
             </a>
-        </li>
-    {% else %}
-        <li>Aucune conversation</li>
-    {% endfor %}
-        </ul>
+        </div>
+        {% endif %}
+
+    </div>
 </section>
 
 
