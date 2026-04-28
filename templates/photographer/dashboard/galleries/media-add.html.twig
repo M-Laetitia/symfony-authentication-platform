@@ -26,59 +26,51 @@
 
         <h2 class="media-add__title">Add Photo to {{ gallery.name }}</h2>
 
-        <form method="POST" enctype="multipart/form-data" class="media-form">
+        <div class="media-add__recommendations">
+            <h3>Recommendations</h3>
+            <div class="media-add__recommendations-content">
+                <p><strong>Recommended sizes:</strong></p>
+                <ul>
+                    <li>Portrait: 800×1200px (max 1800px width)</li>
+                    <li>Landscape: 1600×900px (max 1800px width)</li>
+                </ul>
+                <p>Max size 3MB</p>
+                <p><strong>Accepted formats:</strong> WebP, PNG, JPEG</p>
+            </div>
+        </div>
+
+        {{ form_start(form, { 'attr': { 'class': 'media-form', 'enctype': 'multipart/form-data' } }) }}
             
             <div class="form-group">
-                <label for="media" class="form-label">Photo File*</label>
-                <input 
-                    type="file" 
-                    id="media" 
-                    name="media" 
-                    accept="image/jpeg,image/png,image/jpg,image/webp"
-                    required
-                >
+                {{ form_label(form.media) }}
+                {{ form_widget(form.media, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.media) }}
             </div>
 
             <div class="form-group">
-                <label for="altText" class="form-label">Image Description (Alt Text)*</label>
-                <textarea 
-                    id="altText" 
-                    name="altText" 
-                    class="form-control" 
-                    rows="3"
-                    required
-                    placeholder="Describe what's in the photo for accessibility..."
-                ></textarea>
+                {{ form_label(form.altText) }}
+                {{ form_widget(form.altText, { 'attr': { 'class': 'form-control' } }) }}
                 <small class="form-help">This is important for accessibility and SEO. Be descriptive about the content.</small>
+                {{ form_errors(form.altText) }}
             </div>
 
             <div class="form-group">
-                <label for="caption" class="form-label">Caption (Optional)</label>
-                <textarea 
-                    id="caption" 
-                    name="caption" 
-                    class="form-control" 
-                    rows="2"
-                    placeholder="Add a caption or details about this photo..."
-                ></textarea>
+                {{ form_label(form.caption) }}
+                {{ form_widget(form.caption, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.caption) }}
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        name="featured" 
-                        value="1"
-                    >
-                    Make this a featured image
-                </label>
+            <div class="form-group form-group--checkbox">
+                {{ form_widget(form.featured) }}
+                {{ form_label(form.featured) }}
+                {{ form_errors(form.featured) }}
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="button button--accent button--medium">Upload Photo</button>
                 <a href="{{ path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--black-variant button--medium">Cancel</a>
             </div>
-        </form>
+        {{ form_end(form) }}
 
     </div>
 </section>
