@@ -7,6 +7,7 @@ use App\Entity\Media;
 use App\Entity\Photographer;
 use App\Enum\GallerySeriesType;
 use App\Enum\MediaType;
+use App\Form\MediaGalleryAddFormType;
 use App\Repository\GallerySeriesRepository;
 use App\Repository\PhotographerRepository;
 use App\Service\MediaUploader;
@@ -159,11 +160,15 @@ class PhotographerGalleryController extends AbstractController
         $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
         $gallery = $this->getGalleryByIdOrThrow($galleryId, $photographer, $galleryRepo);
 
-        if ($request->isMethod('POST')) {
-            $uploadedFile = $request->files->get('media');
-            $altText = $request->request->get('altText', '');
-            $caption = $request->request->get('caption', '');
-            $isFeatured = (bool) $request->request->get('featured');
+        $form = $this->createForm(MediaGalleryAddFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $uploadedFile = $request->files->get('media_gallery_add_form')['media'];
+            $altText = $data['altText'] ?? '';
+            $caption = $data['caption'] ?? '';
+            $isFeatured = $data['featured'] ?? false;
 
             if ($uploadedFile) {
                 $subfolder = "photographer/{$photographer->getId()}/galleries/{$galleryId}";
@@ -191,6 +196,7 @@ class PhotographerGalleryController extends AbstractController
         return $this->render('photographer/dashboard/galleries/media-add.html.twig', [
             'photographer' => $photographer,
             'gallery' => $gallery,
+            'form' => $form->createView(),
         ]);
     }
 
