@@ -1,109 +1,115 @@
 {% extends 'base.html.twig' %}
 
-
-{% block title %}Conversation with {{ otherParticipant.firstName}} {% endblock %}
-
-
+{% block title %}Conversation with {{ otherParticipant.firstName ?? otherParticipant.username}} {% endblock %}
 
 {% block body %}
 
-{# <twig:Banner
-title="My blabla page"
-subtitle="Aut fuga culpa ab quibusdam"
-variant="dark"
-/> #}
 
-<section id="conversation-page"
-    data-page="conversation"
-    data-conversation-id="{{ conversation.id }}"
->
-    <h1>Conversation avec {{ otherParticipant.firstName }}</h1>
+<twig:Banner
+    title="Chat with {{ otherParticipant.firstName|default(otherParticipant.username) }} {{ otherParticipant.lastName|default('') }}"
+    subtitle="Let's discuss your project and create something amazing together!"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Conversations', url: path('chat'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: (otherParticipant.firstName|default(otherParticipant.username) ~ ' ' ~ otherParticipant.lastName|default(''))|trim, type: 'current' }
+    ]"
+/>
+ 
 
-    <ul id="chat-messages">
-        {% for msg in messages %}
-        <li>
-            <strong>{{ msg.sender.username }}</strong> :
-            {% if msg.serviceProposal %}
-                {# Include le template de la proposal #}
-                {% include 'chat/_proposal.html.twig' with {'proposal': msg.serviceProposal} %}
-            {% else %}
-                {{ msg.content }}
-            {% endif %}
-            <em>({{ msg.creationDate|date('H:i d/m/Y') }})</em>
-    
-            {# Reporting button only for photographers, if not already reported and not their own message #}
-            {% if is_granted('ROLE_PHOTOGRAPHER') and not msg.isReported and msg.sender.id != app.user.id %}
-                <button class="btn-report" data-message-id="{{ msg.id }}">Report</button>
-            {% endif %}
-    
-            {# Afficher si le message a été reporté #}
-            {% if msg.isReported %}
-                <div class="reported-message" style="color:red; font-style:italic; margin-top:5px;">
-                    Message reported{% if msg.reportReason %} : "{{ msg.reportReason }}"{% endif %}
+<section class="main-section-page conversation-page" id="conversation-page" data-page="conversation" data-conversation-id="{{ conversation.id }}">
+    <div class="conversation__header">
+        <h2 class="conversation__title">Chat with {{ otherParticipant.firstName|default(otherParticipant.username) }}</h2>
+        {% if not is_granted('ROLE_PHOTOGRAPHER') and otherParticipant.photographer %}
+            <a href="{{ path('team_show', {slug: otherParticipant.photographer.slug}) }}" class="conversation__profile-btn button button--small button--accent">
+                See Profile
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="conversation__container">
+        <ul class="conversation__messages" id="chat-messages">
+            {% for msg in messages %}
+            <li class="conversation__message {% if msg.sender.id == app.user.id %}conversation__message--own{% endif %}">
+                <div class="conversation__message-bubble">
+                    <div class="conversation__message-author">{{ msg.sender.username }}</div>
+                    <div class="conversation__message-content">
+                        {% if msg.serviceProposal %}
+                            {% include 'chat/_proposal.html.twig' with {'proposal': msg.serviceProposal} %}
+                        {% else %}
+                            {{ msg.content }}
+                        {% endif %}
+                    </div>
+                    <div class="conversation__message-date">{{ msg.creationDate|date('H:i d/m/Y') }}</div>
                 </div>
-            {% endif %}
-        </li>
-    {% else %}
-        <li>No messages</li>
-    {% endfor %}
+            </li>
+            {% else %}
+            <li class="conversation__empty">No messages yet. Start the conversation!</li>
+            {% endfor %}
         </ul>
+    </div>
 
-        <div id="report-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span id="modal-close" style="float:right; cursor:pointer;">&times;</span>
-                <h3>Report a message</h3>
-                {{ form_start(reportForm, {
-                    'action': path('chat_message_report'),
-                    'method': 'POST',
-                    'attr': {'id': 'report-form'}
-                }) }}
-                    {{ form_widget(reportForm.reason) }}
-                    <input type="hidden" name="messageId" id="report-message-id" value="">
-                    <button type="submit">Send</button>
-                {{ form_end(reportForm) }}
-            </div>
-        </div>
-
-        {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPHER') %}
-        {# <form id="message-form"
-                data-conversation-id="{{ conversation.id }}"
-                action="{{ path('chat_conversation_show', {id: conversation.id}) }}"
-                method="post">
-            {{ form_widget(form) }}
-            <button type="submit" class="button button--accent">Send</button>
-        </form> #}
+    {% if not conversation.isFrozen or is_granted('ROLE_PHOTOGRAPHER') %}
+    <div class="conversation__footer">
         {{ form_start(form, {
             'action': path('chat_message_send', {'id': conversation.id}),
             'attr': {
                 'id': 'message-form',
-                'data-conversation-id': conversation.id
+                'data-conversation-id': conversation.id,
+                'data-user-id': app.user.id,
+                'class': 'conversation__form'
             }
         }) }}
-            {{ form_widget(form.content, {'attr': {'id': 'message-input'}}) }}
-            <button type="submit">Send</button>
+            {{ form_widget(form.content, {'attr': {'id': 'message-input', 'class': 'conversation__input', 'placeholder': 'Type your message...'}}) }}
+            <button type="submit" class="conversation__submit-btn button  button--accent">Send</button>
+            
         {{ form_end(form) }}
-        {% else %}
-            <div class="alert alert-danger">
-                Your message has been reported. You can no longer send messages
-                while it is awaiting verification by the administrator.
-            </div>
-        {% endif %}
+    </div>
+    {% else %}
+        <div class="conversation__alert">
+            Your message has been reported. You can no longer send messages while it is awaiting verification by the administrator.
+        </div>
+    {% endif %}
 
+    <div class="conversation__actions">
         {% if app.user and is_granted('ROLE_PHOTOGRAPHER') %}
-            <a href="{{ path('proposal_new', {id: conversation.id}) }}"
-            class="">
+            {% if conversation.isFrozen %}
+                <div class="conversation__alert conversation__alert--frozen">
+                    ⚠️ This conversation has been reported and is currently frozen pending review by our team. You cannot report this conversation again until it's reviewed.
+                </div>
+            {% endif %}
+            
+            <a href="{{ path('proposal_new', {id: conversation.id}) }}" class="conversation__proposal-link button {% if conversation.isFrozen %}button--disabled{% else %} button--accent button--medium{% endif %}">
                 Make a Proposal
             </a>
+            <button 
+                id="report-conversation-btn" 
+                class="conversation__link conversation__link--danger button {% if conversation.isFrozen %}button--disabled{% else %}button--danger button--medium{% endif %}">
+                Report Conversation
+            </button>
         {% endif %}
+        
+        <a href="{{ path('chat') }}" class="conversation__link button button--medium button--black">
+            Back to Conversations
+        </a>
+    </div>
 
-        <div>
-            <a href="{{ path('chat')}}">Go back to all conversations</a>
+    <div id="report-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <h3>Report Conversation</h3>
+            <form id="report-conversation-form" method="POST">
+                <label for="report-reason">Reason for reporting:</label>
+                <textarea id="report-reason" name="reason" class="modal-textarea" placeholder="Explain why you're reporting this conversation..." required></textarea>
+                
+                <label for="report-message">Reference a specific message (optional):</label>
+                <input type="text" id="report-message" name="message_reference" class="modal-input" placeholder="Message content or timestamp...">
+                
+                <button type="submit" class="modal-submit button button--small button--danger ">Report Conversation</button>
+            </form>
         </div>
+    </div>
 </section>
-
-
-
-
-
 
 {% endblock %}
