@@ -90,9 +90,10 @@
                         <div class="photo-card">
                             <div class="photo-card__image-wrapper">
                                 <img 
-                                    src="{{ asset('uploads/' ~ media.path) }}" 
+                                    src="{{ media.path | imagine_filter('gallery_thumb_edit') }}" 
                                     alt="{{ media.altText }}"
                                     class="photo-card__image"
+                                    loading="lazy"
                                 >
                                 {% if media.type.value == 'portfolio_featured' %}
                                     <div class="photo-card__featured-badge">★ Featured</div>

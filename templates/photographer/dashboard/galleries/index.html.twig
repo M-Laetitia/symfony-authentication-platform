@@ -56,9 +56,10 @@
                                 <div class="gallery-card__thumbnails">
                                     {% for media in gallery.medias|slice(0, 4) %}
                                         <img 
-                                            src="{{ asset('uploads/' ~ media.path) }}" 
+                                            src="{{ media.path | imagine_filter('gallery_thumb_index') }}" 
                                             alt="{{ media.altText }}"
                                             class="gallery-card__thumbnail"
+                                            loading="lazy"
                                         >
                                     {% endfor %}
                                 </div>
