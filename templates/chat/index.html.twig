@@ -47,7 +47,9 @@
                     {% endif %}
                     
                     <div class="conversation-row__title-section">
-                        <h2 class="conversation-row__title">Conversation with <strong>{{ conv.otherParticipant }}</strong></h2>
+                        <a href="{{ path('chat_conversation_show', {'id': conv.id}) }}">
+                           <h2 class="conversation-row__title">Conversation with <strong>{{ conv.otherParticipant }}</strong></h2> 
+                        </a>
                     </div>
 
                     {% if conv.unreadCount > 0 %}
