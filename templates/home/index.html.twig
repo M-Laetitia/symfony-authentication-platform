@@ -90,7 +90,7 @@
                                 />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our mission</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our mission</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                         />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our vision</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our vision</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                         />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our value</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our value</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -303,16 +303,16 @@
                 <div class="section-works__gallery">
                     {% for portfolio in latestPhotographies %}
                     <figure class="gallery__item {% if loop.first or loop.last %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}"></a>
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}">
                         <div class="gallery__detail">
-                            <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}" class="gallery__detail-link">
+                            <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
                                     <span class="gallery__name">{{ portfolio.photographer.firstName }} {{ portfolio.photographer.lastName }}</span>
                                     <span class="separator" aria-hidden="true"></span>
                                     <span class="gallery__service">{{ portfolio.gallerySeries.name }}</span>
                                 </div>
-                            </a>
-                        </div>
+                            </div>
+                        </div></a>
                     </figure>
                     {% endfor %}
                 </div>
@@ -386,7 +386,7 @@
                 <twig:SectionIntro
                 title="Articles & blog"
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
-                buttonText="Learn more"
+                buttonText="Discover our blog"
                 linkBtn="/blog"
                 />
 
