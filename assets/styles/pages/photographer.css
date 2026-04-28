@@ -627,6 +627,26 @@
         box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
     }
 
+    .media-add__recommendations {
+        margin-bottom: 2rem;
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+
+        }
+        .media-add__recommendations-content {
+            border-left: 5px solid var(--color-accent);
+            padding-left: 1rem;
+        }
+    }
+
+    .form-group--checkbox {
+        display: flex!important;
+        flex-direction: row!important;
+        justify-content: flex-start!important;
+        gap: 10px;
+    }
+
     .media-add__title {
         font-size: 1.75rem;
         font-weight: 600;
