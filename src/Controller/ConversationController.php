@@ -128,6 +128,8 @@ class ConversationController extends AbstractController
             $conversationData[] = [
                 'id' => $conv->getId(),
                 'otherParticipant' => $otherUser->getUsername(),
+                'hasAvatar' => $otherUser->getAvatar() !== null,
+                'otherParticipantAvatar' => $otherUser->getAvatar() ? '/uploads/' . $otherUser->getAvatar()->getPath() : null,
                 'lastMessage' => $lastMessage?->getContent() ?? 'no message',
                 'lastMessageDate' => $lastMessage?->getCreationDate(),
                 'authorLastMessage' => $lastMessage?->getSender()?->getUsername(),
@@ -295,55 +297,7 @@ class ConversationController extends AbstractController
         return new JsonResponse(['status' => 'error', 'errors' => (string) $form->getErrors(true)], 400);
     }
 
-    // // ^ REPORT MESSAGE
-    // #[Route('/chat/message/report', name: 'chat_message_report', methods: ['POST'])]
-    // #[IsGranted('ROLE_PHOTOGRAPHER')]
-    // public function report(
-    //     Request $request,
-    //     EntityManagerInterface $em,
-    //     MailerService $mailerService,
-    //     MessageRepository $messageRepo,
-    // ): Response {
-    //     $user = $this->getUser();
-    //     $form = $this->createForm(ReportMessageFormType::class);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $data = $form->getData();
-    //         $reason = $data['reason'];
-
-    //         $messageId = $request->request->get('messageId');
-    //         $message = $messageRepo->find($messageId);
-
-    //         if (!$message) {
-    //             throw $this->createNotFoundException('Message none found.');
-    //         }
-
-    //         if ($message->getSender() === $user) {
-    //             throw $this->createAccessDeniedException('You cannot report your own message.');
-    //         }
-
-    //         $message->setIsReported(true);
-    //         $message->setReportReason($reason);
-    //         $message->getConversation()->setIsFrozen(true);
-
-    //         $em->flush();
-
-    //         // Send emails to both the user and the admin
-    //         $mailerService->sendMessageReportedEmail($message, $user, $reason);
-    //         $mailerService->sendAdminMessageReportNotification($message, $user, $reason);
-
-    //         $this->addFlash('success', 'The message has been successfully reported. Emails have been sent to the user and the admin.');
-
-    //         return $this->redirectToRoute('chat_conversation_show', [
-    //             'id' => $message->getConversation()->getId(),
-    //         ]);
-    //     }
-
-    //     // If the form is not valid, redirect back with an error message
-    //     return new Response('Invalid form', 400);
-    // }
-
+    
     // ^ CREATE PROPOSAL
     #[Route('/conversation/{id}/proposal/new', name: 'proposal_new')]
     #[IsGranted('ROLE_PHOTOGRAPHER')]
@@ -359,6 +313,7 @@ class ConversationController extends AbstractController
 
         $proposal = new ServiceProposal();
         $proposal->setConversation($conversation);
+        $client = $conversation->getClient();
 
         $activeTaxes = $taxRepository->findBy(['active' => 1]);
 
@@ -399,6 +354,7 @@ class ConversationController extends AbstractController
         return $this->render('proposal/new.html.twig', [
             'form' => $form->createView(),
             'conversation' => $conversation,
+            'client'=> $client,
         ]);
     }
 
@@ -557,6 +513,8 @@ class ConversationController extends AbstractController
             'messageReference' => $messageReference,
             'timestamp' => new \DateTimeImmutable(),
         ]);
+        
+        $this->addFlash('success', 'Conversation reported successfully. Our team will review it shortly.');
         
         return new JsonResponse(['status' => 'ok', 'message' => 'Conversation reported and frozen successfully']);
     }
