@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
+
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('media/favicon/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('media/favibon/favicon-96x96.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('media/favicon/apple-touch-icon.png') }}">
 
          {# Meta description #}
         <meta name="description" content="{% block meta_description %}{{ meta_description|default('Default meta description') }}{% endblock %}">
@@ -12,6 +17,7 @@
         <meta name="robots" content="{% block meta_robots %}{{ meta_robots|default('index, follow') }}{% endblock %}">
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -50,17 +56,18 @@
                 {% include 'layout/footer.html.twig' %}
             {% endblock %}  
         </div>
-
-        <button id="scrollTopBtn" class="scroll-top-btn">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 8L8 0L16 8L14 10L8 4L2 10L0 8Z" fill="#D2D2CE"/>
-            </svg>
-        </button>
     </body>
 
     
     <!-- Overlay -->
     <div class="side-panel__overlay"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll back to top">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 9L8 2L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
 
     <!-- Aside -->
     <aside
