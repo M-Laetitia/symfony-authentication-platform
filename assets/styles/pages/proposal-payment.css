@@ -148,6 +148,9 @@
 /* &---------- PROPOSAL CARD -------- */
 /* &--------------------------------- */
 
+.proposal-card__action-btn.cancel-proposal {
+    margin: 10px 0 15px 15px;
+}
 .proposal-card {
     max-width: 600px;
     width: 600px;
@@ -194,6 +197,11 @@
 .proposal-card__status--accepted {
     background-color: #60956d;
     color: #ecfff0;
+}
+
+.proposal-card__status--cancelled {
+    background-color: #434343;
+    color: #ffffff;
 }
 
 .proposal-card__status--declined {
