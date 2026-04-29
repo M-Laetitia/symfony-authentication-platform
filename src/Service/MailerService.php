@@ -21,7 +21,7 @@ class MailerService
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@domain.com', 'Website name'))
             ->to($user->getEmail())
-            ->subject('Welcome !')
+            ->subject('Welcome  to MOSAIC!')
             ->htmlTemplate('emails/user/welcome.html.twig')
             ->context([
                 'user' => $user,

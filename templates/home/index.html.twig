@@ -2,6 +2,10 @@
 
 {% block title %}Home | MOSAIC {% endblock %}
 
+{% block preload %}
+    <link rel="preload" as="image" href="{{ 'media/hero-image.webp' | imagine_filter('hero_image') }}">
+{% endblock %}
+
 {% block body %}
     <section class="hero" aria-labelledby="hero-title">
         <div class="hero__container">

@@ -125,6 +125,10 @@ jobs:
       - name: ✅ Run Tests
         run: APP_ENV=test php bin/phpunit
 
+      - name: 📋 Show Symfony logs
+        if: failure()
+        run: cat var/log/test.log || echo "No log file found"
+
       - name: Nettoyer les fichiers de build
         if: success()
         run: rm -f public/build/entrypoints.json public/build/manifest.json

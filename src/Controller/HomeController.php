@@ -16,7 +16,7 @@ use App\Service\ContactFormHandler;
 
 class HomeController extends AbstractController
 {
-    #[Route('/home', name: 'home')]
+    #[Route('/', name: 'home')]
     public function index(ArticleRepository $articleRepo, MediaRepository $mediaRepo,  PhotographerRepository $photographerRepo, ContactFormHandler $handler, SeoService $seoService, Request $request ): Response
     {
 
