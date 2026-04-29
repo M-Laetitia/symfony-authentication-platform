@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\ServiceProposalType;
 use App\Repository\ServiceProposalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,8 +61,11 @@ class ServiceProposal
     #[ORM\JoinColumn(nullable: false)]
     private ?Tax $tax = null;
 
-    #[ORM\OneToOne(mappedBy: 'serviceProposal', cascade: ['persist', 'remove'])]
-    private ?Order $orderProposal = null;
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'serviceProposal')]
+    private Collection $orders;
 
     #[ORM\Column]
     private ?int $deliveryDelay = null;
@@ -85,6 +90,10 @@ class ServiceProposal
     #[ORM\JoinColumn(nullable: true)]
     private ?Speciality $speciality = null;
 
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -249,19 +258,27 @@ class ServiceProposal
         return $this->price_exclu_tax * $this->tax->getRate();
     }
 
-    public function getOrderProposal(): ?Order
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
     {
-        return $this->orderProposal;
+        return $this->orders;
     }
 
-    public function setOrderProposal(Order $orderProposal): static
+    public function addOrder(Order $order): static
     {
-        // set the owning side of the relation if necessary
-        if ($orderProposal->getServiceProposal() !== $this) {
-            $orderProposal->setServiceProposal($this);
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setServiceProposal($this);
         }
 
-        $this->orderProposal = $orderProposal;
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        $this->orders->removeElement($order);
 
         return $this;
     }
