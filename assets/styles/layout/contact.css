@@ -63,6 +63,8 @@
             font-weight: 400;
             margin-bottom: 10px;
         }
+
+
         .contact__detail-link {
             font-family: var(--font-heading);
             font-size: 26px;
@@ -73,6 +75,22 @@
             &:hover {
                 color: var(--color-grey-700);
             }
+        }
+
+        .contact__detail.icon-box__container {
+            .icon-box  {
+                transition: var(--transition-base);
+                &:hover svg path{
+                    fill: var(--color-grey-900);
+                }
+                &:hover {
+                    background-color: var(--color-accent);
+                    border: 1px solid var(--color-grey-900);
+                }
+            }
+
+            svg path {
+                transition: var(--transition-base);           }
         }
 
         .contact__detail {

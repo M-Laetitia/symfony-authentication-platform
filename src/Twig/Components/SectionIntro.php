@@ -12,4 +12,5 @@ final class SectionIntro
     public string $buttonText = 'See more';
     public ?string $variant = null;
     public string $linkBtn ="";
+    public bool $showButton = true;
 }
