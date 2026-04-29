@@ -17,6 +17,7 @@
         font-size: 30px;
         text-transform: uppercase;
         margin-bottom: 25px;
+        font-weight: 400;
     }
 
     .newsletter__form {
