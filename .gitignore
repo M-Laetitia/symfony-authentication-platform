@@ -24,7 +24,7 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
-copilot-instructuions.md
+
 note
 note2.txt
 note3
@@ -49,3 +49,7 @@ yarn-error.log
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
+
+
+manifest.json
+entrypoints.json

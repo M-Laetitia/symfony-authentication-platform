@@ -89,5 +89,36 @@ liip_imagine:
                     size: [1240, 900]  # 620x450 en DPR2
                     mode: outbound
 
+        # GALLERY_THUMBNAIL: ~
+        gallery_thumb_mobile:
+            filters:
+                thumbnail:
+                    size: [560, 560]   # 280x280 en DPR2
+                    mode: outbound
+
+        gallery_thumb_desktop:
+            filters:
+                thumbnail:
+                    size: [800, 800]   # 400x400 en DPR2
+                    mode: outbound
+
+        # GALLERY_DASHBOARD: ~
+        gallery_thumb_index:
+            filters:
+                thumbnail:
+                    size: [180, 180]   # 90x90 en DPR2
+                    mode: outbound
+
+        gallery_thumb_edit:
+            filters:
+                thumbnail:
+                    size: [636, 636]   # 318x318 en DPR2
+                    mode: outbound
+        hero_image:
+            filters:
+                thumbnail:
+                    size: [2720, 2720]   # ← 0 = hauteur auto, pas de crop
+                    mode: inset
+
     # webp:
     #     generate: true

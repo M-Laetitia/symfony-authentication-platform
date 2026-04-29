@@ -195,9 +195,16 @@ class MediaUploader implements MediaUploaderInterface
             throw new HttpException(500, "Erreur LiipImagine lors de la génération WebP : " . $e->getMessage());
         }
 
+        // Extract the enum value to use as filename prefix (e.g., 'portfolio_cover', 'article_cover')
         $prefix = $type instanceof MediaType ? $type->value : 'media';
+        
+        // Generate a random 32-character hexadecimal string for uniqueness
         $random = bin2hex(random_bytes(16));
+        
+        // Build the final filename: {prefix}_{random_hex}.webp (e.g., portfolio_cover_a1b2c3d4e5f6g7h8.webp)
         $webpFilename = $prefix . '_' . $random . '.webp';
+        
+        // Construct the absolute filesystem path where the WebP file will be saved
         $absoluteWebpPath = $uploadDir . '/' . $webpFilename;
 
         try {

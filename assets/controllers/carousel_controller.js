@@ -41,7 +41,7 @@ export default class extends Controller {
         console.log('Building', count, 'dots')
 
         this.dotsTarget.innerHTML = Array.from({ length: count })
-            .map((_, i) => `<button type="button" class="embla__dot" data-index="${i}" aria-label="Go to slide ${i + 1}"></button>`)
+            .map((_, i) => `<button type="button" class="embla__dot" data-index="${i}" role="tab" aria-selected="false" aria-label="Go to slide ${i + 1}"></button>`)
             .join('')
 
         this.dotsTarget.querySelectorAll('button').forEach(btn => {
@@ -63,6 +63,7 @@ export default class extends Controller {
 
         this.dotsTarget.querySelectorAll('button').forEach((btn, i) => {
             btn.classList.toggle('is-active', i === index)
+            btn.setAttribute('aria-selected', i === index ? 'true' : 'false')
         })
     }
 }

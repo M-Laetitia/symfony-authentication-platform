@@ -6,12 +6,13 @@ function initConversationChat() {
     // Optional chaining (?.) : évite un TypeError si form est null
     const input = form?.querySelector('textarea, input');
     const conversationId = form?.dataset.conversationId;
+    const currentUserId = parseInt(form?.dataset.userId || '0');
     const chatContainer = document.getElementById('chat-messages');
 
     if (!form || !input || !conversationId || !chatContainer) return;
 
     setupForm(form, input);
-    setupMercure(conversationId, chatContainer);
+    setupMercure(conversationId, chatContainer, currentUserId);
 }
 
 function setupForm(form, input) {
@@ -74,7 +75,7 @@ function showFormError(form, message) {
     setTimeout(() => errorEl.remove(), 10000);
 }
 
-function setupMercure(conversationId, chatContainer) {
+function setupMercure(conversationId, chatContainer, currentUserId) {
     // Construction de l'URL avec URLSearchParams pour encoder correctement le topic
     // ex: /conversation/5 → encodé en %2Fconversation%2F5
     const url = new URL('http://localhost:3000/.well-known/mercure');
@@ -85,20 +86,39 @@ function setupMercure(conversationId, chatContainer) {
     eventSource.onopen = () => console.log('Connected to Mercure');
     eventSource.onerror = (e) => console.error('Mercure error', e);
     // onmessage : déclenché à chaque événement SSE reçu depuis le hub Mercure
-    eventSource.onmessage = (event) => appendMessage(JSON.parse(event.data), chatContainer);
+    eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        appendMessage(data, chatContainer, currentUserId);
+    };
 }
 
-function appendMessage(data, chatContainer) {
-    const messageEl = document.createElement('div');
-    messageEl.className = 'chat-message';
-
-    const strong = document.createElement('strong');
-    strong.textContent = data.author; // textContent échappe automatiquement le HTML
-    const text = document.createTextNode(': ' + data.content); 
+function appendMessage(data, chatContainer, currentUserId) {
+    const isOwnMessage = data.senderId === currentUserId;
     
-    messageEl.appendChild(strong);
-    messageEl.appendChild(text);
-    chatContainer.appendChild(messageEl);
+    const li = document.createElement('li');
+    li.className = `conversation__message ${isOwnMessage ? 'conversation__message--own' : ''}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'conversation__message-bubble';
+    
+    const author = document.createElement('div');
+    author.className = 'conversation__message-author';
+    author.textContent = data.author;
+    
+    const content = document.createElement('div');
+    content.className = 'conversation__message-content';
+    content.textContent = data.content;
+    
+    const date = document.createElement('div');
+    date.className = 'conversation__message-date';
+    date.textContent = data.date;
+    
+    bubble.appendChild(author);
+    bubble.appendChild(content);
+    bubble.appendChild(date);
+    
+    li.appendChild(bubble);
+    chatContainer.appendChild(li);
 
     // scrollTop = scrollHeight : force le scroll vers le dernier message
     chatContainer.scrollTop = chatContainer.scrollHeight;

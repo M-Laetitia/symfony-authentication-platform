@@ -1,11 +1,12 @@
 <div class="section-intro {% if variant %}section-intro--{{ variant }}{% endif %}">
     <div class="section-intro__text">
-        <h2 class="section-intro__title">{{ title }}</h2>
-        <h5 class="section-intro__subtitle">{{ subtitle }}</h5>
+        <h2 class="section-intro__title" {% if titleId is defined %}id="{{ titleId }}"{% endif %}>{{ title }}</h2>
+        <p class="section-intro__subtitle">{{ subtitle }}</p>
     </div>
     <div class="section-intro__action">
-        <button class="section-intro__button button button--accent button--small ">
-            <a href="{{ linkBtn }}">{{ buttonText }}</a></button>
+        <a href="{{ linkBtn }}" class="section-intro__button button button--accent button--small">
+            {{ buttonText }}
+        </a>
     </div> 
 </div>
 

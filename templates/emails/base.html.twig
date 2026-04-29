@@ -1,0 +1,18 @@
+{# Email base template for all emails #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block subject %}{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #222; background: #fff; }
+        .email-container { max-width: 600px; margin: 0 auto; padding: 2em; background: #fff; border-radius: 8px; }
+        h1, h2, h3 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        {% block body %}{% endblock %}
+    </div>
+</body>
+</html>

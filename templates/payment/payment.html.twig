@@ -1,24 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Payment - Order #{{ order.orderNumber }}{% endblock %}
+{% block title %}Secure Payment - Order #{{ order.orderNumber }}{% endblock %}
 
 {% block body %}
-<h1>Payment for Order #{{ order.orderNumber }}</h1>
 
-<h3>ORDER Details</h3>
-{# <p><strong>Service:</strong> {{ proposal.service.name }}</p>
-<p><strong>Photographer:</strong> {{ proposal.photographer.firstName }} {{ proposal.photographer.lastName }}</p>
-<p><strong>Message:</strong> {{ proposal.message }}</p>
-<p><strong>Price (excl. tax):</strong> €{{ proposal.priceExcluTax|number_format(2) }}</p>
-<p><strong>Tax:</strong> €{{ (proposal.priceExcluTax * proposal.tax.rate)|number_format(2) }}</p>
-<p><strong>Total (TTC):</strong> €{{ (proposal.priceExcluTax * (1 + proposal.tax.rate))|number_format(2) }}</p> #}
+<twig:Banner
+    title="Proceed to Payment"
+    subtitle="Complete your payment securely with Stripe"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Conversations', url: path('chat'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Payment', type: 'current' }
+    ]"
+    variant="dark"
+/>
 
-<hr>
-<form action="{{ path('payment_checkout', { id: order.id }) }}" method="POST">
-    <input type="hidden" name="_token" value="{{ csrf_token('payment_checkout') }}">
-    <button type="submit">
-        Payer {{ order.totalAmount / 100 }}€
-    </button>
-</form>
+
+
+<section class="payment-page">
+    <div class="payment-page__container">
+
+        <!-- Header -->
+        <div class="payment-page__header">
+            <h2 class="payment-page__title">Complete Your Payment</h2>
+            <p class="payment-page__order-number">Order #{{ order.orderNumber }}</p>
+        </div>
+
+        <!-- Payment Box -->
+        <div class="payment-box">
+            
+            <!-- Amount -->
+            <div class="payment-box__amount">
+                €{{ (order.totalAmount / 100)|number_format(2, '.', ',') }}
+            </div>
+
+            <!-- Description -->
+            <p class="payment-box__description">
+                You are about to be redirected to Stripe's secure payment platform to complete your transaction.
+            </p>
+
+            <!-- Info -->
+            <div class="payment-box__info">
+                <strong>💳 Secure Payment</strong>
+                Your payment information is processed securely by Stripe. We never store your payment details.
+            </div>
+
+            <!-- Cancel Info -->
+            <div class="payment-box__info" style="background-color: #f0f8ff; border-left-color: #0066cc;">
+                <strong>ℹ️ If You Cancel</strong>
+                This payment order will be cancelled, but the proposal remains available. You can create a new order anytime. You'll be redirected back to your conversation.
+            </div>
+
+            <!-- Actions -->
+            <div class="payment-box__actions">
+                <form action="{{ path('payment_checkout', { id: order.id }) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('payment_checkout') }}">
+                    <button type="submit" class="button button--medium btn-confirm">
+                        Proceed to Stripe Payment
+                    </button>
+                </form>
+
+                <a href="{{ path('order_cancel', { id: order.id }) }}" class="button button--black-variant button--medium">
+                    Cancel & Go Back
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
 
 {% endblock %}
