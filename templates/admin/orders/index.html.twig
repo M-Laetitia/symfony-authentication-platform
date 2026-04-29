@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Orders Management{% endblock %}
+
+{% block body %}
+	<twig:Banner
+		title="Orders Management"
+		subtitle="Admin area for proposals, orders, payments, and invoices."
+		:breadcrumbs="[
+			{label: 'Home', url: path('home'), type: 'link'},
+            {label: 'separator', type: 'separator' },
+			{label: 'Orders', type: 'current'}
+		]"
+	/>
+	<div class="admin-orders">
+		<section class="admin-orders__section">
+			<h2>Service Proposals</h2>
+			<div class="admin-orders__list" id="serviceproposals-list">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>Title</th>
+							<th>Created At</th>
+							<th>Expires At</th>
+							<th>Price</th>
+							<th>Photographer</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for proposal in serviceProposals %}
+						<tr>
+							<td>{{ proposal.title }}</td>
+							<td>{{ proposal.createdAt ? proposal.createdAt|date('Y-m-d H:i') : '' }}</td>
+							<td>{{ proposal.expirationDate ? proposal.expirationDate|date('Y-m-d H:i') : '' }}</td>
+							<td>{{ proposal.priceExcluTax }} €(HT)</td>
+							<td>
+								{% set photographer = proposal.photographer %}
+								{% if photographer and photographer.user %}
+									{{ photographer.user.firstName }} {{ photographer.user.lastName }}
+								{% else %}
+									-
+								{% endif %}
+							</td>
+							<td>{{ proposal.status.value}}</td>
+							<td>
+								{% if app.user and photographer and photographer.user and app.user.id == photographer.user.id %}
+									<form method="post" action="{{ path('admin_proposal_cancel', {id: proposal.id}) }}" style="display:inline;">
+										<button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+									</form>
+									{% if proposal.conversation %}
+										<a href="{{ path('chat_conversation_show', {id: proposal.conversation.id}) }}" class="btn btn-primary btn-sm" style="margin-left: 0.5em;">View Conversation</a>
+									{% endif %}
+								{% endif %}
+							</td>
+						</tr>
+					{% else %}
+						<tr><td colspan="7">No proposals found.</td></tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+			   <section class="admin-orders__section">
+				   <h3>Orders</h3>
+				   <div class="admin-orders__list" id="orders-list">
+					   <table class="table table-sm">
+						   <thead>
+							   <tr>
+								   <th>ID</th>
+								   <th>Order #</th>
+								   <th>Status</th>
+								   <th>Created At</th>
+								   <th>Total (€)</th>
+							   </tr>
+						   </thead>
+						   <tbody>
+						   {% for order in orders %}
+							   <tr>
+								   <td>{{ order.id }}</td>
+								   <td>{{ order.orderNumber }}</td>
+								   <td>{{ order.status.value }}</td>
+								   <td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '' }}</td>
+								   <td>{{ order.totalAmount ? (order.totalAmount / 100)|number_format(2, '.', ' ') : '0.00' }}</td>
+							   </tr>
+						   {% else %}
+							   <tr><td colspan="5">No orders found.</td></tr>
+						   {% endfor %}
+						   </tbody>
+					   </table>
+				   </div>
+			   </section>
+
+		<section class="admin-orders__section">
+			   <h3>Payments</h3>
+			   <div class="admin-orders__list" id="payments-list">
+				   <table class="table table-sm">
+					   <thead>
+						   <tr>
+							   <th>ID</th>
+							   <th>Order Proposal ID</th>
+							   <th>Amount (€)</th>
+							   <th>Provider</th>
+							   <th>Status</th>
+							   <th>Billing Address</th>
+						   </tr>
+					   </thead>
+					   <tbody>
+					   {% for payment in payments %}
+						   <tr>
+							   <td>{{ payment.id }}</td>
+							   <td>{{ payment.orderProposal ? payment.orderProposal.id : '' }}</td>
+							   <td>{{ payment.amount ? (payment.amount / 100)|number_format(2, '.', ' ') : '0.00' }}</td>
+							   <td>{{ payment.provider.value }}</td>
+							   <td>{{ payment.status.value }}</td>
+							   <td>
+								   {% set addr = payment.billingAddress %}
+								   {{ addr.name }}<br>
+								   {{ addr.line1 }}{% if addr.line2 %}, {{ addr.line2 }}{% endif %}<br>
+								   {{ addr.postal_code }} {{ addr.city }}<br>
+								   {{ addr.country }}<br>
+								   {{ addr.email }}
+							   </td>
+						   </tr>
+					   {% else %}
+						   <tr><td colspan="5">No payments found.</td></tr>
+					   {% endfor %}
+					   </tbody>
+				   </table>
+			   </div>
+		</section>
+
+		<section class="admin-orders__section">
+			   <h3>Invoices (PDF)</h3>
+			   <div class="admin-orders__list" id="invoices-list">
+				   <table class="table table-sm">
+					   <thead>
+						   <tr>
+							   <th>ID</th>
+							   <th>Order Proposal ID</th>
+							   <th>Invoice #</th>
+							   <th>Status</th>
+							   <th>Total (€)</th>
+							   <th>Issued At</th>
+							   <th>PDF</th>
+						   </tr>
+					   </thead>
+					   <tbody>
+					   {% for invoice in invoices %}
+						   <tr>
+							   <td>{{ invoice.id }}</td>
+							   <td>{{ invoice.orderProposal ? invoice.orderProposal.id : '' }}</td>
+							   <td>{{ invoice.invoiceNumber }}</td>
+							   <td>{{ invoice.status.value }}</td>
+							   <td>{{ invoice.totalAmount ? (invoice.totalAmount / 100)|number_format(2, '.', ' ') : '0.00' }}</td>
+							   <td>{{ invoice.issuedAt ? invoice.issuedAt|date('Y-m-d H:i') : '' }}</td>
+							   <td>
+								   {% if invoice.pdfPath %}
+									   {% set pdfParts = invoice.pdfPath|split('/') %}
+									   {% set year = pdfParts|filter(v => v matches('/^\\d{4}$/'))|first %}
+									   <a href="{{ path('admin_invoice_file', {year: year, filename: pdfParts|last}) }}?inline=1" target="_blank" class="btn btn-sm btn-outline-primary">Afficher</a>
+								   {% else %}
+									   -
+								   {% endif %}
+							   </td>
+						   </tr>
+					   {% else %}
+						   <tr><td colspan="7">No invoices found.</td></tr>
+					   {% endfor %}
+					   </tbody>
+				   </table>
+			   </div>
+		</section>
+	</div>
+{% endblock %}
