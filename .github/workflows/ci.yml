@@ -99,8 +99,8 @@ jobs:
         run: |
           APP_ENV=test php bin/console doctrine:database:create
           APP_ENV=test php bin/console doctrine:schema:create
+          APP_ENV=test php bin/console doctrine:migrations:version --add --all --no-interaction
           APP_ENV=test php bin/console doctrine:migrations:migrate --no-interaction
-        # APP_ENV=test php bin/console doctrine:database:drop --force --if-exists
 
       - name:  Lint YAML, Twig and Container
         run: |
