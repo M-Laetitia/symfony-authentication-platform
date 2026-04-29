@@ -12,10 +12,13 @@
             <div class="hero__main">
                 <figure class="hero__figure">
                     <img 
-                        src="{{ asset('uploads/media/hero-image.webp') }}" 
+                        src="{{ 'media/hero-image.webp' | imagine_filter('hero_image') }}"
                         alt="MOSAIC Photography Studio" 
                         class="hero__image u-img-cover"
                         data-parallax
+                        loading="eager"
+                        width="1360"
+                        height="1080"
                     >
                 </figure>
                 <div class="hero__content">
@@ -303,7 +306,7 @@
                 <div class="section-works__gallery">
                     {% for portfolio in latestPhotographies %}
                     <figure class="gallery__item {% if loop.first or loop.last %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}" width="880" height="500">
                         <div class="gallery__detail">
                             <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
