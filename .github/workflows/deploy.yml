@@ -38,6 +38,7 @@ jobs:
       - name: 🚀 Deploy to production server
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@195.154.191.63 "
+            git config --global --add safe.directory /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
             cd /var/www/vhosts/mosaic.digitics.fr/httpdocs &&
             git pull origin master &&
             /opt/plesk/php/8.3/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader &&
