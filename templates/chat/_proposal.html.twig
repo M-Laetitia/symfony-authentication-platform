@@ -126,5 +126,13 @@
         </form>
     </div>
     {% endif %}
+
+
+    {% if proposal.status.value == 'pending' and app.user and proposal.photographer.user.id == app.user.id %}
+        <button type="button" class="proposal-card__action-btn cancel-proposal proposal-card__action-btn--decline " onclick="openCancelProposalModal({{ proposal.id }})" style="margin-top: 1em;">
+            Cancel Proposal
+        </button>
+        {% include 'chat/_proposal_cancel_modal.html.twig' with {'proposal': proposal} %}
+    {% endif %}
 </div>
 
