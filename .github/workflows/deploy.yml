@@ -44,7 +44,9 @@ jobs:
             git fetch origin &&
             git reset --hard origin/master &&
             /opt/plesk/php/8.3/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader &&
-            /opt/plesk/php/8.3/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod &&
+            /opt/plesk/php/8.3/bin/php bin/console cache:clear --env=prod &&
+            /opt/plesk/php/8.3/bin/php bin/console doctrine:migrations:sync-metadata-storage --env=prod &&
+            /opt/plesk/php/8.3/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing --env=prod &&
             /opt/plesk/php/8.3/bin/php bin/console asset-map:compile --env=prod &&
             /opt/plesk/php/8.3/bin/php bin/console cache:clear --env=prod
           "
