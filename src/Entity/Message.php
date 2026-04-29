@@ -98,12 +98,12 @@ class Message
     }
 
 
-    public function getStatus(): Messagetype
+    public function getStatus(): MessageType
     {
         return $this->status;
     }
 
-    public function setStatus(Messagetype $status): self
+    public function setStatus(MessageType $status): self
     {
         $this->status = $status;
         return $this;
