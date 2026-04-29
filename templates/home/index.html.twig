@@ -2,9 +2,9 @@
 
 {% block title %}Home | MOSAIC {% endblock %}
 
-{% block preload %}
+{# {% block preload %}
     <link rel="preload" as="image" href="{{ 'media/hero-image.webp' | imagine_filter('hero_image') }}">
-{% endblock %}
+{% endblock %} #}
 
 {% block body %}
     <section class="hero" aria-labelledby="hero-title">
@@ -75,7 +75,18 @@
                     <!-- Image -->
                     <div class="section-about__image-wrapper">
                         <figure class="section-about__figure">
-                            <img src="{{asset('uploads/media/mosaic-polaroids-photographies.webp')}}" alt="MOSAIC - polaroids photograhies" class="section-about__image u-img-cover" width="365" height="480">
+                            <img 
+                                src="{{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_desktop') }}"
+                                srcset="
+                                    {{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_mobile') }} 800w,
+                                    {{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_desktop') }} 365w
+                                "
+                                sizes="(max-width: 1024px) 800px, 365px"
+                                alt="MOSAIC - polaroids photograhies"
+                                class="section-about__image u-img-cover"
+                                width="365" height="480"
+                                loading="lazy"
+                            >
                         </figure>
                     </div>
                 </div>
@@ -286,8 +297,9 @@
 
                 <div class="section-works__gallery">
                     {% for portfolio in latestPhotographies %}
-                    <figure class="gallery__item {% if loop.first or loop.last %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}" width="880" height="500">
+                    {% set isLandscape = loop.first or loop.last %}
+                    <figure class="gallery__item {% if isLandscape %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.title }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
                         <div class="gallery__detail">
                             <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
