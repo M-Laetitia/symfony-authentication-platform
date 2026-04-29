@@ -53,7 +53,7 @@ final class UserRegistrationService
                     ->from(new Address('mailer@your-domain.com', 'Acme Mail bot'))
                     ->to((string) $user->getEmail())
                     ->subject('Please Confirm your Email')
-                    ->htmlTemplate('login/confirmation_email.html.twig')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
         } catch (\Throwable $e){
