@@ -114,6 +114,11 @@ liip_imagine:
                 thumbnail:
                     size: [636, 636]   # 318x318 en DPR2
                     mode: outbound
+        hero_image:
+            filters:
+                thumbnail:
+                    size: [2720, 2720]   # ← 0 = hauteur auto, pas de crop
+                    mode: inset
 
     # webp:
     #     generate: true
