@@ -59,7 +59,7 @@ const grey900 = "#242424";
 document.querySelectorAll('.icon-box__container').forEach(detail => {
     if (!detail) return;
 
-    const link = detail.querySelector('.icon-box__link');
+    const link = detail.querySelector('.section-about__feature-text');
     const svg = detail.querySelector('.icon-box__svg');
     const icons = detail.querySelectorAll('.icon-box');  
 
@@ -198,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const value = passwordInput.value;
   
       // Lenght ≥ 8
-      lengthReq.classList.toggle('valid', value.length >= 8);
-      lengthReq.classList.toggle('invalid', value.length < 8);
+      lengthReq.classList.toggle('valid', value.length >= 12);
+      lengthReq.classList.toggle('invalid', value.length < 12);
   
       // Maj
       uppercaseReq.classList.toggle('valid', /[A-Z]/.test(value));

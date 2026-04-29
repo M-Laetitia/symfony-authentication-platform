@@ -28,6 +28,7 @@
 note
 note2.txt
 note3
+note4
 noteToDo.txt
 image_article.txt
 fail2ban/data/filter.d/testfile.txt
@@ -53,3 +54,6 @@ yarn-error.log
 
 manifest.json
 entrypoints.json
+
+/public/uploads/photographer/*
+/public/uploads/avatar/*

@@ -98,8 +98,9 @@
     height: auto; 
 }
 
-.icon-box__link {
-    &:hover {
+
+.section-about__feature-text {
+    &:hover .icon-box__link {
         color: var(--color-grey-700);
     }
 }
@@ -186,6 +187,8 @@
         position: relative;
         display: inline-block;
         transition: var(--transition-base);
+        font-size: 26px;
+        font-weight: 400;
         &:hover:before {
             height: 32px;
         }
@@ -280,6 +283,8 @@
             margin: 10px 0;
             position: relative;
             transition: var(--transition-base);
+            font-size: 26px;
+            font-weight: 400;
             &:hover {
                 color: var(--color-accent);
             }

@@ -31,7 +31,7 @@ class PhotographerRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find active and public photographers with their specialities and portfolio_featured media
+     * Find active and public photographers with their specialities and portfolio_cover media
      * @return Photographer[] Returns an array of Photographer objects
      */
     public function findPhotographersWithLatestFeatured(): array
@@ -45,7 +45,7 @@ class PhotographerRepository extends ServiceEntityRepository
             ->orderBy('m.createdAt', 'DESC')
             ->setParameter('status', '%active%')
             ->setParameter('visibility', '%public%')
-            ->setParameter('mediaType', 'portfolio_featured')
+                ->setParameter('mediaType', 'portfolio_cover')
             ->getQuery()
             ->getResult();
     }

@@ -86,6 +86,16 @@
 /* &------------- INDEX-------------- */
 /* &--------------------------------- */
 
+.conversations-page__empty {
+    p {
+        color: var(--color-white);
+    }
+    .button {
+        margin-top: 20px;
+        display: inline-flex;
+    }
+}
+
 .conversations-page {
     padding: 0 20px;
     background-color: var(--color-white);
