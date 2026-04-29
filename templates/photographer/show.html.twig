@@ -28,13 +28,25 @@
       <!-- SECTION: Photographer Info -->
       <section class="photographer-info">
         <div class="photographer-info__header">
-          <figure class="photographer-info__photo">
-              <img
-                src="/uploads/{{bannerImage.path}}"
-                alt="{{bannerImage.altText}}"
-                class="photographer-info__photo-img u-img-cover"
-              />
-          </figure>
+
+          {% if bannerImage %}
+              <figure class="photographer-info__photo">
+                <img
+                  src="/uploads/{{bannerImage.path}}"
+                  alt="{{bannerImage.altText}}"
+                  class="photographer-info__photo-img u-img-cover"
+                />
+            </figure>
+          {% else %}
+              <figure class="photographer-info__photo">
+                <img
+                  src="/uploads/media/camera.webp"
+                  alt="camera photo"
+                  class="photographer-info__photo-img u-img-cover"
+                />
+            </figure>
+          {% endif %}
+
           <div class="photographer-info__quote">
             <span class="quote-icon-left">
               {% include 'components/icons/quote.html.twig' %}
