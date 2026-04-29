@@ -45,10 +45,17 @@ class Conversation
     #[ORM\ManyToOne(inversedBy: 'conversations')]
     private ?Photographer $photographer = null;
 
+    /**
+     * @var Collection<int, ConversationReport>
+     */
+    #[ORM\OneToMany(targetEntity: ConversationReport::class, mappedBy: 'conversation')]
+    private Collection $conversationReports;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
         $this->serviceProposals = new ArrayCollection();
+        $this->conversationReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,4 +187,36 @@ class Conversation
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, ConversationReport>
+     */
+    public function getConversationReports(): Collection
+    {
+        return $this->conversationReports;
+    }
+
+    public function addConversationReport(ConversationReport $conversationReport): static
+    {
+        if (!$this->conversationReports->contains($conversationReport)) {
+            $this->conversationReports->add($conversationReport);
+            $conversationReport->setConversation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversationReport(ConversationReport $conversationReport): static
+    {
+        if ($this->conversationReports->removeElement($conversationReport)) {
+            // set the owning side to null (unless already changed)
+            if ($conversationReport->getConversation() === $this) {
+                $conversationReport->setConversation(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

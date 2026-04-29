@@ -28,9 +28,16 @@ class Speciality
     #[ORM\ManyToMany(targetEntity: Photographer::class, mappedBy: 'specialities')]
     private Collection $photographers;
 
+    /**
+     * @var Collection<int, ServiceProposal>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceProposal::class, mappedBy: 'speciality')]
+    private Collection $serviceProposals;
+
     public function __construct()
     {
         $this->photographers = new ArrayCollection();
+        $this->serviceProposals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +91,36 @@ class Speciality
     {
         if ($this->photographers->removeElement($photographer)) {
             $photographer->removeSpeciality($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceProposal>
+     */
+    public function getServiceProposals(): Collection
+    {
+        return $this->serviceProposals;
+    }
+
+    public function addServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if (!$this->serviceProposals->contains($serviceProposal)) {
+            $this->serviceProposals->add($serviceProposal);
+            $serviceProposal->setSpeciality($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceProposal(ServiceProposal $serviceProposal): static
+    {
+        if ($this->serviceProposals->removeElement($serviceProposal)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceProposal->getSpeciality() === $this) {
+                $serviceProposal->setSpeciality(null);
+            }
         }
 
         return $this;

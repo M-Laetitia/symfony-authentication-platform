@@ -1,0 +1,283 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Edit Your Profile"
+    subtitle="Manage your photographer information"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Profile Settings', type: 'current' }
+    ]"
+    variant="dark"
+    id="profile-edit-title"
+/>
+
+<section class="main-section-page profile-edit u-display-center" aria-labelledby="profile-edit-title">
+    <div class="profile-edit__container section-centered">
+
+        <h2 class="profile-edit__title">
+            Profile Settings
+        </h2>
+
+        <div class="profile-edit__content">
+
+            {{ form_start(form, {
+                attr: {
+                    class: 'profile-edit__form'
+                },
+                enctype: 'multipart/form-data'
+            }) }}
+
+            <!-- Basic Information Section -->
+            <fieldset class="form-section basic-information">
+                <legend class="form-section__title">Basic Information</legend>
+                
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.firstName) }}
+                        {{ form_widget(form.firstName) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.lastName) }}
+                        {{ form_widget(form.lastName) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </fieldset>
+
+            <!-- Account Settings Section -->
+            <fieldset class="form-section account-settings">
+                <legend class="form-section__title">Account Settings</legend>
+                
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.status) }}
+                        <div class="form-check-group">
+                            {% for child in form.status %}
+                                <div class="form-check-item">
+                                    {{ form_widget(child) }}
+                                    {{ form_label(child) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.status) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.visibility) }}
+                        <div class="form-check-group">
+                            {% for child in form.visibility %}
+                                <div class="form-check-item">
+                                    {{ form_widget(child) }}
+                                    {{ form_label(child) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.visibility) }}
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Bio Section -->
+            <fieldset class="form-section bio">
+                <legend class="form-section__title">About You</legend>
+                
+                <div class="form-group">
+                    {{ form_label(form.bioQuote) }}
+                    {{ form_widget(form.bioQuote) }}
+                    {{ form_errors(form.bioQuote) }}
+                    <small class="form-help">A short tagline or quote that represents your photography style</small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.bioShort) }}
+                    {{ form_widget(form.bioShort) }}
+                    {{ form_errors(form.bioShort) }}
+                    <small class="form-help">A brief summary of who you are and your photography specialties</small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.bioLong) }}
+                    {{ form_widget(form.bioLong) }}
+                    {{ form_errors(form.bioLong) }}
+                    <small class="form-help">Tell your detailed story, share your experience and photography vision</small>
+                </div>
+            </fieldset>
+
+            <!-- Portfolio Banner Section -->
+            <fieldset class="form-section banner">
+                <legend class="form-section__title">Portfolio Banner</legend>
+                
+                {% set portfolioCover = photographer.media|filter(m => m.type.value == 'portfolio_cover')|first %}
+                
+                {% if portfolioCover %}
+                <div class="form-group portfolio-preview">
+                    <p class="portfolio-preview__label">Current banner:</p>
+                    <img 
+                        src="{{ asset('uploads/' ~ portfolioCover.path) }}" 
+                        alt="{{ portfolioCover.altText }}" 
+                        class="portfolio-preview__image"
+                    >
+                    <p class="portfolio-preview__alt-text">
+                        <strong>Alt text:</strong> {{ portfolioCover.altText }}
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form_label(form.portfolioCoverImage) }}
+                    {{ form_widget(form.portfolioCoverImage) }}
+                    {{ form_errors(form.portfolioCoverImage) }}
+                    <small class="form-help">{{ form.portfolioCoverImage.vars.help }}</small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.portfolioCoverAltText) }}
+                    {{ form_widget(form.portfolioCoverAltText) }}
+                    {{ form_errors(form.portfolioCoverAltText) }}
+                    <small class="form-help">{{ form.portfolioCoverAltText.vars.help }}</small>
+                </div>
+            </fieldset>
+
+            <!-- Contact & Location Section -->
+            <fieldset class="form-section contact-location">
+                <legend class="form-section__title">Contact & Location</legend>
+                
+                <div class="form-group">
+                    {{ form_label(form.location) }}
+                    {{ form_widget(form.location) }}
+                    {{ form_errors(form.location) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.languages) }}
+                    {{ form_widget(form.languages) }}
+                    {{ form_errors(form.languages) }}
+                    <small class="form-help">Separate languages with commas</small>
+                </div>
+            </fieldset>
+
+            <!-- Experience Section -->
+            <fieldset class="form-section experience-skills">
+                <legend class="form-section__title">Experience & Skills</legend>
+                
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.experienceYears) }}
+                        {{ form_widget(form.experienceYears) }}
+                        {{ form_errors(form.experienceYears) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.shootingsCount) }}
+                        {{ form_widget(form.shootingsCount) }}
+                        {{ form_errors(form.shootingsCount) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.equipment) }}
+                    {{ form_widget(form.equipment) }}
+                    {{ form_errors(form.equipment) }}
+                    <small class="form-help">List your photography equipment, separate with commas</small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.specialities) }}
+                    {{ form_widget(form.specialities) }}
+                    {{ form_errors(form.specialities) }}
+                    <small class="form-help">{{ form.specialities.vars.help }}</small>
+                </div>
+            </fieldset>
+
+                           
+
+            <!-- Links Section -->
+            <fieldset class="form-section online-presence">
+                <legend class="form-section__title">Online Presence</legend>
+                
+                <div class="form-group">
+                    {{ form_label(form.website) }}
+                    {{ form_widget(form.website) }}
+                    {{ form_errors(form.website) }}
+                    <small class="form-help">Enter without https:// (e.g., example.com)</small>
+                </div>
+
+                <div class="form-section__subtitle">Social Media</div>
+
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.instagram) }}
+                        {{ form_widget(form.instagram) }}
+                        {{ form_errors(form.instagram) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.behance) }}
+                        {{ form_widget(form.behance) }}
+                        {{ form_errors(form.behance) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.tiktok) }}
+                        {{ form_widget(form.tiktok) }}
+                        {{ form_errors(form.tiktok) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.youtube) }}
+                        {{ form_widget(form.youtube) }}
+                        {{ form_errors(form.youtube) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.twitter) }}
+                        {{ form_widget(form.twitter) }}
+                        {{ form_errors(form.twitter) }}
+                    </div>
+
+                    <div class="form-group form-group--half">
+                        {{ form_label(form.facebook) }}
+                        {{ form_widget(form.facebook) }}
+                        {{ form_errors(form.facebook) }}
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="button button--accent button--medium">
+                    Save Changes
+                </button>
+                <a href="{{ path('photographer_dashboard_index', { slug: photographer.slug }) }}" class="button button--black-variant button--medium">
+                    Go back to dashboard
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+
+    </div>
+</section>
+
+
+{% endblock %}

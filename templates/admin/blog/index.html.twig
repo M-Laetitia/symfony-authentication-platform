@@ -4,9 +4,22 @@
 
 {% block body %}
 
-<div class="admin-page admin-blog">
+<twig:Banner
+    title="Blog Management Dashboard"
+    subtitle="Manage the blog content, categories, tags and comments"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', type: 'current' }
+    ]"
+    variant="dark"
+    id="blog-management-title"
+/>
+
+
+<div class="admin-page admin-blog" aria-labelledby="blog-management-title">
     <div class="admin-blog__header">
-        <h1 class="admin-blog__title">Blog Management Dashboard</h1>
+        <h2 class="admin-blog__title">Dashboard</h2>
 
         <div class="admin-blog__stats">
             <div class="admin-blog__stat-card">
@@ -37,7 +50,7 @@
 
 
     <div class="admin-blog__filters">
-        <h2>FILTERS</h2>
+        <h3>FILTERS</h3>
         <div class="admin-blog__filters-container">
             {{ form_start(filterForm, {'attr': {'class': 'admin-blog__filters-form'}}) }}
             
@@ -67,7 +80,7 @@
         </div>
     </div>
     <div class="admin-blog__articles">
-        <h2>ARTICLES</h2>
+        <h3>ARTICLES</h3>
            <table class="admin-blog__table">
             <thead class="admin-blog__table-head">
                 <tr class="admin-blog__table-row admin-blog__table-row--head">
@@ -209,7 +222,7 @@
 
     {# CATEGORIES MANAGEMENT #}
     <section class="admin-categories">
-        <h2 class="admin-categories__title">Categories Management</h2>
+        <h3 class="admin-categories__title">Categories Management</h3>
         
         <a href="{{ path('category_new') }}" class="button button--small button--accent">Add New Category</a>
         
@@ -266,7 +279,7 @@
 
     {# TAGS MANAGEMENT #}
     <section class="admin-tags">
-        <h2 class="admin-tags__title">Tags Management</h2>
+        <h3 class="admin-tags__title">Tags Management</h3>
         
         <a href="{{ path('tag_new') }}" class="button button--small button--accent">Add New Tag</a>
         
@@ -324,7 +337,7 @@
     {% if is_granted('ROLE_ADMIN') %}
         {# COMMENTS MANAGEMENT #}
         <section class="admin-comments">
-            <h2 class="admin-comments__title">Comments Management</h2>
+            <h3 class="admin-comments__title">Comments Management</h3>
             
             <div class="admin-comments__header">
                 <span class="admin-comments__unapproved-count">

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Galleries - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="My Galleries"
+    subtitle="Manage your photography galleries"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Galleries', type: 'current' }
+    ]"
+    variant="dark"
+    id="galleries-title"
+/>
+
+<section class="main-section-page dashboard galleries u-display-center" aria-labelledby="galleries-title">
+    <div class="galleries__container section-centered">
+
+        <h2 id="galleries-title" class="galleries__title">
+            My Photography Galleries
+        </h2>
+
+        <div class="galleries__actions">
+            <a href="{{ path('photographer_gallery_create', { slug: photographer.slug }) }}" class="button button--accent button--small">
+                + Create New Gallery
+            </a>
+        </div>
+
+        {% if galleries is empty %}
+            <div class="galleries__empty">
+                <p>You haven't created any galleries yet.</p>
+                <a href="{{ path('photographer_gallery_create', { slug: photographer.slug }) }}" class="button button--accent ">
+                    Create Your First Gallery
+                </a>
+            </div>
+        {% else %}
+            <div class="galleries__grid">
+                {% for gallery in galleries %}
+                    <div class="gallery-card">
+                        <div class="gallery-card__header">
+                            <h3 class="gallery-card__title">{{ gallery.name }}</h3>
+                            <p class="gallery-card__count">{{ gallery.medias|length }} photo{{ gallery.medias|length != 1 ? 's' : '' }}</p>
+                        </div>
+
+                        {% if gallery.description %}
+                            <p class="gallery-card__description">{{ gallery.description }}</p>
+                        {% endif %}
+
+                        <div class="gallery-card__preview">
+                            {% if gallery.medias|length > 0 %}
+                                <div class="gallery-card__thumbnails">
+                                    {% for media in gallery.medias|slice(0, 4) %}
+                                        <img 
+                                            src="{{ media.path | imagine_filter('gallery_thumb_index') }}" 
+                                            alt="{{ media.altText }}"
+                                            class="gallery-card__thumbnail"
+                                            loading="lazy"
+                                        >
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="gallery-card__empty">No photos yet</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="gallery-card__actions">
+                            <a href="{{ path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--small button--accent">
+                                Manage Photos
+                            </a>
+                            <a href="{{ path('photographer_gallery_media_add', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--small button--accent">
+                                Add Photo
+                            </a>
+                            <a href="{{ path('photographer_gallery_delete', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--small button--danger" onclick="return confirm('Delete this gallery and all its photos?');">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+
+{% endblock %}
