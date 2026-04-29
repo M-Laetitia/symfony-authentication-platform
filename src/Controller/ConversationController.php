@@ -94,6 +94,7 @@ class ConversationController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $userId = $user->getId();
+        $conversationData = [];
 
         $conversations = $conversationRepo->findByAuthenticatedUser($user);
         $conversationIds = array_map(
@@ -125,6 +126,7 @@ class ConversationController extends AbstractController
 
             $lastMessage = $lastMessagesByConversation[$conv->getId()] ?? null;
 
+            
             $conversationData[] = [
                 'id' => $conv->getId(),
                 'otherParticipant' => $otherUser->getUsername(),
@@ -135,8 +137,8 @@ class ConversationController extends AbstractController
                 'authorLastMessage' => $lastMessage?->getSender()?->getUsername(),
                 'unreadCount' => $unreadByConversation[$conv->getId()] ?? 0,
             ];
-        }
-
+            }
+            
         $unreadMessages = $messageRepo->countUnreadForUser($userId);
 
         return $this->render('chat/index.html.twig', [
