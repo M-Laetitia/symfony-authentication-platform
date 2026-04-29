@@ -93,19 +93,20 @@ jobs:
       #     echo "MySQL container ID: $MYSQL_CONTAINER_ID"
       #     docker logs $MYSQL_CONTAINER_ID 
 
-      - name: 🛠 Run Doctrine migrations
+      - name: Prepare database
         run: |
+          APP_ENV=test php bin/console doctrine:database:drop --force --if-exists
           APP_ENV=test php bin/console doctrine:database:create
-          APP_ENV=test php bin/console doctrine:schema:create
-          APP_ENV=test php bin/console doctrine:migrations:sync-metadata-storage
-          APP_ENV=test php bin/console doctrine:migrations:version --add --all --no-interaction
           APP_ENV=test php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name: Validate schema
+        run: APP_ENV=test php bin/console doctrine:schema:validate    
 
       - name:  Lint YAML, Twig and Container
         run: |
-          php bin/console lint:yaml config
-          php bin/console lint:twig templates
-          php bin/console lint:container
+          APP_ENV=test php bin/console lint:yaml config
+          APP_ENV=test php bin/console lint:twig templates
+          APP_ENV=test php bin/console lint:container
 
       - name: 🎨 Create fake Webpack build
         run: |
@@ -121,6 +122,9 @@ jobs:
           }
           EOF
           echo '{}' > public/build/manifest.json
+      
+      - name: Warmup cache
+        run: APP_ENV=test php bin/console cache:warmup
 
       - name: ✅ Run Tests
         run: APP_ENV=test php bin/phpunit
