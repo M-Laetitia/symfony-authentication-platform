@@ -20,6 +20,7 @@ class SeoService
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
             'register' => 'noindex, nofollow',
+            'chat' => 'noindex, nofollow',
             'blog' => 'index, follow',
             'contact' => 'index, follow',
             'home' => 'index, follow',

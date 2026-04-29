@@ -38,7 +38,7 @@ class Invoice
     #[ORM\Column(length: 30 , unique:true)]
     private ?string $invoice_number = null;
 
-    #[ORM\OneToOne(inversedBy: 'invoice', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'invoice', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderProposal = null;
 

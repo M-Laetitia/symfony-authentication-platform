@@ -22,8 +22,15 @@
             padding-bottom: 20px;
             margin-bottom: 35px;
             border-bottom: 1px solid var(--color-grey-200);
-        }
 
+            .contact__intro {
+                font-family: var(--font-heading);
+                font-size: 20px;
+                font-weight: 300;
+                text-transform:uppercase;
+            }
+        }
+        
         .contact__fields {
             display: flex;
             flex-direction: column;
@@ -41,8 +48,9 @@
         width: 50%;
         .contact__header {
             margin-bottom: 40px;
-            h3 {
+            .contact__intro {
                 margin-bottom: 15px;
+
             }
         }
         .contact__details {

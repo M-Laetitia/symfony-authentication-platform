@@ -131,6 +131,9 @@
     .section-intro__subtitle {
         font-size: 22px;
         letter-spacing: 1.3px;
+        font-family: var(--font-heading);
+        font-weight: 300;
+        text-transform: uppercase;
     }
 
 }

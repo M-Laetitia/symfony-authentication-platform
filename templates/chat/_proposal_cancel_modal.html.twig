@@ -1,0 +1,23 @@
+<div class="modal proposal-modal cancel" id="cancelProposalModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <h5 class="modal__title modal__title--danger">Cancel Proposal</h5>
+        <p class="modal__description">Are you sure you want to cancel this proposal?</p>
+        <div class="modal__info-box modal__info-box--danger">
+            <p><strong>Title:</strong> {{ proposal.title }}</p>
+            <p><strong>Message:</strong> {{ proposal.message }}</p>
+            <p><strong>Total price (incl. tax):</strong> €{{ (proposal.priceExcluTax * (1 + proposal.tax.rate))|number_format(2) }}</p>
+        </div>
+        <div class="modal__warning-box">
+            <p><strong>This action cannot be undone.</strong> The proposal will be cancelled.</p>
+        </div>
+        <div class="modal__actions">
+            <button type="button" class="modal__btn modal__btn--secondary cancel-modal-btn button button--small button--black-variant">Go back</button>
+            <form method="post" action="{{ path('admin_proposal_cancel', {'id': proposal.id}) }}" class="modal__form">
+                <input type="hidden" name="_token" value="{{ csrf_token('cancel_proposal_' ~ proposal.id) }}">
+                <input type="hidden" name="from_conversation" value="1">
+                <button type="submit" class="modal__btn modal__btn--danger button button--small button--danger">Yes, cancel</button>
+            </form>
+        </div>
+    </div>
+</div>

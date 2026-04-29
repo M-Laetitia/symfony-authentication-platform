@@ -315,7 +315,7 @@
     .photographer-info__details-wrapper{
         display: flex;
         gap: 80px;
-        margin-bottom: 200px;
+        margin-bottom: 150px;
     }
 
     .photographer-info__details {
@@ -386,7 +386,7 @@
         gap: 30px;
     }
     .photographer-info__about-title {
-        font-size: 48px ;
+        font-size: clamp(2.25rem, 5vw, 3.2rem);
         border-bottom: 1px solid var(--color-grey-400);
         padding-bottom: 20px;
         margin-bottom: 30px;
@@ -394,7 +394,23 @@
 
     .photographer-info__actions {
         display: flex;
-        gap: 28px;
+        flex-wrap: wrap;
+        column-gap: 28px;
+        row-gap: 15px;
+    }
+
+    .photographer-info__actions-disabled {
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+
+        a {
+            font-weight: 600;
+            transition: var(--transition-base);
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }
 
@@ -435,12 +451,14 @@
     .gallery__filters {
         display: flex;
         justify-content: center;
-        gap: 3rem;
+        column-gap: 3rem;
+        row-gap: 1rem;
         margin-bottom: 35px;
+        flex-wrap: wrap ;
     }
     .js-filter-button {
         font-family: var(--font-heading);
-        font-size: 22px;
+        font-size: clamp(18px, 3vw, 22px);
         text-transform: uppercase;
         font-weight: 400;
         position: relative;
@@ -531,7 +549,7 @@
 @media (max-width: 900px ) {
     .portfolio-page {
         .photographer-info__details-wrapper{
-            margin-bottom: 200px;
+            margin-bottom: 120px;
             flex-direction: column-reverse;
         }
         .photographer-info__details {
@@ -570,6 +588,29 @@
         }
         .team__artists {
             margin-top: 100px;
+            margin: auto;
+        }
+    }
+    .photographer-info__header {
+        margin-bottom: 100px;
+    }
+    .portfolio-page {
+        .photographer-info__details {
+            box-shadow: 8px 8px 0px 0px var(--color-grey-800);
+        }
+
+        .js-gallery-grid {
+            width: 100%;
+            margin: auto!important;
+        }
+    }
+
+    .portfolio-page {
+        & .photographer-gallery {
+            .gallery__item {
+                width: calc(33.333% - 30px);
+                margin: 15px;
+            }
         }
     }
 }
@@ -578,6 +619,27 @@
     .team {
         .team__artist-list {
             grid-template-columns: repeat(1, 2fr);
+        }
+    }
+
+    .portfolio-page {
+        .photographer-gallery {
+            .gallery__item {
+                width: calc(50% - 30px);
+            }
+        }
+    }
+    .portfolio-page {
+        .photographer-info__header {
+            position: relative;
+            margin-bottom: 80px;
+        }
+    }
+
+    .portfolio-page {
+        .photographer-info__quote {
+            height: auto;
+            padding: 30px;
         }
     }
 }

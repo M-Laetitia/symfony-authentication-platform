@@ -108,4 +108,23 @@ class MailerService
 
         $this->mailer->send($email);
     }
+
+    public function sendInvoiceEmail(\App\Entity\Order $order, string $recipientEmail, string $pdfPath): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@domain.com', 'MOSAIC Agency'))
+            ->to($recipientEmail)
+            ->subject('Your Invoice #' . $order->getOrderNumber())
+            ->htmlTemplate('emails/user/invoice.html.twig')
+            ->context([
+                'order' => $order,
+            ]);
+
+        // Ajouter le PDF en pièce jointe
+        if (file_exists($pdfPath)) {
+            $email->attachFromPath($pdfPath, 'invoice.pdf', 'application/pdf');
+        }
+
+        $this->mailer->send($email);
+    }
 }

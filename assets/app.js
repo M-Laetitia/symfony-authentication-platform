@@ -6,7 +6,9 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
+
 import './js/global.js';
+import './js/proposal-modal.js';
 
 if (document.querySelector('.gallery-glightbox-isotope')) {
     import('./js/glightbox-isotope.js');
