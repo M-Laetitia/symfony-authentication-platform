@@ -21,6 +21,18 @@ liip_imagine:
         # use the default cache configuration
         # cache : ~
 
+        about_image_desktop:
+            filters:
+                thumbnail:
+                    size: [730, 960]   # 365x480 en DPR2
+                    mode: outbound
+
+        about_image_mobile:
+            filters:
+                thumbnail:
+                    size: [800, 470]
+                    mode: outbound
+
         # the name of the "filter set"
         webp_upload:
             quality: 85
@@ -113,6 +125,19 @@ liip_imagine:
             filters:
                 thumbnail:
                     size: [636, 636]   # 318x318 en DPR2
+                    mode: outbound
+
+        # HOME_WORKS_THUMBNAIL: ~
+        works_thumb_landscape:
+            filters:
+                thumbnail:
+                    size: [1760, 1200]  # 880x600 en DPR2
+                    mode: outbound
+
+        works_thumb_portrait:
+            filters:
+                thumbnail:
+                    size: [740, 1000]   # 370x500 en DPR2
                     mode: outbound
         hero_image:
             filters:
