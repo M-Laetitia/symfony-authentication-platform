@@ -31,7 +31,7 @@ class MediaGalleryAddFormType extends AbstractType
                         'mimeTypesMessage' => 'Accepted formats: JPEG, PNG, WebP',
                     ]),
                     new File([
-                        'maxSize' => '3M',
+                        'maxSize' => '4M',
                         'maxSizeMessage' => 'The file is too large (max: 3MB).',
                     ]),
                 ],
