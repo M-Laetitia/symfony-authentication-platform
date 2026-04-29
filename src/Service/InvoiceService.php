@@ -9,20 +9,24 @@ use App\Entity\Invoice;
 use App\Entity\Payment;
 use App\Enum\InvoiceType;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MailerService; 
 
 class InvoiceService
 {
     public function __construct(
         private EntityManagerInterface $em,
         private Environment $twig,
+        private MailerService $mailer,
     ) {}
+
 
     public function createFromOrder(Order $order, Payment $payment): Invoice
     {
         $invoice = new Invoice();
 
         $invoice->setIssuedAt(new \DateTimeImmutable());
-        $invoice->setStatus(InvoiceType::ISSUED);
+        $invoice->setStatus
+        (InvoiceType::ISSUED);
         $invoice->setTotalAmount($payment->getAmount());
         $invoice->setOrderProposal($order);
         $invoice->setPdfPath('');
@@ -47,7 +51,13 @@ class InvoiceService
 
         // ^ Buyer snapshot
         // $invoice->setBuyerSnapshot($payment->getBillingAddress() ?? []);
-        $invoice->setBuyerSnapshot($payment->getBillingAddress() ?? []);
+        $billing = $payment->getBillingAddress() ?? [];
+        // Stripe ne fournit qu'un champ 'name', pas firstName/lastName
+        $buyerSnapshot = $billing;
+        if (!isset($buyerSnapshot['name']) && isset($billing['firstName'])) {
+            $buyerSnapshot['name'] = trim(($billing['firstName'] ?? '') . ' ' . ($billing['lastName'] ?? ''));
+        }
+        $invoice->setBuyerSnapshot($buyerSnapshot);
 
         // ^ Payment snapshot 
         $invoice->setPaymentSnapshot([
@@ -81,6 +91,15 @@ class InvoiceService
 
         $this->em->persist($invoice);
 
+        // Chemin absolu pour l'envoi par email
+        $absolutePdfPath = dirname(__DIR__, 2) . '/' . $pdfPath;
+        
+        $this->mailer->sendInvoiceEmail(
+            $order,
+            $order->getClient()->getEmail(),
+            $absolutePdfPath
+        );
+
         return $invoice;
     }
 
@@ -95,8 +114,7 @@ class InvoiceService
             mkdir($dir, 0777, true);
         }
 
-        // $filename = $invoice->getInvoiceNumber() . '.pdf';
-        $filename = 'INVOICE-' . $invoice->getIssuedAt()->format('Y') . '-' . $invoice->getId() . '.pdf';
+        $filename = $invoice->getInvoiceNumber() . '.pdf';
 
         $path     = $dir . '/' . $filename;
 
@@ -121,13 +139,13 @@ class InvoiceService
                 'siret'       => '362 521 879 00034',
             ],
             'buyer'          => [
-                'name'        => $invoice->getBuyerSnapshot()['firstName'] . ' ' . $invoice->getBuyerSnapshot()['lastName'],
+                'name'        => $invoice->getBuyerSnapshot()['name'] ?? '',
                 'line1'       => $invoice->getBuyerSnapshot()['line1'] ?? '',
                 'line2'       => $invoice->getBuyerSnapshot()['line2'] ?? '',
                 'postal_code' => $invoice->getBuyerSnapshot()['postal_code'] ?? '',
                 'city'        => $invoice->getBuyerSnapshot()['city'] ?? '',
                 'country'     => $invoice->getBuyerSnapshot()['country'] ?? '',
-                'email'       => $invoice->getBuyerSnapshot()['email'],
+                'email'       => $invoice->getBuyerSnapshot()['email'] ?? '',
             ],
             'description'    => $invoice->getOrderSnapshot()['title'],
             'service_date'   => $invoice->getOrderSnapshot()['created_at'],

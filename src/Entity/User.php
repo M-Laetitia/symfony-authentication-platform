@@ -101,6 +101,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'client')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, ConversationReport>
+     */
+    #[ORM\OneToMany(targetEntity: ConversationReport::class, mappedBy: 'reportedBy')]
+    private Collection $conversationReports;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -110,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->serviceProposals = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->conversationReports = new ArrayCollection();
     }
 
 
@@ -484,5 +491,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ConversationReport>
+     */
+    public function getConversationReports(): Collection
+    {
+        return $this->conversationReports;
+    }
+
+    public function addConversationReport(ConversationReport $conversationReport): static
+    {
+        if (!$this->conversationReports->contains($conversationReport)) {
+            $this->conversationReports->add($conversationReport);
+            $conversationReport->setReportedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversationReport(ConversationReport $conversationReport): static
+    {
+        if ($this->conversationReports->removeElement($conversationReport)) {
+            // set the owning side to null (unless already changed)
+            if ($conversationReport->getReportedBy() === $this) {
+                $conversationReport->setReportedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? '')) ?: $this->username;
     }
 }

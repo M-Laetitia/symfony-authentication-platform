@@ -1,3 +1,29 @@
+// Scroll to top button
+const scrollBtn = document.getElementById('scrollTopBtn');
+
+// Check initial state
+if (window.scrollY > 300) { 
+    scrollBtn.classList.add('visible');
+} else {
+    scrollBtn.classList.remove('visible');
+}
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) { 
+        scrollBtn.classList.add('visible');
+    } else {
+        scrollBtn.classList.remove('visible');
+    }
+});
+
+
+scrollBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
 // FLash messages
 document.addEventListener('DOMContentLoaded', () => {
     const flashes = document.querySelectorAll('.flash-message');
@@ -189,14 +215,72 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // modal report message
-  document.querySelectorAll('.btn-report').forEach(button => {
-    button.addEventListener('click', () => {
-        const msgId = button.dataset.messageId;
-        document.getElementById('report-message-id').value = msgId;
-        document.getElementById('report-modal').style.display = 'flex';
+  // Modal pour reporter une conversation
+  const reportConversationBtn = document.getElementById('report-conversation-btn');
+  const reportModal = document.getElementById('report-modal');
+  const modalClose = document.getElementById('modal-close');
+  const reportForm = document.getElementById('report-conversation-form');
+  
+  if (reportConversationBtn) {
+    reportConversationBtn.addEventListener('click', () => {
+        if (!reportConversationBtn.disabled) {
+            reportModal.classList.add('active');
+        }
     });
-});
+  }
+  
+  if (modalClose) {
+    modalClose.addEventListener('click', () => {
+        reportModal.classList.remove('active');
+    });
+  }
+  
+  // Fermer le modal en cliquant en dehors
+  if (reportModal) {
+    reportModal.addEventListener('click', (e) => {
+        if (e.target === reportModal) {
+            reportModal.classList.remove('active');
+        }
+    });
+  }
+  
+  // Gérer l'envoi du formulaire
+  if (reportForm) {
+    reportForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const reason = document.getElementById('report-reason').value;
+        const messageReference = document.getElementById('report-message').value;
+        const conversationId = document.querySelector('[data-conversation-id]').dataset.conversationId;
+        
+        try {
+            const response = await fetch(`/chat/conversation/${conversationId}/report`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    reason: reason,
+                    message_reference: messageReference
+                })
+            });
+            
+            if (response.ok) {
+                reportForm.reset();
+                reportModal.classList.remove('active');
+                location.reload();
+            } else {
+                alert('Error reporting conversation. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error reporting conversation.');
+        }
+    });
+  }
+
+
 
 // Modale de confirmation d'acceptation de proposition
 console.log('JavaScript chargé !');
@@ -253,6 +337,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Injecter la modale
                 document.body.insertAdjacentHTML('beforeend', html);
+                
+                // Ajouter la classe active pour afficher la modale
+                const newModal = document.querySelector('#confirmationModal, #refuseModal');
+                if (newModal) {
+                    newModal.classList.add('active');
+                }
             })
             .catch(err => {
                 console.error('Erreur fetch:', err);
@@ -297,6 +387,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 document.body.insertAdjacentHTML('beforeend', html);
+                
+                // Ajouter la classe active pour afficher la modale
+                const newModal = document.querySelector('#confirmationModal, #refuseModal');
+                if (newModal) {
+                    newModal.classList.add('active');
+                }
             })
             .catch(err => {
                 console.error('Erreur fetch refus:', err);
@@ -307,11 +403,66 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Fermer les modales
 document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('cancel-modal-btn') || e.target.textContent === 'Annuler') {
-        console.log('Fermeture modale');
+    // Vérifier si c'est un bouton cancel-modal-btn
+    if (e.target.classList.contains('cancel-modal-btn')) {
+        console.log('Fermeture modale (cancel-modal-btn clicked)');
         const modal = e.target.closest('.modal');
         if (modal) {
-            modal.remove();
+            modal.style.display = 'none';
+            // Ou supprimer la modal complètement
+            // modal.remove();
         }
     }
 });
+
+
+// EDIT BOX - dashboard media edit
+    const toggleEditBtn = document.getElementById('toggleEditBtn');
+    const editFormContainer = document.getElementById('editFormContainer');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+    if (toggleEditBtn && editFormContainer) {
+        toggleEditBtn.addEventListener('click', function() {
+            if (editFormContainer.style.display === 'none') {
+                editFormContainer.style.display = 'block';
+                this.textContent = 'Hide Edit';
+                editFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                editFormContainer.style.display = 'none';
+                this.textContent = 'Edit Info';
+            }
+        });
+    }
+
+    if (cancelEditBtn && editFormContainer) {
+        cancelEditBtn.addEventListener('click', function() {
+            editFormContainer.style.display = 'none';
+            if (toggleEditBtn) {
+                toggleEditBtn.textContent = 'Edit Info';
+            }
+        });
+    }
+
+
+    // hero parallax
+
+        const parallaxImage = document.querySelector('[data-parallax]');
+    
+    if (parallaxImage) {
+        let scrollY = 0;
+        let ticking = false;
+        
+        function updateParallax() {
+            parallaxImage.style.transform = `translateY(${scrollY * 0.3}px)`;
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
+    }

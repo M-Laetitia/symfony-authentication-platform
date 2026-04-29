@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
+
+        <link rel="preload" as="image" href="{{ asset('uploads/media/hero-image.webp') }}">
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('media/favicon/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('media/favibon/favicon-96x96.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('media/favicon/apple-touch-icon.png') }}">
 
          {# Meta description #}
         <meta name="description" content="{% block meta_description %}{{ meta_description|default('Default meta description') }}{% endblock %}">
@@ -12,6 +18,7 @@
         <meta name="robots" content="{% block meta_robots %}{{ meta_robots|default('index, follow') }}{% endblock %}">
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -22,26 +29,24 @@
         {% endblock %}
     </head>
     
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            {% if label == 'success' and message.type is defined and message.type == 'registration' %}
-                <div class="flash-message alert alert-{{ label }}">
-                    {{ message.text|nl2br }}
-                    <button type="button" class="flash-close" aria-label="Close">&times;</button>
-                </div>
-            {% else %}
-                <div class="flash-message alert alert-{{ label }}">
-                    {{ message|nl2br }}
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endfor %}
-        
-
-
     {% include 'layout/navbar.html.twig' %}
     <body class="{% block body_class %}{% endblock %}">
         <div class="page-wrapper">
+    
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    {% if label == 'success' and message.type is defined and message.type == 'registration' %}
+                        <div class="flash-message alert alert-{{ label }}">
+                            {{ message.text|nl2br }}
+                            <button type="button" class="flash-close" aria-label="Close">&times;</button>
+                        </div>
+                    {% else %}
+                        <div class="flash-message alert alert-{{ label }}">
+                            {{ message|nl2br }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
     
             <main class="content">
                 {% block body %}{% endblock %}
@@ -58,6 +63,13 @@
     <!-- Overlay -->
     <div class="side-panel__overlay"></div>
 
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll back to top">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 9L8 2L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
     <!-- Aside -->
     <aside
         id="side-panel"
@@ -65,12 +77,9 @@
         aria-hidden="true"
     >
 
-
         <div class="side-panel__content">
             <!-- contenu -->
         </div>
     </aside>
-
-
 
 </html>

@@ -3,21 +3,198 @@
 {% block title %}Make a Proposal{% endblock %}
 
 {% block body %}
-    <h1 class="">Make a Proposal</h1>
 
-    {{ form_start(form) }}
-        {{ form_row(form.title) }}
-        {{ form_row(form.message) }}
-        {{ form_row(form.price_exclu_tax) }}
-        {{ form_row(form.tax) }}
-        {{ form_row(form.expiration_date) }}
-        <button type="submit" class="">
-            Send Proposal
-        </button>
-    {{ form_end(form) }}
+<twig:Banner
+    title="Crafting an Offer"
+    subtitle="Design a proposal that reflects your vision and expertise"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Conversations', url: path('chat'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: client.displayName, url: path('chat_conversation_show', {id: conversation.id}), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'New Proposal', type: 'current' }
+    ]"
+    variant="dark"
+/>
 
-    <a href="{{ path('chat_conversation_show', {id: conversation.id}) }}"
-       class="">
-       Back to Conversation
-    </a>
+<style>
+    .proposal-form__errors {
+        background-color: #fee;
+        border: 1px solid #dc3545;
+        border-radius: 4px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+    }
+
+    .proposal-form__errors ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .proposal-form__errors li {
+        color: #dc3545;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .proposal-form__errors li:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group--error .form-control {
+        border-color: #dc3545;
+        background-color: #fff5f5;
+    }
+
+    .form-error {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #dc3545;
+    }
+
+    .form-error ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .form-error li {
+        margin: 0;
+    }
+</style>
+
+<section class="main-section-page proposal-page">
+    <div class="proposal-page__container section-centered">
+
+        <!-- Page Header -->
+        <div class="proposal-page__header">
+            <h1 class="proposal-page__title">Make a Proposal for <strong>{{ client.displayName }}</strong></h1>
+            <p class="proposal-page__subtitle">Complete all sections to send a detailed offer</p>
+        </div>
+
+        <!-- Form -->
+        <div class="proposal-page__form-wrapper">
+            {{ form_start(form, {
+                'attr': {
+                    'class': 'proposal-form'
+                }
+            }) }}
+
+            <!-- Form Errors -->
+            {% if form_errors(form) %}
+            <div class="proposal-form__errors">
+                {{ form_errors(form) }}
+            </div>
+            {% endif %}
+
+            <!-- General Information Section -->
+            <div class="proposal-form__section">
+                <h2 class="proposal-form__section-title">General Information</h2>
+                <div class="proposal-form__fields">
+                    <div class="form-group form-group--full">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control form-control--text'}}) }}
+                    </div>
+                    <div class="form-group form-group--full">
+                        {{ form_label(form.message) }}
+                        {{ form_widget(form.message, {'attr': {'class': 'form-control form-control--textarea'}}) }}
+                    </div>
+                    <div class="form-group form-group--full">
+                        {{ form_label(form.speciality) }}
+                        {{ form_widget(form.speciality, {'attr': {'class': 'form-control form-control--select'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Section -->
+            <div class="proposal-form__section">
+                <h2 class="proposal-form__section-title">Pricing</h2>
+                <div class="proposal-form__fields proposal-form__fields--grid-2">
+                    <div class="form-group">
+                        {{ form_label(form.price_exclu_tax) }}
+                        {{ form_widget(form.price_exclu_tax, {'attr': {'class': 'form-control form-control--text'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.tax) }}
+                        {{ form_widget(form.tax, {'attr': {'class': 'form-control form-control--text'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div class="proposal-form__section">
+                <h2 class="proposal-form__section-title">Schedule</h2>
+                <div class="proposal-form__fields">
+                    <div class="form-group">
+                        {{ form_label(form.serviceDate) }}
+                        {{ form_widget(form.serviceDate, {'attr': {'class': 'form-control form-control--date'}}) }}
+                    </div>
+                    <div class="proposal-form__fields proposal-form__fields--grid-2">
+                        <div class="form-group">
+                            {{ form_label(form.startAt) }}
+                            {{ form_widget(form.startAt, {'attr': {'class': 'form-control form-control--time'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.endAt) }}
+                            {{ form_widget(form.endAt, {'attr': {'class': 'form-control form-control--time'}}) }}
+                        </div>
+                    </div>
+                    <div class="form-group form-group--full">
+                        {{ form_label(form.location) }}
+                        {{ form_widget(form.location, {'attr': {'class': 'form-control form-control--text'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Section -->
+            <div class="proposal-form__section">
+                <h2 class="proposal-form__section-title">Delivery</h2>
+                <div class="proposal-form__fields proposal-form__fields--grid-2">
+                    <div class="form-group">
+                        {{ form_label(form.editedPhotoCount) }}
+                        {{ form_widget(form.editedPhotoCount, {'attr': {'class': 'form-control form-control--number'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.deliveryDelay) }}
+                        {{ form_widget(form.deliveryDelay, {'attr': {'class': 'form-control form-control--text'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validity Section -->
+            <div class="proposal-form__section proposal-form__section--last">
+                <h2 class="proposal-form__section-title">Proposal Validity</h2>
+                <div class="proposal-form__fields">
+                    <div class="form-group form-group--full {% if form.expiration_date.vars.errors|length > 0 %}form-group--error{% endif %}">
+                        {{ form_label(form.expiration_date) }}
+                        {{ form_widget(form.expiration_date, {'attr': {'class': 'form-control form-control--date'}}) }}
+                        {% if form.expiration_date.vars.errors|length > 0 %}
+                        <div class="form-error">
+                            {{ form_errors(form.expiration_date) }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="proposal-form__actions">
+                <button type="submit" class="button button--accent button--large">
+                    Send Proposal
+                </button>
+                <a href="{{ path('chat_conversation_show', {id: conversation.id}) }}" class="button button--black-variant button--large">
+                    Cancel
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+    </div>
+</section>
+
+
 {% endblock %}

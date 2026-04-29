@@ -1,0 +1,642 @@
+/* &----------- NEW PROPOSAL -------- */
+/* &--------------------------------- */
+
+.proposal-page {
+    padding: 0px 20px;
+    min-height: 100vh;
+}
+
+.proposal-page__container {
+    max-width: 60%;
+    margin: 0 auto;
+}
+
+.proposal-page__header {
+    margin-bottom: 40px;
+}
+
+.proposal-page__title {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--color-grey-700);
+    font-family: var(--font-heading);
+    letter-spacing: -0.5px;
+    padding-bottom: 20px;
+
+    strong {
+        font-weight: 600;
+        color:var(--color-grey-900); ;
+    }
+}
+
+.proposal-form__section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-grey-800);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.proposal-page__form-wrapper {
+    background: white;
+    border: 1px solid var(--color-grey-200);
+    padding: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.proposal-page  {
+    .proposal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+    .proposal-form__section--last {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .proposal-form__section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--color-grey-200);
+    }
+    .proposal-form__fields--grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+     .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-group--full {
+        grid-column: 1 / -1;
+    }
+    .proposal-form__actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 32px;
+        border-top: 1px solid var(--color-grey-200);
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-grey-900);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control{
+        padding: 12px 16px;
+        border: 1px solid var(--color-grey-200);
+        background-color: var(--color-white);
+        font-family: inherit;
+        color: var(--color-grey-900);
+        transition: var(--transition-base);
+        &:focus {
+            border-color: var(--color-accent);
+            outline: none;
+        }
+    }
+
+    .form-control--text,
+    .form-control--date,
+    .form-control--time,
+    .form-control--number {
+        height: 44px;
+    }
+
+    .form-control--textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .form-control--select {
+        height: 44px;
+        cursor: pointer;
+    }
+
+    .form-control::placeholder {
+        color: var(--color-grey-700);
+    }
+}
+
+#service_proposal_form_speciality {
+    max-width: 250px;
+    height: 46px;
+}
+#service_proposal_form_serviceDate {
+    max-width: 250px;
+}
+
+.proposal-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* &---------- PROPOSAL CARD -------- */
+/* &--------------------------------- */
+
+.proposal-card__action-btn.cancel-proposal {
+    margin: 10px 0 15px 15px;
+}
+.proposal-card {
+    max-width: 600px;
+    width: 600px;
+    border: 1px solid var(--color-grey-200);
+    margin: 12px 0;
+    overflow: hidden;
+    background-color: #fff;
+
+    p, div {
+        font-size: 16px;
+        color: var(--color-grey-900);
+    }
+}
+
+.proposal-card__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1;
+}
+.proposal-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid var(--color-grey-200);
+}
+
+.proposal-card__status {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 12px;
+}
+.proposal-card__status--pending {
+    background-color: #ffcc6e;
+    color: #42350e;
+}
+
+.proposal-card__status--accepted {
+    background-color: #60956d;
+    color: #ecfff0;
+}
+
+.proposal-card__status--cancelled {
+    background-color: #434343;
+    color: #ffffff;
+}
+
+.proposal-card__status--declined {
+    background-color: #c64854;
+    color: #ffffff;
+}
+
+.proposal-card__status--completed {
+    background-color: #60956d;
+    color: #ecfff0;
+}
+
+.proposal-card__section-description{
+    border-bottom: 1px solid var(--color-grey-200);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.proposal-card__pricing .expiration-date {
+    margin-top: 15px; 
+    color: var(--color-grey-700); 
+    font-size: 16px;
+}
+
+.proposal-card__detail-label {
+    color: var(--color-grey-700);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+}
+
+.proposal-card__price-row--total {
+    font-weight: 600;
+    border-top: 1px solid var(--color-grey-200);
+    background-color: #ededed;
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.proposal-card__action-btn {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition-base);
+}
+
+.proposal-card__action-btn--accept {
+    background-color: var(--color-accent);
+    color: var(--color-grey-900);
+    border: 1px solid var(--color-grey-900);
+    &:hover {
+        background-color: #4edc9e;
+    }
+}
+
+.proposal-card__action-btn--decline {
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    &:hover {
+        background-color: var(--color-grey-900);
+        color: var(--color-white);
+    }
+}
+.proposal-card__content {
+    padding: 16px;
+}
+.proposal-card__message {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.proposal-card__section {
+    margin-bottom: 14px;
+}
+
+.proposal-card__section:last-of-type {
+    margin-bottom: 0;
+}
+
+.proposal-card__actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: #f8f8f8;
+    border-top: 1px solid var(--color-grey-200);
+}
+
+.proposal-card__photographer {
+    color: #f8f8f8;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+}
+
+.proposal-card__price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.proposal-card__section:last-of-type {
+    margin-bottom: 0;
+}
+
+.proposal-card__section {
+    margin-bottom: 14px;
+}
+
+.proposal-card__details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.proposal-card__detail-value {
+    font-weight: 500;
+}
+
+.proposal-card__pricing {
+    border-top: 1px solid var(--color-grey-200);
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+
+/* &-------------- ORDER ------------ */
+/* &--------------------------------- */
+
+.order-create-page {
+    padding:0 20px;
+}
+
+.order-create-page__container {
+    margin: 0 auto;
+    width: 60%;
+    margin-bottom: 280px;
+}
+
+.order-create-page__title {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    letter-spacing: -0.5px;
+    padding-bottom: 20px;
+}
+
+.order-create-page__header {
+    margin-bottom: 30px;
+}
+
+.order-create-page__subtitle {
+    font-size: 18px;
+}
+
+.order-summary__section-title {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.order-summary {
+    background-color: #f8f8f8;
+    border: 1px solid var(--color-grey-200);
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.order-summary__section {
+    margin-bottom: 25px;
+}
+
+.order-summary__section:last-child {
+    margin-bottom: 0;
+}
+
+.order-summary__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.order-summary__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.order-summary__item.description-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.order-summary__value {
+    color: var(--color-grey-900);
+    font-weight: 600;
+}
+
+.order-summary__label {
+    color: var(--color-grey-800);
+    font-weight: 500;
+}
+
+.order-summary__pricing {
+    border-top: 1px solid var(--color-grey-200);
+    padding-top: 15px;
+}
+
+.order-summary__price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--color-grey-700);
+}
+
+.order-summary__total-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-grey-900);
+    padding-top: 12px;
+    border-top: 1px solid var(--color-grey-200);
+}
+
+.order-create-page {
+    .order-form {
+        background-color: #fff;
+        border: 1px solid var(--color-grey-200);
+        padding: 40px;
+    }
+
+    .order-form__section {
+        margin-bottom: 30px;
+    }
+
+    .order-form__section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .order-form__section-title {
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--color-grey-200);
+        background-color: #fff;
+        &:focus {
+            border-color: var(--color-accent);
+            outline: none;
+        }
+    }
+        .form-checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .form-checkbox-group label {
+        margin: 0;
+        cursor: pointer;
+    }
+        .order-form__actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid var(--color-grey-200);
+    }
+
+    #order_confirmation_form_note {
+        resize: vertical;
+    }
+
+    .order-form__section--agreement {
+        a {
+            font-weight: 600;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+}
+
+/* &------------- PAYMENT ----------- */
+/* &--------------------------------- */
+.payment-page {
+    padding: 0 20px;
+}
+.payment-page__container {
+        margin: 0 auto;
+        width: var(--width-content);
+        margin-bottom: 280px;
+}
+
+.payment-page__title {
+    margin: 0 0 10px 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+}
+.payment-page__header {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.payment-page__order-number {
+    color: var(--color-grey-700);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.payment-box {
+    background-color: #f8f8f8;
+    border: 1px solid var(--color-grey-200);
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.payment-box__amount {
+    font-size: clamp(2.5rem, 6vw, 3rem);
+    font-weight: 700;
+    color: #3b9f3b;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.payment-box__description {
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+.payment-box__info {
+    background-color: #e8f4f8;
+    border-left: 4px solid var(--color-accent);
+    padding: 15px;
+    margin-bottom: 30px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.payment-box__info strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.payment-box__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+
+/* ?--------- MEDIA QUERIES --------- */
+/* ?--------------------------------- */
+
+/* ?------------- LARGE ------------- */
+
+@media (max-width: 1500px) {
+
+}
+
+@media (max-width: 1280px) {
+
+}
+
+/* ?------------- MEDIUM ------------ */
+
+
+@media (max-width: 1024px) {
+
+    
+}
+
+/* ?------------- SMALL ------------- */
+
+
+@media (max-width: 900px ) {
+
+}
+
+@media (max-width: 768px ) {
+
+}
+
+/* ?------------ VERY SMALL --------- */
+@media (max-width: 480px) {
+
+}
+

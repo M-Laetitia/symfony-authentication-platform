@@ -44,6 +44,18 @@ class MediaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    // méthode pour trouver les dernières photographie (qui ont le statut portfolio_featured) pour la page d'accueil
+    public function findLatestPhotographies(int $limit = 8): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.typeImage = :type')
+            ->setParameter('type', MediaType::PORTFOLIO_FEATURED)
+            ->orderBy('m.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     // public function findArticleCoverByArticleId(int $articleId): ?Media
     // {
     //     /** @var array<string, mixed> $params */

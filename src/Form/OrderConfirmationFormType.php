@@ -32,10 +32,6 @@ class OrderConfirmationFormType extends AbstractType
                     'placeholder' => 'Add a note for the photographer...',
                     'rows' => 4,
                 ],
-            ])
-
-            ->add('confirm', SubmitType::class, [
-                'label' => 'Confirm order',
             ]);
     }
 

@@ -84,7 +84,7 @@ class StripeWebhookController extends AbstractController
 
             $order->setStatus(OrderType::PAID);
             $serviceProposal = $order->getServiceProposal();
-            // $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
+            $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
 
             $em->persist($payment);
             $invoiceService->createFromOrder($order, $payment); 

@@ -19,7 +19,13 @@ class EditorJsMediaUploader
     public function uploadForEditorJs(UploadedFile $file, string $caption = '', string $altText = ''): JsonResponse
     {
         try {
-            $media = $this->mediaUploader->upload($file, $caption, $altText, MediaType::DEFAULT);
+            $media = $this->mediaUploader->upload(
+                $file, 
+                $caption, 
+                $altText, 
+                MediaType::ARTICLE_IMAGE,
+                'articles_content'  // Sous-dossier pour les images EditorJS
+            );
 
             return new JsonResponse([
                 'success' => 1,
@@ -38,25 +44,3 @@ class EditorJsMediaUploader
         }
     }
 }
-
-
-// public function uploadForEditorJs(UploadedFile $file, string $caption = '', string $altText = ''): JsonResponse
-    // {
-    //     try {
-    //         $media = $this->upload($file, $caption, $altText, MediaType::ARTICLE_IMAGE);
-    //         return new JsonResponse([
-    //             'success' => 1,
-    //             'file' => [
-    //                 'url' => $media->getPath(),
-    //                 'id' => $media->getId(),
-    //                 'width' => $media->getWidth(),
-    //                 'height' => $media->getHeight(),
-    //             ]
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return new JsonResponse([
-    //             'success' => 0,
-    //             'message' => 'Erreur : ' . $e->getMessage()
-    //         ]);
-    //     }
-    // }

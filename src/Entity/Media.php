@@ -19,7 +19,7 @@ class Media
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $altText = null;
 
     #[ORM\Column]

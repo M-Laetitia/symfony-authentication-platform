@@ -16,12 +16,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PaymentController extends AbstractController
 {
     #[Route('/order/create/{id}', name: 'create_order', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function review(
         ServiceProposal $proposal,
+        OrderRepository $orderRepo,
         Request $request,
         Security $security,
         EntityManagerInterface $em
@@ -93,10 +96,16 @@ class PaymentController extends AbstractController
             //     }
             // } while ($existing);
 
-            $order->setOrderNumber(
-                sprintf('ORD-%s-%05d', (new \DateTimeImmutable())->format('Y'), $proposal->getId())
-            );
-    
+            $baseOrderNumber = sprintf('ORD-%s-%05d', (new \DateTimeImmutable())->format('Y'), $proposal->getId());
+            $orderNumber = $baseOrderNumber;
+            $suffix = 1;
+            
+            while ($orderRepo->findOneBy(['order_number' => $orderNumber])) {
+                $orderNumber = $baseOrderNumber . '-' . $suffix;
+                $suffix++;
+            }
+            
+            $order->setOrderNumber($orderNumber);
 
             // $order->setOrderNumber($orderNumber);
             $em->persist($order);
@@ -130,6 +139,30 @@ class PaymentController extends AbstractController
         ]);
     }
 
+    #[Route('/order/{id}/cancel', name: 'order_cancel', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function cancelOrder(Order $order, EntityManagerInterface $entityManager): Response
+    {
+        // Verify ownership
+        if ($order->getClient()->getId() !== $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+        
+        // Revert proposal to PENDING
+        $order->getServiceProposal()->setStatus(ServiceProposalType::PENDING);
+        
+        // Cancel order
+        $order->setStatus(OrderType::CANCELLED);
+        
+        $entityManager->flush();  
+        
+        $this->addFlash('success', 'Order cancelled. The proposal is still available.');
+        
+        return $this->redirectToRoute('chat_conversation_show', [
+            'id' => $order->getServiceProposal()->getConversation()->getId()
+        ]);
+    }
+
 
     // #[Route('/order/{orderId}/proceed-to-payment', name: 'payment_redirect', methods: ['POST'])]
     // public function redirectToPayment(Order $order, Security $security,): Response
@@ -152,6 +185,7 @@ class PaymentController extends AbstractController
 
 
     #[Route('/payment/{orderId}', name: 'payment_page', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function showPaymentPage(
         int $orderId,
         Request $request,
@@ -182,6 +216,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/order/{id}/checkout', name: 'payment_checkout', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function checkout(
         int               $id,
         OrderRepository   $orderRepository,
@@ -213,6 +248,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/order/{id}/payment/success', name: 'payment_success')]
+    #[IsGranted('ROLE_USER')]
     public function success(int $id, OrderRepository $orderRepository): Response
     {
 
@@ -226,6 +262,7 @@ class PaymentController extends AbstractController
         }
 
         $invoice = $order->getInvoice();
+
         // Page affichée après paiement réussi
         // Ne pas mettre à jour la BDD ici - cest le webhook qui fait foi
         return $this->render('payment/success.html.twig', [
@@ -235,12 +272,14 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/order/{id}/payment/cancel', name: 'payment_cancel')]
+    #[IsGranted('ROLE_USER')]
     public function cancel(int $id): Response
     {
         return $this->render('payment/cancel.html.twig', ['orderId' => $id]);
     }
 
     #[Route('/invoice/{id}/download', name: 'invoice_download')]
+    #[IsGranted('ROLE_USER')]
     public function downloadInvoice(
         int                $id,
         InvoiceRepository  $invoiceRepository

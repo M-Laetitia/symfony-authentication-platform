@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Gallery - {{ photographer.user.firstName }} {{ photographer.user.lastName }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Create New Gallery"
+    subtitle="Add a new photo series"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Galleries', url: path('photographer_gallery_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Create Gallery', type: 'current' }
+    ]"
+    variant="dark"
+/>
+
+<section class="main-section-page gallery-create u-display-center">
+    <div class="gallery-create__container section-centered" style="max-width: 600px;">
+
+        <h2 class="gallery-create__title">Create New Gallery</h2>
+
+        <form method="POST" class="gallery-form">
+            <div class="form-group">
+                <label for="name" class="form-label">Gallery Name*</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    class="form-control" 
+                    required
+                    placeholder="e.g., Concert Photography, Fashion Shoot, Street Photography"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Description (Optional)</label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    class="form-control" 
+                    rows="5"
+                    placeholder="Describe this gallery series..."
+                ></textarea>
+                <small class="form-help">Tell your clients what makes this series special</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button button--accent button--medium">Create Gallery</button>
+                <a href="{{ path('photographer_gallery_index', { slug: photographer.slug }) }}" class="button button--black-variant button--medium">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+
+{% endblock %}

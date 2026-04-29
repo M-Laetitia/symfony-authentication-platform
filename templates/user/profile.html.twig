@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-
 {% block title %}My profile{% endblock %}
 
 {% block body_class %}page--profile{% endblock %}
@@ -8,10 +7,17 @@
 {% block body %}
 
 <twig:Banner
-title="My Profile"
-subtitle="Welcome back, {{ app.user ? app.user.username : '' }}"
-variant="dark"
+    title="My Profile"
+    subtitle="A closer look at your account! "
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Profile', type: 'current' }
+    ]"
+    variant="dark"
+    id="blog-title"
 />
+
 
 <section
     class="main-section-page profile account account--profile u-display-center"
@@ -211,39 +217,6 @@ variant="dark"
         </div>
     </div>
 </section>
-
-
-
-        <h1>Mon profil</h1>
-    
-        <div>
-            <p><strong>Roles :</strong>
-                {% for role in user.roles %}
-                    <span >{{ role }}</span>
-                {% else %}
-                    <span >Aucun rôle</span>
-                {% endfor %}
-            </p>
-        </div>
-    </div>
-
-
-    {# <p>Test is granted</p>
-    {% if is_granted('ROLE_USER') %}
-        <p>Role user </p>
-    {% endif %}
-
-    {% if is_granted('ROLE_PHOTOGRAPHER') %}
-        <p>Role employé</p>
-    {% endif %}
-
-    {% if is_granted('ROLE_ADMIN') %}
-        <p>Role admin</p>
-    {% endif %}
-
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
-        <p>Role super-admin</p>
-    {% endif %} #}
 
 
 

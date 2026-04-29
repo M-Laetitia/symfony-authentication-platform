@@ -16,6 +16,18 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findCategoriesWithArticleCount(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id, c.name, c.slug, COUNT(a.id) AS articlesCount')
+            ->leftJoin('c.articles', 'a', 'WITH', 'a.status = :status')
+            ->setParameter('status', 'published')
+            ->groupBy('c.id')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */

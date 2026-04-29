@@ -1,39 +1,138 @@
-<div class="">
-    <div class="">
-        {# <h4 class="">{{ proposal.service.name }}</h4> #}
-        <span class="">{{ proposal.status.value|capitalize }}</span>
+
+<div class="proposal-card">
+    {# Header with title and status badge #}
+    <div class="proposal-card__header">
+        <div>
+            <h3 class="proposal-card__title">{{ proposal.title }}</h3>
+            <div class="proposal-card__photographer">
+                By {{ proposal.photographer.firstName }} {{ proposal.photographer.lastName }}
+            </div>
+        </div>
+        <span class="proposal-card__status proposal-card__status--{{ proposal.status.value|lower }}">
+            {{ proposal.status.value|capitalize }}
+        </span>
     </div>
-    <p class="">{{ proposal.message }}</p>
 
-    <p class="">
-        Price (excl. tax): €{{ proposal.priceExcluTax }}<br>
-        Tax ({{ proposal.tax.rate * 100 }}%): €{{ (proposal.priceExcluTax  * proposal.tax.rate)|number_format(2) }}<br>
-        Total: €{{ (proposal.priceExcluTax  * (1 + proposal.tax.rate))|number_format(2) }} <br>
-        Expiration Date: {{ proposal.expirationDate|date('d/m/Y') }}
-    </p>
+    {# Main content #}
+    <div class="proposal-card__content">
+        {# Message/Description #}
+        <div class="proposal-card__section-description">
+            <p class="proposal-card__detail-label">Description</p>
+            {% if proposal.message %}
+            <p class="proposal-card__message">{{ proposal.message }}</p>
+            {% endif %}
+        </div>
 
+        {# Details section #}
+        <div class="proposal-card__details">
+            {% if proposal.serviceDate %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Service Date</div>
+                <div class="proposal-card__detail-value">{{ proposal.serviceDate|date('d/m/Y') }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.location %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Location</div>
+                <div class="proposal-card__detail-value">{{ proposal.location }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.startAt %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Start Time</div>
+                <div class="proposal-card__detail-value">{{ proposal.startAt|date('H:i') }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.endAt %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">End Time</div>
+                <div class="proposal-card__detail-value">{{ proposal.endAt|date('H:i') }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.editedPhotoCount %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Edited Photos</div>
+                <div class="proposal-card__detail-value">{{ proposal.editedPhotoCount }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.deliveryDelay %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Delivery (days)</div>
+                <div class="proposal-card__detail-value">{{ proposal.deliveryDelay }}</div>
+            </div>
+            {% endif %}
+
+            {% if proposal.speciality %}
+            <div class="proposal-card__detail-item">
+                <div class="proposal-card__detail-label">Speciality</div>
+                <div class="proposal-card__detail-value">{{ proposal.speciality.name }}</div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Pricing section #}
+        <div class="proposal-card__pricing">
+            <div class="proposal-card__price-row">
+                <span>Price (excl. tax)</span>
+                <span>€{{ proposal.priceExcluTax|number_format(2, '.', ',') }}</span>
+            </div>
+            <div class="proposal-card__price-row">
+                <span>Tax ({{ (proposal.tax.rate * 100)|number_format(0) }}%)</span>
+                <span>€{{ (proposal.priceExcluTax * proposal.tax.rate)|number_format(2, '.', ',') }}</span>
+            </div>
+            <div class="proposal-card__price-row--total">
+                <span>Total</span>
+                <span>€{{ (proposal.priceExcluTax * (1 + proposal.tax.rate))|number_format(2, '.', ',') }}</span>
+            </div>
+            <div class="proposal-card__price-row expiration-date" >
+                <span>Expires</span>
+                <span>{{ proposal.expirationDate|date('d/m/Y') }}</span>
+            </div>
+        </div>
+    </div>
+
+    {# Action buttons - show only if proposal is pending and user is client #}
     {% if proposal.status.value == 'pending' and app.user and app.user.id == proposal.conversation.client.id %}
-    <form
-        class="proposal-accept-form"
-        method="post"
-        action="{{ path('proposal_accept', {'id': proposal.id}) }}"
-    >
-        <input type="hidden" name="_token" value="{{ csrf_token('accept_proposal_' ~ proposal.id) }}">
-        <input type="hidden" name="action" value="request_confirmation">
-        <button type="submit" class="btn btn-success">Accept offer</button>
-    </form>
+    <div class="proposal-card__actions">
+        <form
+            method="post"
+            action="{{ path('proposal_accept', {'id': proposal.id}) }}"
+            class="proposal-accept-form"
+            style="flex: 1;"
+        >
+            <input type="hidden" name="_token" value="{{ csrf_token('accept_proposal_' ~ proposal.id) }}">
+            <input type="hidden" name="action" value="request_confirmation">
+            <button type="submit" class="proposal-card__action-btn proposal-card__action-btn--accept">
+                Accept Offer
+            </button>
+        </form>
 
-    <form
-        method="post"
-        action="{{ path('proposal_refuse', {'id': proposal.id}) }}"
-        style="display:inline;"
-        class="proposal-refuse-form"
-    >
-        <input type="hidden" name="_token" value="{{ csrf_token('refuse_proposal_' ~ proposal.id) }}">
-        <input type="hidden" name="action" value="request_confirmation">
-        <button type="submit" class="btn btn-outline-danger">Decline offer</button>
-    </form>
-        <p>Status: {{ proposal.status.value|capitalize }}</p>
+        <form
+            method="post"
+            action="{{ path('proposal_refuse', {'id': proposal.id}) }}"
+            class="proposal-refuse-form"
+            style="flex: 1;"
+        >
+            <input type="hidden" name="_token" value="{{ csrf_token('refuse_proposal_' ~ proposal.id) }}">
+            <input type="hidden" name="action" value="request_confirmation">
+            <button type="submit" class="proposal-card__action-btn proposal-card__action-btn--decline">
+                Decline
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+
+    {% if proposal.status.value == 'pending' and app.user and proposal.photographer.user.id == app.user.id %}
+        <button type="button" class="proposal-card__action-btn cancel-proposal proposal-card__action-btn--decline " onclick="openCancelProposalModal({{ proposal.id }})" style="margin-top: 1em;">
+            Cancel Proposal
+        </button>
+        {% include 'chat/_proposal_cancel_modal.html.twig' with {'proposal': proposal} %}
     {% endif %}
 </div>
 

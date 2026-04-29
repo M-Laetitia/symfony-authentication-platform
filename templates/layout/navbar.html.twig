@@ -16,7 +16,7 @@
                 <!-- Brand -->
                 <div class="navbar__brand">
                     <a href="{{ path('home') }}" class="navbar__logo-link">
-                        <span class="navbar__logo"></span>
+                        <span class="navbar__logo">{% include 'components/icons/logo.html.twig' %}</span>
                         <span class="navbar__site-name">MOSAIC</span>
                     </a>
                 </div>
@@ -32,16 +32,24 @@
                         class="navbar__link {% if app.request.attributes.get('_route') == 'home' %}navbar__link--active{% endif %}"
                         {% if app.request.attributes.get('_route') == 'home' %}aria-current="page"{% endif %}>
                         Home
-                     </a>
+                        </a>
                     </li>
                     <li class="navbar__item">
-                        <a href="{{ path('team_index') }}" class="navbar__link" {% if app.request.attributes.get('_route') == 'team' %}navbar__link--active{% endif %}>Team</a>
+                        <a href="{{ path('team_index') }}" 
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'team_index' %} navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'team_index' %}aria-current="page"{% endif %}>
+                        Team
+                        </a>
                     </li>
-                    <li class="navbar__item">
+                    {# <li class="navbar__item">
                         <a href="/gallery" class="navbar__link">Gallery</a>
-                    </li>
+                    </li> #}
                     <li class="navbar__item">
-                        <a href="{{ path('blog_index')}}" class="navbar__link">Blog</a>
+                        <a href="{{ path('blog_index')}}" 
+                        class="navbar__link {% if app.request.attributes.get('_route') == 'blog_index' %}navbar__link--active{% endif %}"
+                        {% if app.request.attributes.get('_route') == 'blog_index' %}aria-current="page"{% endif %}>
+                        Blog
+                        </a>
                     </li>
                     <li class="navbar__item">
                         <a href="{{ path('contact') }}"
@@ -49,9 +57,6 @@
                         {% if app.request.attributes.get('_route') == 'contact' %}aria-current="page"{% endif %}>
                         Contact
                         </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a href="/contact" class="navbar__link">Contact</a>
                     </li>
                 </ul>
 
@@ -68,9 +73,9 @@
                 <!-- Actions -->
                 <!-- Search -->
                 <div class="navbar__actions">
-                    <a href="/search" class="navbar__action navbar__action--search">
+                    {# <a href="/search" class="navbar__action navbar__action--search">
                         <svg id="fi_7535830" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m20.7 19.3-3.4-3.4c1.1-1.4 1.7-3.1 1.7-4.9 0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8c1.8 0 3.5-.6 4.9-1.7l3.4 3.4c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4zm-15.7-8.3c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"  fill="#F2F2F2"></path></svg>
-                    </a>
+                    </a> #}
 
                     <!-- Chat notification -->
                     {% if app.user %}
@@ -101,6 +106,7 @@
                     </a>
 
                     {% endif %}
+
 
                     <!-- log in/register/profile -->
                     <div class="navbar__user" aria-label="User menu">
@@ -138,6 +144,17 @@
                                             Profile
                                         </a>
                                     </li>
+
+                                    {% if is_granted('ROLE_PHOTOGRAPHER') and app.user.photographer %}
+                                    <li class="navbar__user-item">
+                                        <a href="{{ path('photographer_dashboard_index', { slug: app.user.photographer.slug }) }}"
+                                            class="navbar__user-link"
+                                            {% if app.request.attributes.get('_route') starts with 'photographer_dashboard_' %}aria-current="page"{% endif %}>
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    {% endif %}
+
                                     <li class="navbar__user-item">
                                         <a href="{{ path('app_logout') }}" class="navbar__user-link">Log out</a>
                                     </li>
@@ -151,7 +168,7 @@
                                 {% endif %}
                             </div>
                         </ul>
-</div>
+                    </div>
                     
                 </div>
             </div>

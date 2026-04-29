@@ -11,4 +11,6 @@ final class Banner
     public ?string $subtile = 'Subtile';
     public ?string $imageSrc = '';
     public ?string $variant ='';
+    public ?array $breadcrumbs = null;
+    public ?string $id = null;
 }

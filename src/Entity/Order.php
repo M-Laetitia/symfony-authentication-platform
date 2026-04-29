@@ -31,7 +31,7 @@ class Order
     #[ORM\Column]
     private ?\DateTimeImmutable $terms_accepted_at = null;
 
-    #[ORM\OneToOne(inversedBy: 'orderProposal', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ServiceProposal $serviceProposal = null;
 
@@ -48,7 +48,7 @@ class Order
     #[ORM\Column]
     private ?int $totalAmount = null;
 
-    #[ORM\OneToOne(mappedBy: 'orderProposal', targetEntity: Invoice::class)]
+    #[ORM\OneToOne(mappedBy: 'orderProposal', targetEntity: Invoice::class, cascade: ['persist'])]
     private ?Invoice $invoice = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]

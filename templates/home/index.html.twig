@@ -1,10 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Home | MOSAIC {% endblock %}
 
 {% block body %}
-    <section class="hero">
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__container">
+            <!-- Left decorative sidebar -->
+            <div class="hero__sidebar hero__sidebar--left"></div>
 
+            <!-- Main hero content -->
+            <div class="hero__main">
+                <figure class="hero__figure">
+                    <img 
+                        src="{{ 'media/hero-image.webp' | imagine_filter('hero_image') }}"
+                        alt="MOSAIC Photography Studio" 
+                        class="hero__image u-img-cover"
+                        data-parallax
+                        loading="eager"
+                        width="1360"
+                        height="1080"
+                    >
+                </figure>
+                <div class="hero__content">
+                    <h1 id="hero-title" class="hero__title">MOSAIC</h1>
+                    <p class="hero__subtitle">Capturing your most precious moments with passion and artistry</p>
+                    <a href="{{ path('team_index') }}" class="hero__cta">
+                         Discover our work   <span>></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right decorative sidebar -->
+            <div class="hero__sidebar hero__sidebar--right"></div>
+        </div>
     </section>
 
     <section class="section section-about" aria-labelledby="about-title">
@@ -25,6 +53,7 @@
                     subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                     buttonText="Discover more"
                     linkBtn="#"
+                    titleId="about-title"
                 />
 
                 <div class="section-about__text-image">
@@ -64,7 +93,7 @@
                                 />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our mission</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our mission</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -83,7 +112,7 @@
                         />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our vision</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our vision</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -102,7 +131,7 @@
                         />
                         </div>
                         <div class="section-about__feature-text">
-                            <h6 class="section-about__feature-title icon-box__link">Our value</h6>
+                            <h3 class="section-about__feature-title icon-box__link">Our value</h3>
                             <p class="section-about__feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         </div>
                     </div>
@@ -134,6 +163,7 @@
                 subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Discover more"
                 linkBtn="#"
+                titleId="services-title"
                 />
                 
                 <div class="section-services__list">
@@ -183,33 +213,66 @@
             </div>
 
             <twig:SectionIntro
-            title="Our photographs"
-            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            title="Our photographers"
+            subtitle=" A team of photographers with unique perspectives capturing your most precious moments."
             buttonText="Discover more"
-            linkBtn="#"
+            linkBtn="/team"
             variant="light"
+            titleId="photographs-title"
             />
-
             <div class="section-photographs__content scroll-text-section__content" >
                 <div class="section-photographs__list">
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
-                    <twig:PhotographBox 
-                    service="events"
-                    name="Name Name"
-                    link="#"
-                    imageSrc="media/images/concert_photography.jpg"
-                    />
+                   <div class="embla" data-controller="carousel">
+                        <div class="embla__viewport" data-carousel-target="viewport">
+                            <div class="embla__container">
+
+                                {% for photographer in photographers %}
+                                    {% set featured = photographer.media|first %}
+
+                                    <div class="embla__slide">
+                                        <twig:PhotographBox 
+                                            :service="photographer.specialityNames|join(', ')"
+                                            :name="photographer.firstName ~ ' ' ~ photographer.lastName"
+                                            :slug="photographer.slug"
+                                            :alt="featured ? (featured.altText ?: photographer.firstName ~ ' ' ~ photographer.lastName ~ ' featured picture') : photographer.firstName ~ ' ' ~ photographer.lastName ~ ' featured picture'"
+                                            :imageSrc="featured ? asset('uploads/' ~ featured.path) : asset('media/images/camera.jpg')"
+                                        />
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                         <div class="carousel-nav section-photographs__carousel-nav">
+                    <div class="carousel-nav__arrows">
+                        <button
+                            class="carousel-nav__arrow embla__prev"
+                            type="button"
+                            data-action="click->carousel#prev"
+                            aria-label="Previous slide"
+                        >
+                        {% include 'components/icons/leftArrow.html.twig' %}
+
+                        </button>
+
+                        <button
+                            class="carousel-nav__arrow embla__next"
+                            type="button"
+                            data-action="click->carousel#next"
+                            aria-label="Next slide"
+                        >
+                            {% include 'components/icons/rightArrow.html.twig' %}
+                        </button>
+                    </div>
+
+                    <div
+                        class="carousel-nav__dots embla__dots"
+                        data-carousel-target="dots"
+                        role="tablist"
+                        aria-label="Photographer carousel navigation"
+                    ></div>
+                </div>
+            </div>
+                    </div> 
                 </div>
             </div>
         </div>
@@ -218,7 +281,7 @@
 
     <div class="u-divider-medium"></div>
 
-    <section class="section section-works " aria-labelledby="works-title">
+    <section class="section section-works" aria-labelledby="works-title">
 
         <div class="scroll-text-section">
             <div class="bg-text--scroll  bg-text--works" aria-hidden="true">
@@ -234,112 +297,28 @@
             title="Our lastest works"
             subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             buttonText="Explore more"
-            linkBtn="#"
+            linkBtn="/team"
+            titleId="works-title"
             />
 
             <div class="section-works__content scroll-text-section__content">
 
                 <div class="section-works__gallery">
-                    <figure class="gallery__item gallery__item--landscape">
-                        <img class="gallery__image  u-img-cover" src="media/images/concert_photography.jpg" alt="">
+                    {% for portfolio in latestPhotographies %}
+                    <figure class="gallery__item {% if loop.first or loop.last %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ asset('uploads/' ~ portfolio.path) }}" alt="{{ portfolio.title }}" width="880" height="500">
                         <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
+                            <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
+                                    <span class="gallery__name">{{ portfolio.photographer.firstName }} {{ portfolio.photographer.lastName }}</span>
+                                    <span class="separator" aria-hidden="true"></span>
+                                    <span class="gallery__service">{{ portfolio.gallerySeries.name }}</span>
                                 </div>
-                              </a>
-                        </div>
+                            </div>
+                        </div></a>
                     </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                  
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/musique.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/streetart.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--portrait">
-                        <img class="gallery__image  u-img-cover" src="media/images/model.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-                    <figure class="gallery__item gallery__item--landscape">
-                        <img class=" gallery__image u-img-cover" src="media/images/wedding.jpg" alt="">
-                        <div class="gallery__detail">
-                            <a href="" class="gallery__detail-link">
-                                <div class="gallery__detail-content">
-                                  <span class="gallery__name">NAME NAME</span>
-                                  <span class="separator" aria-hidden="true"></span>
-                                  <span class="gallery__service">Events</span>
-                                </div>
-                              </a>
-                        </div>
-                    </figure>
-
+                    {% endfor %}
                 </div>
-
 
             </div>
         </div>
@@ -366,6 +345,7 @@
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
                 buttonText="Discover more"
                 linkBtn="#"
+                titleId="testimonials-title"
                 />
 
                 <div class="section-testimonials__container">
@@ -388,23 +368,8 @@
     <div class="u-divider-medium"></div>
 
 
-    {# <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}">
-        Se connecter avec Google
-    </a>
+    {% include 'layout/contact.html.twig' %} 
 
-    {% if app.user %}
-        <p><a href="{{ path('app_profile') }}">Profil</a></p>
-        <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
-    {% else %}
-        <p><a href="{{ path('app_login') }}">Se connecter</a></p>
-        <p><a href="{{ path('app_register') }}">S'inscrire</a></p>
-    {% endif %}
-    <p><a href="{{ path('blog_index') }}">BLOG</a></p> #}
-
-
-
-    {# {% include 'layout/contact.html.twig' %} #}
-    <h1>remettre contact form</h1>
 
     <div class="u-divider-medium"></div>
 
@@ -424,35 +389,30 @@
                 <twig:SectionIntro
                 title="Articles & blog"
                 subtitle="BLorem ipsum dolor sit amet, consectetur adipiscing elit."
-                buttonText="Learn more"
-                linkBtn="#"
+                buttonText="Discover our blog"
+                linkBtn="/blog"
                 />
 
                 <div class="section-articles__container">
 
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Tutorial"
-                    link="#"
-                    :tags="['Art', 'Technique', 'Outdoor']"
-                    date="3 March 2026"
-                    />
+                    {% if latestArticles is not empty %}
+                    <section class="related-articles section-centered">
+                       
+                        <div class="related-articles__list">
+                            {% for article in latestArticles %}
+                            {% set cover = article.medias|first %}
+                                    <twig:ArticleBox
+                                    :title="article.title"
+                                    :imagePath="cover ? cover.path : ''"
+                                    :slug="article.slug"
+                                    :date="article.createdAt|date('j F Y')"
+                                    :tags="article.tags is defined ? article.tags|map(t => t.name) : []"
+                                    />
+                            {% endfor %}
+                        </div>
 
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Interview"
-                    link="#"
-                    :tags="['Travel', 'Photograph']"
-                    date="10 Feb 2026"
-                    />
-
-                    <twig:ArticleBox
-                    title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                    category="Street Photography"
-                    link="#"
-                    :tags="['Art', 'Technique', 'Street photography']"
-                    date="10 Feb 2026"
-                    />
+                    </section>
+                    {% endif %}
 
                 </div>
             </div>
@@ -463,5 +423,6 @@
 
 
     {% include 'layout/subscribe.html.twig' %}
+
 
 {% endblock %}
