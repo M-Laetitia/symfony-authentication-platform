@@ -58,7 +58,6 @@ jobs:
         run: |
           echo "APP_ENV=test" > .env
 
-
       - name: ⚙️ Create .env.test
         run: |
           echo "APP_ENV=test" > .env.test
