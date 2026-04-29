@@ -93,7 +93,6 @@ jobs:
       #     MYSQL_CONTAINER_ID=$(docker ps -q -f "name=mysql")
       #     echo "MySQL container ID: $MYSQL_CONTAINER_ID"
       #     docker logs $MYSQL_CONTAINER_ID 
-      
 
       - name: 🛠 Run Doctrine migrations
         run: |
