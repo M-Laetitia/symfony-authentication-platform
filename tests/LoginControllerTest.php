@@ -78,6 +78,7 @@ class LoginControllerTest extends WebTestCase
             '_password' => 'password',
         ]);
 
+        
         // Vérifie que la redirection est bien vers /home
         self::assertResponseRedirects('/');
         $this->client->followRedirect();
