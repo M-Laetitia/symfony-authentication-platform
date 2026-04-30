@@ -64,7 +64,7 @@
 
 @media (max-width: 900px ) {
     .newsletter {
-        height: 100%;
+        height: auto;
         padding: 40px 0;
         .newsletter__wrapper
      {
