@@ -32,7 +32,7 @@ class Comment
     private ?bool $isApproved = null;
 
     #[ORM\Column(length: 64, nullable: true)]
-    private ?string $ipHash = null;
+    private ?string $encryptIp = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?User $author = null;
@@ -125,14 +125,14 @@ class Comment
         return $this;
     }
 
-    public function getIpHash(): ?string
+    public function getEncryptIp(): ?string
     {
-        return $this->ipHash;
+        return $this->encryptIp;
     }
 
-    public function setIpHash(?string $ipHash): static
+    public function setEncryptIp(?string $encryptIp): static
     {
-        $this->ipHash = $ipHash;
+        $this->encryptIp = $encryptIp;
 
         return $this;
     }

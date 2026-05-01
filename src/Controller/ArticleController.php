@@ -10,11 +10,11 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Tag;
 use App\Enum\MediaType;
+use App\Form\AdminCommentFormType;
 use App\Form\ArticleFilterType;
 use App\Form\ArticleFormType;
 use App\Form\CategoryFormType;
 use App\Form\CommentFormType;
-use App\Form\AdminCommentFormType;
 use App\Form\SearchArticleFormType;
 use App\Form\TagFormType;
 use App\Repository\ArticleRepository;
@@ -22,22 +22,28 @@ use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\TagRepository;
 use App\Service\CommentSecurityService;
+use App\Service\LogEncryptor;
 use App\Service\MediaUploader;
 use App\Service\SeoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\Form\FormError;
 
 
 
 class ArticleController extends AbstractController
 {
+    public function __construct(
+        private LogEncryptor $logEncryptor,
+    ) {
+    }
+
     #[Route('/blog', name: 'blog_index')]
     public function index(
         EntityManagerInterface $em, 
@@ -472,8 +478,8 @@ class ArticleController extends AbstractController
 
                 // Récupère et hache l'IP pour les utilisateurs non connectés
                 $ip = $request->getClientIp();
-                $ipHash = hash('sha256', $ip);
-                $comment->setIpHash($ipHash);
+                $encryptedIp = $this->logEncryptor->encryptIp($ip); 
+                $comment->setEncryptIp($encryptedIp);  
             }
 
             $commentContent = $form->get('content')->getData();
