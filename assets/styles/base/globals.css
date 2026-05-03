@@ -290,6 +290,26 @@ h6 {
   }
 }
 
+/* &------------- COOKIES ----------- */
+/* &--------------------------------- */
+
+#CybotCookiebotDialogFooter .CybotCookiebotDialogBodyButton {
+    background-color: var(--color-gray-900);
+    border: 2px solid var(--color-gray-900);
+}
+
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonCustomize, #CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection{
+    background-color: var(--color-gray-900);
+    border-color: var(--color-gray-900);
+    color: #ffffff;
+}
+
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyButtonAccept, #CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonAccept, #CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll {
+    background-color: var(--color-gray-900);
+    border-color: var(--color-gray-900);
+    color: #ffffff;
+}
+
 /* &----------- SEARCH BAR ---------- */
 /* &--------------------------------- */
 
