@@ -1,0 +1,21 @@
+# Robots.txt for MOSAIC
+# Allow all robots to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and sensitive paths
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /media/
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /*.php$
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://mosaic.digitics.fr/sitemap.xml
