@@ -214,11 +214,6 @@ class ArticleController extends AbstractController
             $em->persist($article);
             $em->flush(); 
 
-            // try {
-            //     $em->flush();
-            // } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
-            //     $form->get('title')->addError(new FormError('This title is already used.'));
-            // }
 
             // EDITOR JS
             $editorContent = $form->get('content')->getData();
