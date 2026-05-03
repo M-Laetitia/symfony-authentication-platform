@@ -22,7 +22,7 @@ class Category
     #[ORM\Column(length: 50, nullable: false, unique: true)]
     private string $slug;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     /**

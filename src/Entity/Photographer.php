@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Mpdf\Tag\P;
 
 #[ORM\Entity(repositoryClass: PhotographerRepository::class)]
 class Photographer
@@ -52,11 +53,11 @@ class Photographer
     #[ORM\Column(nullable: true)]
     private ?array $profile = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: PhotographerStatusType::class)]
-    private array $status = [];
+    #[ORM\Column(type: 'string', length: 20, enumType: PhotographerStatusType::class)]
+    private PhotographerStatusType  $status ;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: PhotographerVisibilityType::class)]
-    private array $visibility = [];
+    #[ORM\Column(type: 'string', length: 20, enumType: PhotographerVisibilityType::class)]
+    private PhotographerVisibilityType $visibility ;
 
     /**
      * @var Collection<int, Media>
@@ -245,30 +246,26 @@ class Photographer
     //     return is_array($specialties) ? $specialties : [];
     // }
 
-    /**
-     * @return PhotographerStatusType[]
-     */
-    public function getStatus(): array
+
+    public function getStatus(): PhotographerStatusType
     {
         return $this->status;
     }
 
-    public function setStatus(array $status): static
+    public function setStatus(PhotographerStatusType $status): self
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * @return PhotographerVisibilityType[]
-     */
-    public function getVisibility(): array
+
+    public function getVisibility(): PhotographerVisibilityType
     {
         return $this->visibility;
     }
 
-    public function setVisibility(array $visibility): static
+    public function setVisibility(PhotographerVisibilityType $visibility): self
     {
         $this->visibility = $visibility;
 

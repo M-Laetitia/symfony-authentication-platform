@@ -31,7 +31,7 @@ class Comment
     #[ORM\Column(nullable: true)]
     private ?bool $isApproved = null;
 
-    #[ORM\Column(length: 64, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $encryptIp = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]

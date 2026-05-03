@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use App\Enum\GallerySeriesType;
 use App\Repository\GallerySeriesRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GallerySeriesRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_GALLERY_SLUG', fields: ['slug'])]
 class GallerySeries
 {
     #[ORM\Id]
@@ -17,8 +18,14 @@ class GallerySeries
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 125)]
+    #[ORM\Column(length: 100)]
     private ?string $name = null;
+
+    #[ORM\Column(length: 100, unique: true)]
+    private ?string $slug = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'gallerySeries')]
     private ?Photographer $photographer = null;
@@ -29,15 +36,13 @@ class GallerySeries
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'gallerySeries')]
     private Collection $medias;
 
-    #[ORM\Column(type: 'string', enumType: GallerySeriesType::class)]
-    private GallerySeriesType $type;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     public function __construct()
     {
         $this->medias = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -99,17 +104,6 @@ class GallerySeries
     }
 
 
-    public function getType(): GallerySeriesType
-    {
-        return $this->type;
-    }
-
-    public function setType(GallerySeriesType $type): self
-    {
-        $this->type = $type;
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -120,5 +114,41 @@ class GallerySeries
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Generate a slug from the gallery name
+     * Used by services/controllers to create unique slugs
+     */
+    public function generateSlugFromName(): string
+    {
+        $slug = strtolower(trim($this->name ?? ''));
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = trim($slug, '-');
+        return $slug;
     }
 }
