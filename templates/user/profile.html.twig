@@ -206,18 +206,50 @@
 
                     <button
                         type="button"
-                        class="button  button--large button--border-accent profile-delete-account__action"
+                        class="button button--large button--border-accent profile-delete-account__action"
+                        id="delete-account-btn"
                     >
                         Delete my account
                     </button>
                 </section>
+
+                <!-- Delete account confirmation modal -->
+                <div id="delete-account-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+                    <div class="modal__overlay" id="modal-overlay"></div>
+                    <div class="modal__content">
+                        <div class="modal__header">
+                            <h2 id="modal-title" class="modal__title">Confirm account deletion</h2>
+                            <button type="button" class="modal__close" id="modal-close" aria-label="Close modal">
+                                &times;
+                            </button>
+                        </div>
+                        <div class="modal__body">
+                            <p class="modal__body--warning">Are you absolutely sure you want to delete your account? This action is irreversible and will :</p>
+                            <ul>
+                                <li>Permanently deactivate your account</li>
+                                <li>Remove your personal data (email, username, avatar)</li>
+                                <li>Pseudonymize your content (messages, comments will remain visible but attributed to "Deleted User")</li>
+                            </ul>
+                            <p class="modal__body--undone"><strong>This cannot be undone.</strong></p>
+                        </div>
+                        <div class="modal__footer">
+                            <button type="button" class="button button--medium  button--accent" id="modal-cancel">
+                                Cancel
+                            </button>
+                            <form id="delete-account-form" method="POST" action="{{ path('account_delete') }}" style="display: inline;">
+                                <button type="submit" class="button button--medium button--danger">
+                                    Delete my account permanently
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
             </main>
 
         </div>
     </div>
 </section>
-
 
 
 {% endblock %}

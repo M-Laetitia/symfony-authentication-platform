@@ -22,13 +22,13 @@ class Payment
     #[ORM\Column]
     private ?\DateTimeImmutable $paidAt = null;
 
-    #[ORM\Column(type: 'string', enumType: PaymentProviderType::class)]
+    #[ORM\Column(type: 'string', length: 20, enumType: PaymentProviderType::class)]
     private PaymentProviderType $provider;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $currency = null;
 
-    #[ORM\Column(type: 'string', enumType: PaymentStatusType::class)]
+    #[ORM\Column(type: 'string', length: 25, enumType: PaymentStatusType::class)]
     private PaymentStatusType $status ;
 
     #[ORM\Column(length: 255, nullable: true)]

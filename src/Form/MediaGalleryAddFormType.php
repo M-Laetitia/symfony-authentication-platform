@@ -58,11 +58,18 @@ class MediaGalleryAddFormType extends AbstractType
                 ]
             ])
             ->add('caption', TextareaType::class, [
-                'label' => 'Caption (Optional)',
+                'label' => 'Caption (Optional) - 255 characters max',
                 'required' => false,
+                'constraints' => [
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'The caption cannot exceed 255 characters.',
+                    ]),
+                ],
                 'attr' => [
                     'rows' => 2,
                     'placeholder' => 'Add a caption or details about this photo...',
+                    'maxlength' => 255,
                 ]
             ])
             ->add('featured', CheckboxType::class, [

@@ -20,8 +20,8 @@ class Conversation
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $creation_date = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: ConversationType::class)]
-    private array $status = [];
+    #[ORM\Column(type: 'string', length: 20, enumType: ConversationType::class)]
+    private ConversationType $status ;
 
     /**
      * @var Collection<int, Message>
@@ -75,15 +75,13 @@ class Conversation
         return $this;
     }
 
-    /**
-     * @return ConversationType[]
-     */
-    public function getStatus(): array
+
+    public function getStatus(): ConversationType
     {
         return $this->status;
     }
 
-    public function setStatus(array $status): static
+    public function setStatus(ConversationType $status): self
     {
         $this->status = $status;
 
