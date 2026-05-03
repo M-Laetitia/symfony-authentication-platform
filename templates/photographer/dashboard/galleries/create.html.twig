@@ -26,13 +26,14 @@
 
         <form method="POST" class="gallery-form">
             <div class="form-group">
-                <label for="name" class="form-label">Gallery Name*</label>
+                <label for="name" class="form-label">Gallery Name* (100 characters max)</label>
                 <input 
                     type="text" 
                     id="name" 
                     name="name" 
                     class="form-control" 
                     required
+                    maxlength="100"
                     placeholder="e.g., Concert Photography, Fashion Shoot, Street Photography"
                 >
             </div>
