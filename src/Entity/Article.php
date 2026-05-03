@@ -27,7 +27,7 @@ class Article
     #[ORM\Column(length: 150, unique: true, nullable: false)]
     private string $slug = '';
 
-    #[ORM\Column(type: 'string', enumType: ArticleType::class)]
+    #[ORM\Column(type: 'string', length: 20, enumType: ArticleType::class)]
     private ArticleType $status;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,10 +41,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $isVerified = false;
 
     // Google info
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -107,6 +108,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ConversationReport::class, mappedBy: 'reportedBy')]
     private Collection $conversationReports;
 
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $createdAt;
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -117,6 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->conversations = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->conversationReports = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
 
@@ -526,5 +530,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getDisplayName(): string
     {
         return trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? '')) ?: $this->username;
+    }
+
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 }

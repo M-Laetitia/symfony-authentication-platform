@@ -29,7 +29,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('gallery_edit') }}">
                 
                 <div class="form-group">
-                    <label for="name" class="form-label">Gallery Name*</label>
+                    <label for="name" class="form-label">Gallery Name* (100 characters max)</label>
                     <input 
                         type="text" 
                         id="name" 
@@ -37,6 +37,7 @@
                         value="{{ gallery.name }}"
                         class="form-control" 
                         required
+                        maxlength="100"
                     >
                 </div>
 

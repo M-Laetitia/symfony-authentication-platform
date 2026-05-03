@@ -33,7 +33,7 @@ class ServiceProposal
     #[ORM\Column]
     private ?\DateTimeImmutable $expiration_date = null;
 
-    #[ORM\Column(type: 'string', enumType: ServiceProposalType::class)]
+    #[ORM\Column(type: 'string', length: 25, enumType: ServiceProposalType::class)]
     private ServiceProposalType $status ;
 
     #[ORM\ManyToOne(inversedBy: 'serviceProposals')]

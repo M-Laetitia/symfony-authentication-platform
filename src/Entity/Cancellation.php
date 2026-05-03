@@ -21,7 +21,7 @@ class Cancellation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reason = null;
 
-    #[ORM\Column(type: 'string', enumType: CancellationReasonType::class)]
+    #[ORM\Column(type: 'string', length: 25, enumType: CancellationReasonType::class)]
     private CancellationReasonType $reasonType;
 
     #[ORM\Column(length: 30)]

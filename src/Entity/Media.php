@@ -28,10 +28,10 @@ class Media
     // #[ORM\Column(columnDefinition: "ENUM('cover', 'gallery_image', 'article_image')")]
     // private string $type;
 
-    #[ORM\Column(type: 'string', enumType: MediaType::class)]
+    #[ORM\Column(type: 'string', length: 30, enumType: MediaType::class)]
     private MediaType $typeImage;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $caption = null;
 
     #[ORM\ManyToOne(inversedBy: 'medias')]

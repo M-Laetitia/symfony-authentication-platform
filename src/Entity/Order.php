@@ -19,7 +19,7 @@ class Order
     #[ORM\Column(length: 30, unique: true)]
     private ?string $order_number = null;
 
-    #[ORM\Column(type: 'string', enumType: OrderType::class)]
+    #[ORM\Column(type: 'string', length: 20, enumType: OrderType::class)]
     private OrderType $status ;
 
     #[ORM\Column]

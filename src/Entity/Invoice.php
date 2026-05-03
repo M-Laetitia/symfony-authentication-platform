@@ -17,7 +17,7 @@ class Invoice
     #[ORM\Column]
     private ?\DateTimeImmutable $issuedAt = null;
 
-    #[ORM\Column(type: 'string', enumType: InvoiceType::class)]
+    #[ORM\Column(type: 'string', length: 20, enumType: InvoiceType::class)]
     private InvoiceType $status;
 
     #[ORM\Column]
