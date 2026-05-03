@@ -34,14 +34,15 @@ class CategoryFormType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
-                'label' => 'Description (max 500 characters)',
+                'label' => 'Description (max 255 characters)',
                 'attr' => [
                     'placeholder' => 'Enter category description (optional)...',
-                    'rows' => 6,
+                    'rows' => 4,
+                    'maxlength' => 255,
                 ],
                 'constraints' => [
                     new Assert\Length([
-                        'max' => 500,
+                        'max' => 255,
                         'maxMessage' => 'The description cannot exceed {{max}} characters',
                     ]),
                 ],
