@@ -70,7 +70,7 @@ class ConversationController extends AbstractController
             $conversation = new Conversation();
             $conversation->setClient($client);
             $conversation->setPhotographer($photographer);
-            $conversation->setStatus([ConversationType::ACTIVE]);
+            $conversation->setStatus(ConversationType::ACTIVE);
             $conversation->setIsFrozen(false);
             $conversation->setCreationDate(new \DateTimeImmutable());
 
@@ -502,7 +502,6 @@ class ConversationController extends AbstractController
         $report->setCreatedAt(new \DateTimeImmutable());
         $report->setStatus([ConversationReportType::PENDING]);
         
-
         $conversation->setIsFrozen(true);
         
         $em->persist($report);
