@@ -7,9 +7,8 @@ use App\Enum\PhotographerVisibilityType;
 use App\Repository\PhotographerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Mpdf\Tag\P;
+
 
 #[ORM\Entity(repositoryClass: PhotographerRepository::class)]
 class Photographer
