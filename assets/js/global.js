@@ -466,3 +466,40 @@ document.addEventListener('click', function(e) {
             }
         }, { passive: true });
     }
+
+// Confirmation modale delete account 
+if (document.body.classList.contains('page--profile')) {
+    const deleteBtn = document.getElementById('delete-account-btn');
+    const modal = document.getElementById('delete-account-modal');
+    const closeBtn = document.getElementById('modal-close');
+    const cancelBtn = document.getElementById('modal-cancel');
+    const overlay = document.getElementById('modal-overlay');
+
+    if (deleteBtn && modal) {
+        // Open modal
+        deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Close modal
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+        if (overlay) overlay.addEventListener('click', closeModal);
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    }
+}
