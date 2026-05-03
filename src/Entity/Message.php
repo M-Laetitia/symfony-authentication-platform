@@ -23,13 +23,7 @@ class Message
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $creation_date = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $is_reported = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $report_reason = null;
-
-    #[ORM\Column(type: 'string', enumType: MessageType::class)]
+    #[ORM\Column(type: 'string', length: 20, enumType: MessageType::class)]
     private MessageType $status ;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
@@ -72,31 +66,6 @@ class Message
 
         return $this;
     }
-
-    public function isReported(): ?bool
-    {
-        return $this->is_reported;
-    }
-
-    public function setIsReported(?bool $is_reported): static
-    {
-        $this->is_reported = $is_reported;
-
-        return $this;
-    }
-
-    public function getReportReason(): ?string
-    {
-        return $this->report_reason;
-    }
-
-    public function setReportReason(?string $report_reason): static
-    {
-        $this->report_reason = $report_reason;
-
-        return $this;
-    }
-
 
     public function getStatus(): MessageType
     {
