@@ -189,8 +189,8 @@ class PhotographerDashboardController extends AbstractController
         // Status and Visibility (from enum)
         $statusValue = $form->get('status')->getData();
         $visibilityValue = $form->get('visibility')->getData();
-        $photographer->setStatus([PhotographerStatusType::from($statusValue)]);
-        $photographer->setVisibility([PhotographerVisibilityType::from($visibilityValue)]);
+        $photographer->setStatus(PhotographerStatusType::from($statusValue));
+        $photographer->setVisibility(PhotographerVisibilityType::from($visibilityValue));
 
         // Portfolio Cover Image
         $portfolioImageFile = $form->get('portfolioCoverImage')->getData();
