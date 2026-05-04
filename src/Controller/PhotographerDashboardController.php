@@ -135,8 +135,8 @@ class PhotographerDashboardController extends AbstractController
             'youtube' => $socials['youtube'] ?? null,
             'twitter' => $socials['twitter'] ?? null,
             'facebook' => $socials['facebook'] ?? null,
-            'status' => !empty($photographer->getStatus()) ? $photographer->getStatus()[0]->value : PhotographerStatusType::INACTIVE->value,
-            'visibility' => !empty($photographer->getVisibility()) ? $photographer->getVisibility()[0]->value : PhotographerVisibilityType::PRIVATE->value,
+            'status' => $photographer->getStatus()->value,
+            'visibility' => $photographer->getVisibility()->value,
         ];
     }
 
