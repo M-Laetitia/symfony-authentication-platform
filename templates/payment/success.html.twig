@@ -74,9 +74,11 @@
             <br>
             <span style="color: #2e7d32; font-weight: 500;">Your invoice is on its way by email.</span>
         </p>
-        <a class="success-page__button" href="{{ path('invoice_download', { id: invoice.id }) }}" target="_blank">
-            Download my invoice
-        </a>
+        {% if invoice %}
+            <a class="success-page__button" href="{{ path('invoice_download', { id: invoice.id }) }}" target="_blank">
+                Download my invoice
+            </a>
+        {% endif %}
 
     </div>
 {% endblock %}
