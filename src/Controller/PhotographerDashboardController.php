@@ -135,8 +135,8 @@ class PhotographerDashboardController extends AbstractController
             'youtube' => $socials['youtube'] ?? null,
             'twitter' => $socials['twitter'] ?? null,
             'facebook' => $socials['facebook'] ?? null,
-            'status' => !empty($photographer->getStatus()) ? $photographer->getStatus()[0]->value : PhotographerStatusType::INACTIVE->value,
-            'visibility' => !empty($photographer->getVisibility()) ? $photographer->getVisibility()[0]->value : PhotographerVisibilityType::PRIVATE->value,
+            'status' => $photographer->getStatus()->value,
+            'visibility' => $photographer->getVisibility()->value,
         ];
     }
 
@@ -189,8 +189,8 @@ class PhotographerDashboardController extends AbstractController
         // Status and Visibility (from enum)
         $statusValue = $form->get('status')->getData();
         $visibilityValue = $form->get('visibility')->getData();
-        $photographer->setStatus([PhotographerStatusType::from($statusValue)]);
-        $photographer->setVisibility([PhotographerVisibilityType::from($visibilityValue)]);
+        $photographer->setStatus(PhotographerStatusType::from($statusValue));
+        $photographer->setVisibility(PhotographerVisibilityType::from($visibilityValue));
 
         // Portfolio Cover Image
         $portfolioImageFile = $form->get('portfolioCoverImage')->getData();

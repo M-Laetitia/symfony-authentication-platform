@@ -56,17 +56,16 @@ final class UserRegistrationService
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
+        // } catch (\Throwable $e){
+        //     $this->logger->error('Error sending confirmation email (continuing anyway):  '.$e->getMessage(), [
+        //         'email' => $user->getEmail(),
+        //         'exception' => $e,
+        //     ]);
+        // }
         } catch (\Throwable $e){
             $this->logger->error('Error sending email:  '.$e->getMessage());
             throw new \RuntimeException('Unable to send confirmation email');
         };
-        // $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-        //     (new TemplatedEmail())
-        //         ->from(new Address('mailer@your-domain.com', 'Acme Mail bot'))
-        //         ->to((string) $user->getEmail())
-        //         ->subject('Please Confirm your Email')
-        //         ->htmlTemplate('registration/confirmation_email.html.twig')
-        // );
 
         // 5. Dispatcher l'événement
         $event = new UserRegisteredEvent($user);

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\GallerySeries;
 use App\Entity\Media;
 use App\Entity\Photographer;
-use App\Enum\GallerySeriesType;
 use App\Enum\MediaType;
 use App\Form\MediaGalleryAddFormType;
 use App\Repository\GallerySeriesRepository;
@@ -17,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[IsGranted('ROLE_PHOTOGRAPHER')]
 #[Route('/photographer/dashboard/{slug}/galleries', name: 'photographer_gallery_')]
@@ -46,7 +46,8 @@ class PhotographerGalleryController extends AbstractController
         string $slug,
         Request $request,
         PhotographerRepository $photographerRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
     ): Response {
         $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
 
@@ -60,7 +61,7 @@ class PhotographerGalleryController extends AbstractController
             if ($name) {
                 $gallery->setName($name);
                 $gallery->setDescription($description);
-                $gallery->setType(GallerySeriesType::GALLERY);
+                $gallery->setSlug(strtolower($slugger->slug($name)));
                 $em->persist($gallery);
                 $em->flush();
 
