@@ -45,7 +45,6 @@ class StripeWebhookController extends AbstractController
             $session = $event->data->object;
             $orderId = $session->metadata->order_id ?? null;
 
-            dump($session->metadata, $orderId);
             if (!$orderId) {
                 return new Response('order_id manquant', Response::HTTP_BAD_REQUEST);
             }
