@@ -94,11 +94,15 @@ class InvoiceService
         // Chemin absolu pour l'envoi par email
         $absolutePdfPath = dirname(__DIR__, 2) . '/' . $pdfPath;
         
-        $this->mailer->sendInvoiceEmail(
-            $order,
-            $order->getClient()->getEmail(),
-            $absolutePdfPath
-        );
+        try {
+            $this->mailer->sendInvoiceEmail(
+                $order,
+                $order->getClient()->getEmail(),
+                $absolutePdfPath
+            );
+        } catch (\Throwable $e) {
+            // Email échoué mais l'invoice est persistée → pas bloquant
+        }
 
         return $invoice;
     }

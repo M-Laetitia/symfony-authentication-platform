@@ -86,8 +86,14 @@ class StripeWebhookController extends AbstractController
             $serviceProposal->setStatus(ServiceProposalType::ACCEPTED);
 
             $em->persist($payment);
-            $invoiceService->createFromOrder($order, $payment); 
-            $em->flush();
+            $em->flush(); // Payment + Order + ServiceProposal sauvegardés EN PREMIER
+
+            try {
+                $invoiceService->createFromOrder($order, $payment);
+            } catch (\Throwable $e) {
+                // L'invoice a échoué mais le Payment est déjà en BDD → pas de problème
+                // L'invoice peut être régénérée manuellement si besoin
+            }
 
         }
 
