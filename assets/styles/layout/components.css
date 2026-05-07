@@ -412,9 +412,7 @@
 
 
 @media (max-width: 900px ) {
-    /* .photograph-box {
-        width: 100%;;
-    } */
+
     .page-hero {
         .page-hero__container {
             width: 100%;
@@ -444,7 +442,23 @@
 }
 
 
+
+@media (max-width: 630px ) {
+    .section-intro {
+        flex-direction: column;
+    }
+}
+
+
 /* ?------------ VERY SMALL --------- */
+
+@media (max-width: 500px) {
+    .photograph-box .section-photographs__infos {
+        width: 100%;
+    }
+}
+
+
 @media (max-width: 480px) {
 
 }
