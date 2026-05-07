@@ -130,7 +130,7 @@
     }
 
     .team__artists-description {
-        font-size: 22px;
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
         font-weight: 300;
         font-family: var(--font-heading);
         text-transform: uppercase;
@@ -613,6 +613,12 @@
             }
         }
     }
+
+    .team .team__artists {
+        .team__artists-header{
+            margin: 60px 0;
+        }
+    }
 }
 
 @media (max-width: 768px ) {
@@ -642,6 +648,11 @@
             padding: 30px;
         }
     }
+    .team {
+        .team__intro {
+            padding: 15px;
+        }
+    }
 }
 
 /* ?------------ VERY SMALL --------- */
@@ -652,5 +663,22 @@
                 height: 500px;
             }
         }
-    } 
+    }
+    .team {
+        & .team__intro {
+            .team__actions{
+                flex-direction: column;
+            }
+        }
+    }
+    .team .team__intro {
+        .team__call-to-action {
+            flex-direction: column;
+        }
+    }
+    .artist-card {
+        .artist-card__media, .artist-card__overlay {
+            height: 400px;
+        }
+    }
 }
