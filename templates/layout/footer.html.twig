@@ -136,9 +136,10 @@
         &copy; {{ "now"|date("Y") }} <span>Mosaic Agency</span>. All Rights Reserved.
       </p>
       <p class="footer__legal">
-        <a href="">Terms & Conditions</a> <span>|</span> 
-        <a href="">Legal Notice</a> <span>|</span> 
-        <a href="">Privacy Policy & Cookies</a>
+        <a href="{{ path('legal_terms') }}">Terms & Conditions</a> <span>|</span> 
+        <a href="{{ path('legal_cgv') }}">Sales Conditions</a> <span>|</span> 
+        <a href="{{ path('legal_notice') }}">Legal Notice</a> <span>|</span> 
+        <a href="{{ path('legal_privacy') }}">Privacy Policy & Cookies</a>
       </p>
     </div>
   </footer>

@@ -16,7 +16,7 @@ class OrderConfirmationFormType extends AbstractType
     {
         $builder
             ->add('acceptTerms', CheckboxType::class, [
-                'label' => "I agree to the terms and conditions* - AJOUTER LIEN",
+                'label' => false,
                 'required' => true,
                 'constraints' => [
                     new IsTrue(
