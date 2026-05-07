@@ -478,7 +478,8 @@ input[type="search"]::-webkit-search-cancel-button {
     opacity: 0.4;
     white-space: nowrap;
     font-family: var(--font-heading);
-    font-size: 180px;
+    /* font-size: 11rem; */
+    font-size: clamp(5rem, 15vw, 11rem);
     font-weight: 700;
     display: flex;
     gap: 4rem;
@@ -843,7 +844,7 @@ button.disabled {
 
 @media (max-width: 1500px) {
     .section-centered {
-        width: 90%;
+        width: 100%;
     }
 }
 
@@ -855,6 +856,10 @@ button.disabled {
 
     h2 {
         font-size: 64px;
+    }
+
+    .bg-text__track {
+        font-size: 10rem;
     }
 }
 
@@ -893,8 +898,19 @@ button.disabled {
         margin-bottom: 120px;
     }
     .scroll-top-btn {
-        display: none;
+        /* display: none; */
     }
+
+    .bg-text__track {
+        font-size: 8.7rem;
+    }
+
+    .embla{
+        padding-right: 0px;
+    }
+
+
+    
 }
 
 @media (max-width: 900px ) {
@@ -902,6 +918,9 @@ button.disabled {
 }
 
 /* ?------------ VERY SMALL --------- */
+
+
+
 @media (max-width: 480px) {
     h2 { font-size: 34px; }
     h3 { font-size: 26px; }
