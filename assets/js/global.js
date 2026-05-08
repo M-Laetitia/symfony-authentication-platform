@@ -98,7 +98,11 @@ const overlay = document.querySelector('.side-panel__overlay');
 function togglePanel() {
     const isOpen = panel.classList.toggle('side-panel--open');
 
+    // Reset inline style that may override CSS class
+    panel.style.transform = '';
+
     overlay.classList.toggle('side-panel__overlay--visible', isOpen);
+    toggle.classList.toggle('active', isOpen);
 
     toggle.setAttribute('aria-expanded', isOpen);
     panel.setAttribute('aria-hidden', !isOpen);
@@ -107,12 +111,7 @@ function togglePanel() {
 }
 
 toggle.addEventListener('click', () => {
-    toggle.classList.toggle('active');
     togglePanel();
-    const panel = document.getElementById(toggle.getAttribute('aria-controls'));
-    const isExpanded = toggle.classList.contains('active');
-    toggle.setAttribute('aria-expanded', isExpanded);
-    panel.style.transform = isExpanded ? 'translateX(0)' : 'translateX(-100%)';
 });
 overlay.addEventListener('click', togglePanel);
 
