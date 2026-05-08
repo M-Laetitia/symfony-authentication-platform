@@ -60,6 +60,12 @@
                 {{ form_errors(form.caption) }}
             </div>
 
+            <div class="form-group">
+                {{ form_label(form.speciality) }}
+                {{ form_widget(form.speciality, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.speciality) }}
+            </div>
+
             <div class="form-group form-group--checkbox">
                 {{ form_widget(form.featured) }}
                 {{ form_label(form.featured) }}

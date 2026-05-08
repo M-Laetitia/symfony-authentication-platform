@@ -63,6 +63,18 @@
                         >{{ media.caption ?? '' }}</textarea>
                     </div>
 
+                    <div class="form-group">
+                        <label for="specialityId" class="form-label">Speciality*</label>
+                        <select id="specialityId" name="specialityId" class="form-control" required>
+                            <option value="">Select a speciality...</option>
+                            {% for speciality in specialities %}
+                                <option value="{{ speciality.id }}" {% if media.speciality and media.speciality.id == speciality.id %}selected{% endif %}>
+                                    {{ speciality.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
                     <div class="form-group form-group--checkbox">
                         <input 
                             type="checkbox" 

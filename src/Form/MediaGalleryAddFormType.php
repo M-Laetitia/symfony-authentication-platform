@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Entity\Speciality;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -71,6 +73,18 @@ class MediaGalleryAddFormType extends AbstractType
                     'placeholder' => 'Add a caption or details about this photo...',
                     'maxlength' => 255,
                 ]
+            ])
+            ->add('speciality', EntityType::class, [
+                'class' => Speciality::class,
+                'choice_label' => 'name',
+                'label' => 'Speciality',
+                'required' => true,
+                'placeholder' => 'Select a speciality...',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please select a speciality for this photo.',
+                    ]),
+                ],
             ])
             ->add('featured', CheckboxType::class, [
                 'label' => 'Make this a featured image',
