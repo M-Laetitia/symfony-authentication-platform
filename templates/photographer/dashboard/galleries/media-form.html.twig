@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if is_edit %}Edit Photo{% else %}Add Photo{% endif %} - {{ photographer.user.firstName }} {{ photographer.user.lastName }}
+{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="{{ is_edit ? 'Edit Photo' : 'Add Photo to ' ~ gallery.name }}"
+    subtitle="{{ is_edit ? 'Update photo details and manage display options' : 'Upload a new photo to your gallery' }}"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Galleries', url: path('photographer_gallery_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: gallery.name, url: path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: is_edit ? 'Edit Photo' : 'Add Photo', type: 'current' }
+    ]"
+    variant="dark"
+/>
+
+<section class="main-section-page media-form media-form--{{ is_edit ? 'edit' : 'add' }} u-display-center">
+    <div class="media-form__container section-centered">
+
+        <div class="media-form__layout">
+
+            <!-- Image Preview (edit only) -->
+            {% if is_edit %}
+            <div class="media-form__preview">
+                <img
+                    src="{{ media.path | imagine_filter('gallery_thumb_edit') }}"
+                    alt="{{ media.altText }}"
+                    class="media-form__image"
+                    id="media-preview"
+                    loading="lazy"
+                >
+            </div>
+            {% endif %}
+
+            <!-- Form -->
+            <div class="media-form__form-wrapper">
+                <h2 class="media-form__title">
+                    {{ is_edit ? 'Edit Photo Details' : 'Add Photo to ' ~ gallery.name }}
+                </h2>
+
+                {% if not is_edit %}
+                    <div class="media-form__recommendations">
+                        <p><strong>Recommended sizes:</strong> Portrait 800×1200px · Landscape 1600×900px (max 1800px)</p>
+                        <p>Max size 4MB · <strong>Formats:</strong> WebP, PNG, JPEG</p>
+                    </div>
+                {% endif %}
+
+                {{ form_start(form, { 'attr': { 'class': 'media-form__fields', 'enctype': 'multipart/form-data' } }) }}
+
+                    {% if not is_edit %}
+                        <div class="form-group">
+                            {{ form_label(form.media) }}
+                            {{ form_widget(form.media, { 'attr': { 'class': 'form-control', 'id': 'media-file-input' } }) }}
+                            {{ form_errors(form.media) }}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        {{ form_label(form.altText) }}
+                        {{ form_widget(form.altText, { 'attr': { 'class': 'form-control' } }) }}
+                        <small class="form-help">Important for accessibility and SEO.</small>
+                        {{ form_errors(form.altText) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.caption) }}
+                        {{ form_widget(form.caption, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(form.caption) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.speciality) }}
+                        {{ form_widget(form.speciality, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(form.speciality) }}
+                    </div>
+
+                    <div class="form-group form-group--checkbox">
+                        {{ form_widget(form.featured) }}
+                        {{ form_label(form.featured) }}
+                        <small class="form-help">Featured photos appear in your portfolio showcase on your public profile.</small>
+                        {{ form_errors(form.featured) }}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="button button--accent button--medium">
+                            {{ is_edit ? 'Save Changes' : 'Upload Photo' }}
+                        </button>
+                        <a href="{{ path('photographer_gallery_edit', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--black-variant button--medium">Cancel</a>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
