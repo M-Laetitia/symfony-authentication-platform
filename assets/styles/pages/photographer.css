@@ -300,7 +300,6 @@
 /* &--------------------------------- */
 
 .gallery-create {
-
     .gallery-create__container{
         background: white;
         padding: 2rem;
@@ -521,120 +520,132 @@
 
 }
 
-/* &---------- EDIT PHOTO ----------- */
+/* &--------- EDIT/ADD PHOTO --------- */
 /* &--------------------------------- */
 
- .media-edit__layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        align-items: start;
-    }
 
-    .media-edit__preview {
-        background-color: var(--color-grey-200);
-        overflow: hidden;
-        height: 400px;
-    }
+.media-form__container {
+    background: white;
+    padding: 3rem;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 
-    .media-edit__image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    textarea {
+        resize: vertical;
     }
+}
 
-    .media-edit__form-wrapper {
-        background: white;
-        padding: 2rem;
-        box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+ .media-form__layout {
+    display: flex;
+    gap: 3rem;
+}
+
+.media-form__form-wrapper {
+    width: 60%;
+}
+.media-form__preview {
+    width: 40%;
+}
+
+.form-group--checkbox  {
+    margin: 20px 0 50px 0;
+    label {
+        margin: 0!important;
     }
+}
+.media-form__preview {
+    background-color: var(--color-grey-200);
+    overflow: hidden;
+    height: 400px;
+}
 
-    .media-edit__title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-    }
+.media-form__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-    .media-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
+.media-form__title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
 
+.media-form__fields{
     .form-group {
         display: flex;
         flex-direction: column;
-    }
 
+        label {
+            margin: 20px 0 8px 0;
+        }
+    }
+    
     .form-group--checkbox {
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
         gap: 0.75rem;
     }
-
+    
     .form-group--checkbox input[type="checkbox"] {
         margin-top: 0.25rem;
         cursor: pointer;
     }
-
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-        color: var(--color-grey-900);
-    }
-
-    .checkbox-label {
-        font-weight: 500;
-        color: var(--color-grey-900);
-        margin: 0;
-        cursor: pointer;
-    }
-
-    .form-control {
-        padding: 0.75rem;
-        border: 1px solid var(--color-grey-200);
-        font-family: inherit;
-        font-size: 1rem;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--color-accent);
-    }
-
+    
     .form-help {
         font-size: 0.85rem;
         color: var(--color-grey-700);
         margin-top: 0.25rem;
     }
-
+    
+    .form-control {
+        padding: 0.45rem;
+        border: 1px solid var(--color-grey-200);
+    
+    }    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-accent);
+    }
+    
     .form-actions {
         display: flex;
         gap: 1rem;
         margin-top: 1rem;
-    }
-
+    }    
     .form-actions .button {
         flex: 1;
+    } 
+
+}
+.media-form--add {
+    .media-form__container {
+        width: 50%;
     }
+    .media-form__layout {
+        display: block;
+    }
+    .media-form__form-wrapper {
+        width: 100%;
+    }
+}
 
 /* &---------- ADD PHOTO ----------- */
 /* &--------------------------------- */
-
-.media-add__container {
+/* 
+.media-form__container {
         background: white;
         padding: 2rem;
         box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
     }
 
-    .media-add__recommendations {
+    .media-form__recommendations {
         margin-bottom: 2rem;
         h3 {
             font-size: 1.25rem;
             margin-bottom: 0.75rem;
 
         }
-        .media-add__recommendations-content {
+        .media-form__recommendations-content {
             border-left: 5px solid var(--color-accent);
             padding-left: 1rem;
         }
@@ -647,7 +658,7 @@
         gap: 10px;
     }
 
-    .media-add__title {
+    .media-form__title {
         font-size: 1.75rem;
         font-weight: 600;
         margin-bottom: 2rem;
@@ -725,4 +736,4 @@
 
     .form-actions .button {
         flex: 1;
-    }
+    } */
