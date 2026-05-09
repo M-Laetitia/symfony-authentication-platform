@@ -40,4 +40,19 @@ class SpecialityRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * Returns only specialities that have at least one media attached.
+     *
+     * @return Speciality[]
+     */
+    public function findWithPhotos(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.media', 'm')
+            ->groupBy('s.id')
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
