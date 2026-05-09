@@ -28,7 +28,6 @@ use App\Service\SeoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,7 +45,6 @@ class ArticleController extends AbstractController
 
     #[Route('/blog', name: 'blog_index')]
     public function index(
-        EntityManagerInterface $em, 
         ArticleRepository $articleRepo, 
         SeoService $seoService, 
         CategoryRepository $categoryRepo, 
@@ -86,7 +84,6 @@ class ArticleController extends AbstractController
             $request->query->getInt('page', 1),    
             6                                      
         );
-
 
         return $this->render('blog/article/index.html.twig', [
             'pagination' => $pagination,
