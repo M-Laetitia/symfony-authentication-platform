@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Every frame tells a story"
+    subtitle="A thousand memories written without words."
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Gallery', type: 'current' }
+    ]"
+    id="gallery-title"
+    variant="dark"
+/>
+
+<section
+    class="main-section-page gallery-page gallery u-display-center"
+    aria-labelledby="gallery-title"
+>
+    <div class="gallery__container section-centered">
+
+        {# ---- Filters ---- #}
+        <div class="gallery__filters">
+            <button class="gallery__filter-btn js-filter-button active" data-filter="*">All</button>
+            {% for speciality in specialities %}
+                {% set specialityClass = speciality.name|lower|replace({' ': '-', '_': '-'})|trim %}
+                <button class="gallery__filter-btn js-filter-button" data-filter=".{{ specialityClass }}">{{ speciality.name }}</button>
+            {% endfor %}
+        </div>
+
+        {# ---- Grid ---- #}
+        <div class="gallery__grid js-gallery-grid gallery-glightbox-isotope">
+            {% for photo in photos %}
+                {% set specialityClass = photo.speciality ? photo.speciality.name|lower|replace({' ': '-', '_': '-'})|trim : '' %}
+                <div class="gallery__item js-gallery-item {{ specialityClass }} {{ loop.index > 12 ? 'is-hidden' }}">
+                    <a
+                        href="/uploads/{{ photo.path }}"
+                        class="gallery__link js-gallery-lightbox"
+                        data-gallery="gallery-main"
+                        data-description="<a class='gslide-photographer-link' href='{{ path('team_show', { slug: photo.photographer.slug }) }}' target='_blank' aria-label='View {{ photo.photographer.firstName }} {{ photo.photographer.lastName }} profile, opens in new tab'><span class='gslide-photographer-name'>{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</span>{% if photo.speciality %}<span class='gslide-separator'>  </span><span class='gslide-speciality'>{{ photo.speciality.name }}</span>{% endif %}</a>"
+                        aria-label="View photo by {{ photo.photographer.firstName }} {{ photo.photographer.lastName }}"
+                    >
+                        <figure class="gallery__figure">
+                            <img
+                                src="/uploads/{{ photo.path }}"
+                                alt="{{ photo.altText }}"
+                                class="gallery__image u-img-cover"
+                                loading="lazy"
+                                width="340"
+                                height="340"
+                            >
+                            <div class="gallery__overlay" >
+                                <p class="gallery__overlay-name">{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</p>
+                                {% if photo.speciality %}
+                                    <p class="gallery__overlay-speciality">{{ photo.speciality.name }}</p>
+                                {% endif %}
+                            </div>
+                            </figure>
+                    </a>
+                    {# <div class="gallery__item-info">
+                        <p class="gallery__photographer-name">{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</p>
+                        {% if photo.speciality %}
+                            <p class="gallery__speciality">{{ photo.speciality.name }}</p>
+                        {% endif %}
+                        <a
+                            href="{{ path('team_show', { slug: photo.photographer.slug }) }}"
+                            class="gallery__profile-link"
+                            target="_blank"
+                        >See profile</a>
+                    </div> #}
+                </div>
+            {% else %}
+                <p class="gallery__empty">No photos to display yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="gallery__actions">
+            <button class="gallery__more js-gallery-more button button--accent button--medium">SEE MORE</button>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
