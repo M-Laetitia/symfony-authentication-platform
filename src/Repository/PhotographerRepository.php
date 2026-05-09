@@ -42,7 +42,7 @@ class PhotographerRepository extends ServiceEntityRepository
             ->leftJoin('p.media', 'm', 'WITH', 'm.typeImage = :mediaType')
             ->where('p.status LIKE :status')
             ->andWhere('p.visibility LIKE :visibility')
-            ->orderBy('m.createdAt', 'DESC')
+            ->orderBy('p.createdAt', 'DESC')
             ->setParameter('status', '%active%')
             ->setParameter('visibility', '%public%')
                 ->setParameter('mediaType', 'portfolio_cover')
