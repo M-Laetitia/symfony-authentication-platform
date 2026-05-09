@@ -32,6 +32,7 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'meta_title' => $seoService->getMetaTitle('login'),
             'meta_description' => $seoService->getMetaDescription('login'),
             'meta_robots' => $seoService->getMetaRobots('login'),
         ]);

@@ -21,6 +21,7 @@ class PhotographerController extends AbstractController
 
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
+            'meta_title' => $seoService->getMetaTitle('team'),
             'meta_description' => $seoService->getMetaDescription('team'),
             'meta_robots' => $seoService->getMetaRobots('team'),
 

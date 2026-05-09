@@ -92,6 +92,7 @@ class ArticleController extends AbstractController
             'topArticles' => $topArticles,
             'searchForm' => $form->createView(),
             'selectedCategory' => $category,
+            'meta_title' => $seoService->getMetaTitle('blog'),
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
