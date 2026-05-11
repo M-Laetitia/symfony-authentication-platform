@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="{{ photographer.firstName }} {{ photographer.lastName }}"
+    subtitle="Complete photography portfolio"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Team', url: path('team_index'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: photographer.firstName ~ ' ' ~ photographer.lastName, type: 'current' }
+    ]"
+    id="photographer-portfolio-title"
+    variant="dark"
+/>
+
+<section
+    class="main-section-page  photographer-portfolio-page u-display-center"
+    aria-labelledby="photographer-portfolio-title"
+>
+    <div class="photographer-portfolio__container section-centered gallery-glightbox-isotope">
+
+        {# ---- Filters by Gallery Series ---- #}
+        <div class="photographer-portfolio__filters gallery__filters ">
+            <button class="photographer-portfolio__filter-btn  gallery__filter-btn js-filter-button active" data-filter="*" data-description="">All Series</button>
+            {% for series in gallerySeries %}
+                {% set seriesClass = series.name|lower|replace({' ': '-', '_': '-'})|trim %}
+                <button class="photographer-portfolio__filter-btn gallery__filter-btn js-filter-button" data-filter=".{{ seriesClass }}" data-description="{{ series.description|default('') }}">
+                    {{ series.name }}
+                </button>
+            {% endfor %}
+        </div>
+
+        {# ---- Series Description ---- #}
+        <div class="photographer-portfolio__description js-series-description"></div>
+
+        {# ---- Grid of Images ---- #}
+        <div class="photographer-portfolio__grid js-gallery-grid">
+            {% set photoCount = 0 %}
+            {% for series in gallerySeries %}
+                {% set seriesClass = series.name|lower|replace({' ': '-', '_': '-'})|trim %}
+                
+                {# Photos for this series #}
+                {% for photo in series.medias %}
+                    {% set photoCount = photoCount + 1 %}
+                    <div class="photographer-portfolio__item js-gallery-item {{ seriesClass }}">
+                        <a
+                            href="/uploads/{{ photo.path }}"
+                            class="photographer-portfolio__link js-gallery-lightbox"
+                            data-gallery="photographer-portfolio-main"
+                            data-description="{{ photo.caption|default('') }}"
+                            aria-label="View photo: {{ photo.caption|default(series.name) }}"
+                        >
+                            <figure class="photographer-portfolio__figure">
+                                <picture>
+                                    <img 
+                                        src="/uploads/{{ photo.path }}"
+                                        alt="{{ photo.altText|default(series.name) }}" 
+                                        class="photographer-portfolio__image u-img-cover"
+                                        loading="lazy"
+                                        width="400"
+                                        height="400"
+                                    >
+                                </picture>
+                                <div class="gallery__overlay" >
+                                    <p class="gallery__overlay-serie">{{ series.name }} </p>
+                                </div>
+                            </figure>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% if photoCount == 0 %}
+                <p class="photographer-portfolio__empty">No photos available yet for this photographer.</p>
+            {% endif %}
+        </div>
+
+        {# See More Button #}
+        <div class="photographer-portfolio__actions">
+            <button class="photographer-portfolio__more js-gallery-more button button--accent button--medium">See More</button>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
