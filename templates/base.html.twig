@@ -32,7 +32,10 @@
         {% endblock %}
     </head>
     
-    {% include 'layout/navbar.html.twig' %}
+        {% block navbar %}
+            {% include 'layout/navbar.html.twig' %}
+        {% endblock %}
+
     <body class="{% block body_class %}{% endblock %}">
         <div class="page-wrapper">
     
@@ -58,7 +61,8 @@
     
             {% block footer %}
                 {% include 'layout/footer.html.twig' %}
-            {% endblock %}  
+            {% endblock %}
+
         </div>
     </body>
 
