@@ -27,6 +27,7 @@ class SeoService
             'home' => 'Professional photography agency capturing emotion, light, and timeless moments. Discover our visual storytelling, expertise, and passion for creating stunning, meaningful images.',
             'team' => 'Meet our talented photographers, each with a unique style and vision. Discover their passion for storytelling through the lens and explore their captivating portfolios.',
             'gallery' => 'Explore our gallery — portraits, weddings, fashion editorials and documentary photography. Discover the work of our photographers based in Strasbourg.',
+            'portfolio' => 'Explore the complete photography portfolio. Discover all the series and works by this photographer.',
         ];
         $this->metaRobots = [
             'login' => 'noindex, nofollow',
