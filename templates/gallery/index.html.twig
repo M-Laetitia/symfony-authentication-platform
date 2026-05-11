@@ -44,14 +44,22 @@
                         aria-label="View photo by {{ photo.photographer.firstName }} {{ photo.photographer.lastName }}"
                     >
                         <figure class="gallery__figure">
-                            <img
-                                src="/uploads/{{ photo.path }}"
-                                alt="{{ photo.altText }}"
-                                class="gallery__image u-img-cover"
-                                loading="lazy"
-                                width="340"
-                                height="340"
-                            >
+                            <picture>
+                                <source 
+                                    media="(min-width: 1024px)" 
+                                    srcset="{{ photo.path | imagine_filter('gallery_thumb_desktop') }} 1x"
+                                >
+                                <source 
+                                    media="(max-width: 1023px)" 
+                                    srcset="{{ photo.path | imagine_filter('gallery_thumb_mobile') }} 1x"
+                                >
+                                <img 
+                                    src="{{ photo.path | imagine_filter('gallery_thumb_desktop') }}" 
+                                    alt="{{ photo.altText }}" 
+                                    class="gallery__image u-img-cover"
+                                    loading="lazy"
+                                >
+                            </picture>
                             <div class="gallery__overlay" >
                                 <p class="gallery__overlay-name">{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</p>
                                 {% if photo.speciality %}
@@ -60,17 +68,6 @@
                             </div>
                             </figure>
                     </a>
-                    {# <div class="gallery__item-info">
-                        <p class="gallery__photographer-name">{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</p>
-                        {% if photo.speciality %}
-                            <p class="gallery__speciality">{{ photo.speciality.name }}</p>
-                        {% endif %}
-                        <a
-                            href="{{ path('team_show', { slug: photo.photographer.slug }) }}"
-                            class="gallery__profile-link"
-                            target="_blank"
-                        >See profile</a>
-                    </div> #}
                 </div>
             {% else %}
                 <p class="gallery__empty">No photos to display yet.</p>
