@@ -448,40 +448,7 @@
 
 
     }
-    .gallery__filters {
-        display: flex;
-        justify-content: center;
-        column-gap: 3rem;
-        row-gap: 1rem;
-        margin-bottom: 35px;
-        flex-wrap: wrap ;
-    }
-    .js-filter-button {
-        font-family: var(--font-heading);
-        font-size: clamp(18px, 3vw, 22px);
-        text-transform: uppercase;
-        font-weight: 400;
-        position: relative;
-
-        &:before {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: -10px;
-            width: calc(100% + 20px);
-            height: 12px;
-            background-color: var(--color-accent);
-            z-index: -1;
-            transform-origin: left;
-            transform: scaleX(0);
-            transition: var(--transition-base);
-        }
-
-        &:hover:before,
-        &.active:before {
-            transform: scaleX(1);        
-        }
-    }
+    
     .photographer-gallery__actions {
         display: flex;
         justify-content: center;
@@ -490,6 +457,139 @@
         .button {
             display: inline-block;
         }
+    }
+}
+
+
+
+/* &------------ GALLERY ------------ */
+/* &--------------------------------- */
+
+.photographer-portfolio__container {
+    padding: 0 20px;
+}
+
+.photographer-portfolio-page {
+    .photographer-portfolio__item{
+        width: calc(25% - 28px);
+        margin: 14px;
+        aspect-ratio: 1;
+        overflow: hidden;
+    }
+
+    .photographer-portfolio__grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        visibility: hidden;
+        margin-right: -5px;
+    }
+
+    .photographer-portfolio__grid.is-ready {
+        visibility: visible;
+    }
+
+    .photographer-portfolio__actions {
+        position: relative;
+        z-index: 10;
+        margin-top: 60px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .photographer-portfolio__description {
+        display: flex;
+        justify-content: center;
+        max-width: 80%;
+        margin: auto;
+        margin-top: 2rem;
+        padding: 0 1.5rem;
+        background-color: var(--color-grey-100);
+        border-radius: 4px;
+        color: var(--color-grey-800);
+        font-size: 1rem;
+        line-height: 1.6;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                    padding 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &.is-visible {
+            max-height: 500px;
+            opacity: 1;
+            padding: 20px 15px 30px 15px;
+            transform: translateY(0);
+        }
+
+        p {
+            text-align: center;
+        }
+        
+    }
+}
+
+.photographer-portfolio__link {
+    display: block;
+    height: 100%;
+    figure, picture {
+        height: 100%;
+    }
+    
+}
+
+.photographer-portfolio-page {
+    .photographer-portfolio__figure {
+        position: relative;
+
+        &:hover .gallery__overlay {
+            opacity: 1;
+        }
+    }
+    .gallery__overlay {
+        position: absolute;
+        width: 90%;
+        height: 90%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        opacity: 0;
+        transition: ease-in-out .4s;
+    }
+
+    .gallery__overlay-serie {
+        color: var(--color-white);
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        font-size: 1.4rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 12px;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transform: translateX(-50%);
+            transition: width 0.5s ease-in-out;
+        }
+    }
+
+    .photographer-portfolio__figure:hover .gallery__overlay-serie::after {
+        width: 100%;
     }
 }
 
@@ -540,7 +640,12 @@
 
 
 @media (max-width: 1024px) {
- 
+    .photographer-portfolio-page {
+        .photographer-portfolio__item {
+            width: calc(33% - 20px);
+            margin: 10px;
+        }
+    }
 }
 
 /* ?------------- SMALL ------------- */
@@ -652,6 +757,17 @@
         .team__intro {
             padding: 15px;
         }
+    }
+
+    .photographer-portfolio-page {
+        .photographer-portfolio__item {
+            width: calc(50% - 20px);
+            margin: 10px;
+        }
+    }
+
+    .photographer-portfolio__grid {
+        margin-right: 0px;
     }
 }
 
