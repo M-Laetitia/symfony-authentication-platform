@@ -58,13 +58,19 @@
                         >
                             <figure class="photographer-portfolio__figure">
                                 <picture>
+                                    <source 
+                                        media="(min-width: 1024px)" 
+                                        srcset="{{ photo.path | imagine_filter('gallery_thumb_desktop') }} 1x"
+                                    >
+                                    <source 
+                                        media="(max-width: 1023px)" 
+                                        srcset="{{ photo.path | imagine_filter('gallery_thumb_mobile') }} 1x"
+                                    >
                                     <img 
-                                        src="/uploads/{{ photo.path }}"
+                                        src="{{ photo.path | imagine_filter('gallery_thumb_desktop') }}" 
                                         alt="{{ photo.altText|default(series.name) }}" 
                                         class="photographer-portfolio__image u-img-cover"
                                         loading="lazy"
-                                        width="400"
-                                        height="400"
                                     >
                                 </picture>
                                 <div class="gallery__overlay" >
