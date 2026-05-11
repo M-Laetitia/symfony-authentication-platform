@@ -15,9 +15,7 @@ class PhotographerController extends AbstractController
     public function index(PhotographerRepository $photographerRepo, SeoService $seoService): Response
     {
 
-        // $photographers = $photographerRepository->findAll();
         $photographers = $photographerRepo->findPhotographersWithCover();
-    // dd($photographers);
 
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
@@ -47,5 +45,25 @@ class PhotographerController extends AbstractController
             'featuredMedias' => $featuredMedias,
         ]);
         
+    }
+
+    #[Route('/photographer/{slug}/portfolio', name: 'photographer_portfolio')]
+    public function portfolio(PhotographerRepository $photographerRepository, SeoService $seoService, string $slug): Response
+    {
+        $photographer = $photographerRepository->findOneBy(['slug' => $slug]);
+
+        if (!$photographer) {
+            throw $this->createNotFoundException('Photographer not found');
+        }
+
+        $gallerySeries = $photographer->getGallerySeries();
+
+        return $this->render('photographer/portfolio.html.twig', [
+            'photographer' => $photographer,
+            'gallerySeries' => $gallerySeries,
+            'meta_title' => $photographer->getFirstName() . ' ' . $photographer->getLastName() . ' - Portfolio | MOSAIC',
+            'meta_description' => $seoService->getMetaDescription('portfolio'),
+            'meta_robots' => $seoService->getMetaRobots('portfolio') ?? 'index, follow',
+        ]);
     }
 }
