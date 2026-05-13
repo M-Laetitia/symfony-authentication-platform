@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MediaRepository;
 use App\Repository\PhotographerRepository;
+use App\Repository\PricingPlanRepository;
 use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +28,7 @@ class PhotographerController extends AbstractController
     }
 
     #[Route('/team/{slug}', name: 'team_show')]
-    public function show(PhotographerRepository $photographerRepository, MediaRepository $mediaRepository,  string $slug): Response
+    public function show(PhotographerRepository $photographerRepository, MediaRepository $mediaRepository, PricingPlanRepository $pricingPlanRepository, string $slug): Response
     {
         $photographer = $photographerRepository->findOneBy(['slug' => $slug]);
 
@@ -37,12 +38,13 @@ class PhotographerController extends AbstractController
 
         $bannerImage = $mediaRepository->findPortfolioCoverByPhotographer($photographer);
         $featuredMedias = $mediaRepository->findFeaturedByPhotographer($photographer);
-       
+        $pricingPlans = $pricingPlanRepository->findBy(['photographer' => $photographer]);
 
         return $this->render('photographer/show.html.twig', [
             'photographer' => $photographer,
             'bannerImage' => $bannerImage,
             'featuredMedias' => $featuredMedias,
+            'pricingPlans' => $pricingPlans,
         ]);
         
     }
