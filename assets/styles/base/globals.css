@@ -9,6 +9,13 @@ html, body {
     }
 }
 
+.bg-text--scroll.bg-text--services {
+	display:none;
+}
+.bg-text__track {
+	display: none!important;
+}
+
 body {
     background-color: var(--color-white);
 }
