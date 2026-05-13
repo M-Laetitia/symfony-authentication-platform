@@ -248,7 +248,7 @@
     }
 
     .scroll-text-section {
-        /* padding: 0; */
+        padding: 0;
     }
     
     .section-works__gallery {
@@ -442,6 +442,7 @@
 
     .related-articles {
         width : 100%;
+        padding : 0px!important;
     }
 }
 

@@ -403,6 +403,7 @@ header.site-header {
     margin-top: auto;
     padding-top: 1.4rem;
     border-top: 1px solid var(--color-accent);
+    justify-content: flex-end;
 }
 
 
