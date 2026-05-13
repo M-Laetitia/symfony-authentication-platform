@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-//& -------- Refusal modal proposal -----------  
+    //& -------- Refusal modal proposal -----------  
     const refuseForms = document.querySelectorAll('.proposal-refuse-form');
     
     refuseForms.forEach(function(form) {
@@ -118,10 +118,45 @@ document.addEventListener('DOMContentLoaded', function() {
                     newModal.classList.add('active');
                 }
             })
-            .catch(err => {
+             .catch(err => {
                 console.error('Erreur fetch refus:', err);
             });
         });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    //& ---------- Services Modal ----------
+    const trigger = document.getElementById('services-modal-trigger');
+    const modal = document.getElementById('services-modal');
+    const closeBtn = document.getElementById('services-modal-close');
+    
+    if (!trigger || !modal || !closeBtn) {
+        return;
+    }
+    
+    const openModal = () => {
+        modal.classList.remove('hidden');
+    };
+    
+    const closeModal = () => {
+        modal.classList.add('hidden');
+    };
+    
+    trigger.addEventListener('click', openModal);
+    
+    closeBtn.addEventListener('click', closeModal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModal();
+        }
     });
 });
 
@@ -263,3 +298,6 @@ if (document.body.classList.contains('page--profile')) {
         });
     }
 }
+
+
+
