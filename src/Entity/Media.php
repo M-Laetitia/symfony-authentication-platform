@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\MediaType;
 
@@ -51,6 +50,9 @@ class Media
 
     #[ORM\ManyToOne(inversedBy: 'medias')]
     private ?GallerySeries $gallerySeries = null;
+
+    #[ORM\ManyToOne(inversedBy: 'media')]
+    private ?Speciality $speciality = null;
 
     public function __construct()
     {
@@ -189,6 +191,18 @@ class Media
     public function setGallerySeries(?GallerySeries $gallerySeries): static
     {
         $this->gallerySeries = $gallerySeries;
+
+        return $this;
+    }
+
+    public function getSpeciality(): ?Speciality
+    {
+        return $this->speciality;
+    }
+
+    public function setSpeciality(?Speciality $speciality): static
+    {
+        $this->speciality = $speciality;
 
         return $this;
     }

@@ -1,32 +1,42 @@
 <?php
 
-
-// src/Controller/ErrorController.php
 namespace App\Controller;
 
-use App\Service\ErrorManager;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Attribute\AsController;
+use App\Service\ErrorMessageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ErrorController extends AbstractController
 {
-    public function show(Request $request): Response
+    public function __construct(private ErrorMessageService $errorMessageService)
     {
-        $exception = $request->attributes->get('exception');
-
-        $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
-
-        if ($statusCode === 403) {
-            return $this->render('error/error403.html.twig');
-        }
-
-        return $this->render('error/error.html.twig', ['status_code' => $statusCode]);
     }
+
+    #[Route(path: '/_error/{statusCode}', name: 'error', requirements: ['statusCode' => '\d+'])]
+    public function show(FlattenException $exception): Response
+    {
+        $statusCode = $exception->getStatusCode();
+        $errorData = $this->errorMessageService->getMessage($statusCode);
+
+        return $this->render('bundles/TwigBundle/Exception/error.html.twig', [
+            'status_code' => $statusCode,
+            'title' => $errorData['title'],
+            'description' => $errorData['description'],
+            'exception' => $exception,
+        ]);
+    }
+
+    // #[Route(path: '/error-preview', name: 'error_preview')]
+    // public function preview(): Response
+    // {
+    //     return $this->render('bundles/TwigBundle/Exception/error.html.twig', [
+    //         'status_code' => 404,
+    //         'title' => 'Page Not Found',
+    //         'description' => 'The page you\'re looking for doesn\'t exist. It might have been moved or deleted.',
+    //     ]);
+    // }
 }
  
 

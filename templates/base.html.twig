@@ -32,7 +32,10 @@
         {% endblock %}
     </head>
     
-    {% include 'layout/navbar.html.twig' %}
+        {% block navbar %}
+            {% include 'layout/navbar.html.twig' %}
+        {% endblock %}
+
     <body class="{% block body_class %}{% endblock %}">
         <div class="page-wrapper">
     
@@ -58,7 +61,8 @@
     
             {% block footer %}
                 {% include 'layout/footer.html.twig' %}
-            {% endblock %}  
+            {% endblock %}
+
         </div>
     </body>
 
@@ -81,7 +85,39 @@
     >
 
         <div class="side-panel__content">
-            <!-- contenu -->
+
+            <figure class="side-panel__figure">
+                <img
+                    src="{{ asset('media/mosaic-polaroids.webp') | imagine_filter('about_image_mobile') }}"
+                    alt="MOSAIC Photography Studio"
+                    class="side-panel__image u-img-cover"
+                    width="400"
+                    height="300"
+                    loading="lazy"
+                >
+            </figure>
+
+            <div class="side-panel__body">
+                <p class="side-panel__brand">MOSAIC</p>
+                <p class="side-panel__description">
+                    Based in <strong>Strasbourg</strong>, MOSAIC is a <em>photography agency</em> dedicated to capturing the depth of human stories.
+                    From <strong>portraits & lifestyle</strong> to <strong>weddings</strong>, <strong>fashion editorials</strong> and <em>documentary reportage</em> -
+                    we craft images that endure. Each project is an encounter, each frame a commitment to <em>authenticity and intention</em>.
+                </p>
+            </div>
+
+            <div class="side-panel__social">
+                <a href="#" class="side-panel__social-link" aria-label="Facebook" rel="noopener noreferrer">
+                    {% include 'components/icons/facebook.html.twig' %}
+                </a>
+                <a href="#" class="side-panel__social-link" aria-label="Instagram" rel="noopener noreferrer">
+                    {% include 'components/icons/instagram.html.twig' %}
+                </a>
+                <a href="#" class="side-panel__social-link twitter" aria-label="Twitter" rel="noopener noreferrer">
+                    {% include 'components/icons/twitter2.html.twig' %}
+                </a>
+            </div>
+
         </div>
     </aside>
 

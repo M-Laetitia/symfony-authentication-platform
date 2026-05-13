@@ -44,7 +44,6 @@ class MediaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // méthode pour trouver les dernières photographie (qui ont le statut portfolio_featured) pour la page d'accueil
     public function findLatestPhotographies(int $limit = 8): array
     {
         return $this->createQueryBuilder('m')
@@ -54,6 +53,27 @@ class MediaRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Fetch all gallery photos (featured + series) with photographer and speciality
+     */
+    public function findGalleryPhotos(?int $specialityId = null): array
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('m', 'p', 's')
+            ->innerJoin('m.photographer', 'p')
+            ->leftJoin('m.speciality', 's')
+            ->andWhere('m.typeImage IN (:types)')
+            ->setParameter('types', [MediaType::PORTFOLIO_FEATURED, MediaType::GALLERY_SERIES])
+            ->orderBy('m.createdAt', 'DESC');
+
+        if ($specialityId) {
+            $qb->andWhere('s.id = :specialityId')
+               ->setParameter('specialityId', $specialityId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     // public function findArticleCoverByArticleId(int $articleId): ?Media

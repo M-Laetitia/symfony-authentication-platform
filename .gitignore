@@ -24,14 +24,6 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
-
-note
-note2.txt
-note3
-note4
-noteToDo.txt
-image_article.txt
-fail2ban/data/filter.d/testfile.txt
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
@@ -43,17 +35,29 @@ yarn-error.log
 /public/media/cache/
 ###< liip/imagine-bundle ###
 
-/storage/invoices/*
-!/storage/invoices/.gitkeep
-
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
-
+# Generated files
+phpinfo.txt
 manifest.json
 entrypoints.json
 
+# Storage & Uploads
+/storage/invoices/*
+!/storage/invoices/.gitkeep
 /public/uploads/photographer/*
 /public/uploads/avatar/*
+/public/uploads/articles/*
+/public/uploads/articles_content/*
+
+# Local development files (notes, etc.)
+note
+note2.txt
+note3
+note4
+noteToDo.txt
+image_article.txt
+fail2ban/data/filter.d/testfile.txt

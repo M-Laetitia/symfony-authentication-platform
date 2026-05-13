@@ -192,16 +192,17 @@
                 </div>
                 {% endif %}
             {% endif %}
-              <a href=""
-                 class="photographer-info__button button button--black button--medium"
+              <button
+                 id="services-modal-trigger"
+                 class="photographer-info__button button button--accent button--medium"
                  aria-label="Discover more details about {{ photographer.firstName }} {{ photographer.lastName }}'s services">
-                MORE DETAILS ABOUT MY SERVICES
-              </a>
-              <a href=""
+                SEE MY SERVICES
+              </button>
+              <a href="{{path('photographer_portfolio', {slug: photographer.slug})}}"
                  class="photographer-info__button button button--black button--medium"
                  aria-label="Discover {{ photographer.firstName }} {{ photographer.lastName }}'s photography work">
                 DISCOVER MY WORK
-              </a>
+              </a> 
             </div>
           </div>
         </div>
@@ -272,6 +273,54 @@
     </div>
   </div>
 </section>
+
+<!-- Services Modal -->
+<div id="services-modal" class="services-modal hidden">
+  <div class="services-modal__content">
+    <!-- Close button -->
+    <button id="services-modal-close" class="services-modal__close">✕</button>
+    
+    <p class="services_modal__note"><b>Note:</b> These packages serve as a starting point and can be tailored to fit your specific needs. If you have unique requirements or would like a custom offer, feel free to send me a message so we can discuss your project in detail.</p>
+    
+    <div class="services-modal__grid">
+      {% for plan in pricingPlans %}
+        {% if plan.isActive() %}
+          <div class="services-modal__plan">
+            <div class="services-modal__top">
+              <h3 class="services-modal__plan-title">{{ plan.planType.value }}</h3>
+              <p class="services-modal__plan-price">{{ plan.price|number_format(plan.price is defined and plan.price is not null and plan.price == plan.price|round(0, 'floor') ? 0 : 2, '.', ' ') }}€</p>
+            </div>
+
+            <p class="services-modal__plan-description">{{ plan.description }}</p>
+
+            {% if plan.whatIncluded %}
+              <div class="services-modal__plan-included">
+                <p class="services-modal__plan-included-label">What's Included:</p>
+                <ul class="services-modal__plan-included-list">
+                  {% for item in plan.whatIncluded %}
+                    <li class="services-modal__plan-included-item">{% include 'components/icons/check.html.twig' %}{{ item }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            {% if plan.additionnalInfos %}
+              <div class="services-modal__plan-additional">
+                <p class="services-modal__plan-additional-label">Additional Information:</p>
+                <ul class="services-modal__plan-additional-list">
+                  {% for item in plan.additionnalInfos %}
+                    <li class="services-modal__plan-additional-item">{% include 'components/icons/check.html.twig' %} {{ item }}</li>
+                  {% endfor %}
+                 
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 

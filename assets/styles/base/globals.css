@@ -3,7 +3,6 @@ html, body {
     height: 100%;
     font-size: 16px;
     font-weight: 400;
-    /* background-color: var(--color-white); */
 
     p, :is(h1, h2, h3, h4, h5, h6)  {
         color: var(--color-grey-900);
@@ -48,7 +47,7 @@ section.page {
 
 .main-section-page {
     margin-top: 170px ;
-    margin-bottom: 280px;
+    margin-bottom: 240px;
 }
 
 .content {
@@ -100,7 +99,6 @@ h6 {
     font-weight: 300;
     line-height: 1.5rem;
 }
-
 
 .comment {
     border: 1px solid black;
@@ -194,6 +192,7 @@ h6 {
     letter-spacing: 1px;
     padding: 5px 8px;
 }
+
 /* &------------- SLIDER ------------ */
 /* &--------------------------------- */
 
@@ -380,7 +379,6 @@ input[type="search"]::-webkit-search-cancel-button {
 /* &------------ ALERT -------------- */
 /* &--------------------------------- */
 
-
 .register-form-error {
     color: var(--color-error);
 }
@@ -392,16 +390,10 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 
-
-.auth-form__alert {
-
-}
-
 .auth-form__alert-emailVerified {
     padding: 19px;
     border: 1px solid var(--color-error);
     margin-bottom: 20px;
-    /* background-color: var(--color-grey-700); */
 }
 
 .flash-message {
@@ -474,7 +466,8 @@ input[type="search"]::-webkit-search-cancel-button {
     opacity: 0.4;
     white-space: nowrap;
     font-family: var(--font-heading);
-    font-size: 180px;
+    /* font-size: 11rem; */
+    font-size: clamp(5rem, 15vw, 11rem);
     font-weight: 700;
     display: flex;
     gap: 4rem;
@@ -800,7 +793,7 @@ button.disabled {
 
 .scroll-top-btn {
   position: fixed;
-  bottom: 40px;  
+  bottom: 110px;  
   right: 40px;   
   font-size: 1.5rem;
   border : 1px solid var(--color-accent);
@@ -839,7 +832,7 @@ button.disabled {
 
 @media (max-width: 1500px) {
     .section-centered {
-        width: 90%;
+        width: 100%;
     }
 }
 
@@ -852,10 +845,21 @@ button.disabled {
     h2 {
         font-size: 64px;
     }
+
+    .bg-text__track {
+        font-size: 10rem;
+    }
 }
 
 /* ?------------- MEDIUM ------------ */
 
+
+@media (max-width: 1100px) {
+    .scroll-top-btn {
+        bottom: 130px;  
+        right: 30px;
+    }
+}
 
 @media (max-width: 1024px) {
     h2 { font-size: 60px; }
@@ -871,7 +875,6 @@ button.disabled {
     .section-centered {
         width: 100%;
     }
-    
 }
 
 /* ?------------- SMALL ------------- */
@@ -888,16 +891,25 @@ button.disabled {
         margin-top: 100px ;
         margin-bottom: 120px;
     }
+
+    .bg-text__track {
+        font-size: 8.7rem;
+    }
+
+    .embla{
+        padding-right: 0px;
+    }
+
     .scroll-top-btn {
-        display: none;
+        bottom: 145px;  
     }
 }
 
 @media (max-width: 900px ) {
-
 }
 
 /* ?------------ VERY SMALL --------- */
+
 @media (max-width: 480px) {
     h2 { font-size: 34px; }
     h3 { font-size: 26px; }
@@ -905,5 +917,6 @@ button.disabled {
     h5 { font-size: 18px; }
     h6 { font-size: 16px; }
 }
+
 
 

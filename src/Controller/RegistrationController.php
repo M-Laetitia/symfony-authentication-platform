@@ -49,6 +49,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+            'meta_title' => $seoService->getMetaTitle('register'),
             'meta_description' => $seoService->getMetaDescription('register'),
             'meta_robots' => $seoService->getMetaRobots('register'),
         ]);

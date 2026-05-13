@@ -5,7 +5,7 @@
 
 .section-photographs {
     height: auto;
-    padding: 80px 20px;
+    padding: 80px 0px;
 }
 
 .section-testimonials {
@@ -245,11 +245,10 @@
         width: var(--width-content);
         margin-left: auto;
         margin-right: auto;
-        padding: 0 20px;
     }
 
     .scroll-text-section {
-        padding: 0;
+        /* padding: 0; */
     }
     
     .section-works__gallery {
@@ -461,7 +460,7 @@
     .section-works .section-intro,
     .section-intro--light,
     .section-photographs__list {
-      width: 90%;
+      width: 100%;
     }
   }
 
@@ -587,6 +586,9 @@
             margin-top: 40px;
         }
     }
+    .section-testimonials {
+        margin-bottom: 0px;
+    }
     .section-services {
         & .section-services__content {
             .section-services__list {
@@ -624,6 +626,27 @@
     .section-works__gallery {
         grid-template-columns: repeat(2, 1fr);
     }
+    }
+
+    .section-about .section-about__text-image {
+        padding: 25px;
+    }
+    .section-about {
+        & .section-about__image-wrapper {
+            & .section-about__figure {
+                &::after {
+                    transform: translate(10px, 10px);
+                }
+            }
+        }
+    }
+
+    .section-about {
+        & .section-about__image-wrapper {
+            .section-about__figure {
+                height: 350px;
+            }
+        }
     }
 
 }

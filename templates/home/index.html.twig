@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home | MOSAIC {% endblock %}
+{% block title %}{{ meta_title }}{% endblock %}
 
 {# {% block preload %}
     <link rel="preload" as="image" href="{{ 'media/hero-image.webp' | imagine_filter('hero_image') }}">
@@ -196,9 +196,9 @@
 
     <section class="section section-dark section-photographs" aria-labelledby="photographs-title">
 
-        <div class="scroll-text-section">
+        <div class="scroll-text-section" aria-hidden="true">
             <div class="bg-text--scroll bg-text--light bg-text--photographs" aria-hidden="true" role="presentation">
-                <div class="bg-text__track">
+                <div class="bg-text__track" aria-hidden="true">
                     <span aria-hidden="true">PHOTOGRAPHERS</span>
                     <span aria-hidden="true">PHOTOGRAPHERS</span>
                     <span aria-hidden="true">PHOTOGRAPHERS</span>
@@ -289,9 +289,9 @@
 
             <twig:SectionIntro
             title="Our lastest works"
-            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            subtitle="Recent photographs showcasing our photographers' unique styles."
             buttonText="Explore more"
-            linkBtn="/team"
+            linkBtn="/gallery"
             titleId="works-title"
             />
 
@@ -301,7 +301,7 @@
                     {% for portfolio in latestPhotographies %}
                     {% set isLandscape = loop.first or loop.last %}
                     <figure class="gallery__item {% if isLandscape %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.title }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.altText }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
                         <div class="gallery__detail">
                             <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">

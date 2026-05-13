@@ -32,8 +32,9 @@ class ContactController extends AbstractController
 
         return $this->render('contact/contact.html.twig', [
             'contactForm' => $form->createView(),
-            'meta_description' => $seoService ->getMetaDescription('contact'),
-            'metaRobots' => $seoService ->getMetaRobots('contact'),
+            'meta_title' => $seoService->getMetaTitle('contact'),
+            'meta_description' => $seoService->getMetaDescription('contact'),
+            'metaRobots' => $seoService->getMetaRobots('contact'),
         ]);
     }
 }

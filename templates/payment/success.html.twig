@@ -9,7 +9,7 @@
         .success-page {
             width: 100vw;
             max-width: 500px;
-            background: #fff;
+            background: var(--color-grey-900);
             border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.07);
             text-align: center;
@@ -19,6 +19,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            margin-bottom: 200px;
         }
         .success-page__icon {
             font-size: 3rem;
@@ -28,18 +29,18 @@
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 0.7em;
-            color: var(--color-accent, #2e7d32);
+            color: var(--color-accent);
         }
         .success-page__desc {
-            color: #444;
+            color: var(--color-white);
             margin-bottom: 2em;
-            font-size: 1.1rem;
+            font-size:16px;
         }
         .success-page__button {
             display: inline-block;
             margin-top: 1em;
             padding: 0.75em 2em;
-            background: var(--color-accent, #2e7d32);
+            background: var(--color-accent);
             color: #fff;
             border-radius: 6px;
             font-weight: 600;
@@ -49,7 +50,7 @@
             box-shadow: 0 2px 8px rgba(46,125,50,0.08);
         }
         .success-page__button:hover {
-            background: #256025;
+            background: var(--color-accent);
         }
     </style>
 {% endblock %}
@@ -72,11 +73,18 @@
             We’re thrilled to help you capture your special moments.<br>
             Your photographer will contact you soon to discuss the details and make sure everything is perfect.<br>
             <br>
-            <span style="color: #2e7d32; font-weight: 500;">Your invoice is on its way by email.</span>
+            <span style="color: #75d279; font-weight: 500;">Your invoice is on its way by email.</span>
         </p>
-        <a class="success-page__button" href="{{ path('invoice_download', { id: invoice.id }) }}" target="_blank">
-            Download my invoice
-        </a>
+        {% if invoice %}
+            <a class="success-page__button" href="{{ path('invoice_download', { id: invoice.id }) }}" target="_blank">
+                Download my invoice
+            </a>
+        {% endif %}
+
+        <div class="success-page__btn">
+            <a href="{{path('home')}}"><button class="button button--medium button--accent">GO BACK HOME</button></a>
+
+        </div>
 
     </div>
 {% endblock %}

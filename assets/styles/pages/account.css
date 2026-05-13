@@ -3,16 +3,18 @@
 
 .account {
     width: 100%;
+    min-height: 100vh!important;
     /* height: 100vh; */
     /* min-height: 100vh; */
     padding-top: var(--height-navbar );
     /* height: calc(100vh - var(--height-navbar )); */
     margin-top: 100px;
+    margin-bottom: 60px;
 
     .account__container {
         background-color: var(--color-grey-800);
         width: 800px;
-        padding: 40px 80px 80px 80px;
+        padding: 60px 80px 40px 80px;
     }
     .auth__header {
         display: flex;
@@ -64,6 +66,41 @@
 
     .auth-form__submit {
         margin-top: 60px;
+    }
+
+    .auth-form__divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 24px 0;
+        color: var(--color-grey-400);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+
+        &::before, &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--color-grey-700);
+        }
+    }
+
+    .auth-form__google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        color: var(--color-white);
+        border: none;
+        font-family: var(--font-base);
+        font-weight: 600;
+        transition: var(--transition-base);
+        margin-top: 30px;
+        &:hover {
+            color: rgb(197, 197, 197);
+        }
     }
 
     .auth-form__group--checkbox {

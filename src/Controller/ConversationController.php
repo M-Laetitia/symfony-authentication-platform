@@ -18,12 +18,10 @@ use App\Repository\ConversationRepository;
 use App\Repository\MessageRepository;
 use App\Repository\PhotographerRepository;
 use App\Repository\TaxRepository;
-use App\Service\MailerService;
 use App\Service\MessagingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +68,7 @@ class ConversationController extends AbstractController
             $conversation = new Conversation();
             $conversation->setClient($client);
             $conversation->setPhotographer($photographer);
-            $conversation->setStatus([ConversationType::ACTIVE]);
+            $conversation->setStatus(ConversationType::ACTIVE);
             $conversation->setIsFrozen(false);
             $conversation->setCreationDate(new \DateTimeImmutable());
 
@@ -222,7 +220,6 @@ class ConversationController extends AbstractController
         EntityManagerInterface $em,
         HubInterface $hub,
         Request $request,
-        HtmlSanitizerInterface $htmlSanitizer,
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -243,10 +240,10 @@ class ConversationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $rawContent = $message->getContent();
-            $sanitized = $htmlSanitizer->sanitize($rawContent);
 
-            // If the content was changed after sanitization → suspicious attempt
-            if ($rawContent !== $sanitized) {
+            // Detect HTML tags → suspicious attempt (XSS/injection)
+            // strip_tags() only removes tags, never encodes apostrophes or special chars
+            if ($rawContent !== strip_tags($rawContent)) {
                 $this->messagesLogger->warning('[Chat] XSS attempt detected in message content', [
                     'user' => $user->getUserIdentifier(),
                     'conversation_id' => $conversation->getId(),
@@ -254,9 +251,13 @@ class ConversationController extends AbstractController
                     'route' => $request->attributes->get('_route'),
                     'raw_content' => $rawContent,
                 ]);
+                $contentToStore = 'This message was flagged and could not be delivered.';
+            } else {
+                // Content is clean → store as-is (Twig will auto-escape on display)
+                $contentToStore = $rawContent;
             }
-            // If the sanitized content is empty but the original content was not → likely an attempt to send malicious content
-            if (empty(trim($sanitized))) {
+
+            if (empty(trim($contentToStore))) {
                 return new JsonResponse(['status' => 'error', 'message' => 'Invalid content'], 400);
             }
 
@@ -273,7 +274,7 @@ class ConversationController extends AbstractController
                 return new JsonResponse(['status' => 'error', 'message' => 'Too many messages, please slow down'], 429);
             }
 
-            $message->setContent($sanitized);
+            $message->setContent($contentToStore);
             $message->setSender($user);
             $message->setConversation($conversation);
             $message->setStatus(MessageType::UNREAD);
@@ -502,7 +503,6 @@ class ConversationController extends AbstractController
         $report->setCreatedAt(new \DateTimeImmutable());
         $report->setStatus([ConversationReportType::PENDING]);
         
-
         $conversation->setIsFrozen(true);
         
         $em->persist($report);

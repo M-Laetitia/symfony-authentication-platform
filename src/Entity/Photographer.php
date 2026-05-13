@@ -76,6 +76,12 @@ class Photographer
     #[ORM\ManyToMany(targetEntity: Speciality::class, inversedBy: 'photographers')]
     private Collection $specialities;
 
+    /**
+     * @var Collection<int, PricingPlan>
+     */
+    #[ORM\OneToMany(targetEntity: PricingPlan::class, mappedBy: 'photographer', orphanRemoval: true)]
+    private Collection $pricingPlans;
+
     public function __construct()
     {
         $this->serviceProposals = new ArrayCollection();
@@ -83,6 +89,7 @@ class Photographer
         $this->media = new ArrayCollection();
         $this->gallerySeries = new ArrayCollection();
         $this->specialities = new ArrayCollection();
+        $this->pricingPlans = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -377,6 +384,36 @@ class Photographer
         }
         
         return is_array($languages) ? $languages : [];
+    }
+
+    /**
+     * @return Collection<int, PricingPlan>
+     */
+    public function getPricingPlans(): Collection
+    {
+        return $this->pricingPlans;
+    }
+
+    public function addPricingPlan(PricingPlan $pricingPlan): static
+    {
+        if (!$this->pricingPlans->contains($pricingPlan)) {
+            $this->pricingPlans->add($pricingPlan);
+            $pricingPlan->setPhotographer($this);
+        }
+
+        return $this;
+    }
+
+    public function removePricingPlan(PricingPlan $pricingPlan): static
+    {
+        if ($this->pricingPlans->removeElement($pricingPlan)) {
+            // set the owning side to null (unless already changed)
+            if ($pricingPlan->getPhotographer() === $this) {
+                $pricingPlan->setPhotographer(null);
+            }
+        }
+
+        return $this;
     }
 
 }

@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Photographer;
+use App\Entity\PricingPlan;
 use App\Enum\MediaType;
 use App\Enum\PhotographerStatusType;
 use App\Enum\PhotographerVisibilityType;
+use App\Enum\PricingPlanType;
 use App\Form\PhotographerProfileFormType;
+use App\Form\PricingPlanFormType;
 use App\Repository\PhotographerRepository;
+use App\Repository\PricingPlanRepository;
 use App\Service\MediaUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +32,101 @@ class PhotographerDashboardController extends AbstractController
         return $this->render('photographer/dashboard/index.html.twig', [
             'photographer' => $photographer,
         ]);
+    }
+
+    #[Route('/pricing-plans', name: 'pricing_plans_index')]
+    public function pricingPlansIndex(string $slug, PhotographerRepository $photographerRepo, PricingPlanRepository $planRepo): Response
+    {
+        $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
+        $plans = $planRepo->findBy(['photographer' => $photographer], ['planType' => 'ASC']);
+
+        return $this->render('photographer/dashboard/pricing-plans/index.html.twig', [
+            'photographer' => $photographer,
+            'plans' => $plans,
+        ]);
+    }
+
+    #[Route('/pricing-plans/{planType}/edit', name: 'pricing_plan_edit', requirements: ['planType' => 'basic|standard|premium'])]
+    public function editPricingPlan(
+        string $slug,
+        string $planType,
+        Request $request,
+        PhotographerRepository $photographerRepo,
+        PricingPlanRepository $planRepo,
+        EntityManagerInterface $em
+    ): Response {
+        $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
+        $enum = PricingPlanType::from($planType);
+
+        $plan = $planRepo->findOneBy(['photographer' => $photographer, 'planType' => $enum]);
+        $isNew = !$plan;
+
+        if (!$plan) {
+            $plan = new PricingPlan();
+            $plan->setPhotographer($photographer);
+            $plan->setPlanType($enum);
+            $plan->setIsActive(true);
+        }
+
+        $form = $this->createForm(PricingPlanFormType::class, $plan);
+        
+        // Pre-fill unmapped textarea fields with existing array data
+        if ($plan->getWhatIncluded() && !empty($plan->getWhatIncluded())) {
+            $form->get('whatIncluded')->setData(implode("\n", $plan->getWhatIncluded()));
+        }
+        if ($plan->getAdditionnalInfos() && !empty($plan->getAdditionnalInfos())) {
+            $form->get('additionnalInfos')->setData(implode("\n", $plan->getAdditionnalInfos()));
+        }
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $whatIncluded = $form->get('whatIncluded')->getData();
+            $plan->setWhatIncluded(array_filter(array_map('trim', explode("\n", $whatIncluded))));
+
+            $additionnalInfos = $form->get('additionnalInfos')->getData();
+            if ($additionnalInfos) {
+                $plan->setAdditionnalInfos(array_filter(array_map('trim', explode("\n", $additionnalInfos))));
+            }
+
+            if ($isNew) {
+                $em->persist($plan);
+            }
+            $em->flush();
+
+            $this->addFlash('success', ucfirst($planType) . ' plan has been saved!');
+
+            return $this->redirectToRoute('photographer_dashboard_pricing_plans_index', ['slug' => $slug]);
+        }
+
+        return $this->render('photographer/dashboard/pricing-plans/edit.html.twig', [
+            'photographer' => $photographer,
+            'plan' => $plan,
+            'form' => $form,
+            'isNew' => $isNew,
+            'pageTitle' => ($isNew ? 'Create' : 'Edit') . ' ' . $enum->value . ' Plan',
+        ]);
+    }
+
+    #[Route('/pricing-plans/{id}/delete', name: 'pricing_plan_delete', methods: ['POST'])]
+    public function deletePricingPlan(
+        string $slug,
+        PricingPlan $plan,
+        PhotographerRepository $photographerRepo,
+        EntityManagerInterface $em
+    ): Response {
+        $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
+
+        if ($plan->getPhotographer() !== $photographer) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $em->remove($plan);
+        $em->flush();
+
+        $this->addFlash('success', 'Plan deleted successfully!');
+
+        return $this->redirectToRoute('photographer_dashboard_pricing_plans_index', ['slug' => $slug]);
     }
 
     #[Route('/profile', name: 'profile_edit')]
@@ -135,8 +234,8 @@ class PhotographerDashboardController extends AbstractController
             'youtube' => $socials['youtube'] ?? null,
             'twitter' => $socials['twitter'] ?? null,
             'facebook' => $socials['facebook'] ?? null,
-            'status' => !empty($photographer->getStatus()) ? $photographer->getStatus()[0]->value : PhotographerStatusType::INACTIVE->value,
-            'visibility' => !empty($photographer->getVisibility()) ? $photographer->getVisibility()[0]->value : PhotographerVisibilityType::PRIVATE->value,
+            'status' => $photographer->getStatus()->value,
+            'visibility' => $photographer->getVisibility()->value,
         ];
     }
 
@@ -189,8 +288,8 @@ class PhotographerDashboardController extends AbstractController
         // Status and Visibility (from enum)
         $statusValue = $form->get('status')->getData();
         $visibilityValue = $form->get('visibility')->getData();
-        $photographer->setStatus([PhotographerStatusType::from($statusValue)]);
-        $photographer->setVisibility([PhotographerVisibilityType::from($visibilityValue)]);
+        $photographer->setStatus(PhotographerStatusType::from($statusValue));
+        $photographer->setVisibility(PhotographerVisibilityType::from($visibilityValue));
 
         // Portfolio Cover Image
         $portfolioImageFile = $form->get('portfolioCoverImage')->getData();

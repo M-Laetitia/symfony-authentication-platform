@@ -49,8 +49,9 @@ class HomeController extends AbstractController
             'photographers' => $photographers,
             'latestPhotographies' => $latestPhotographies,
             'contactForm' => $form->createView(),
-            'meta_description' => $seoService ->getMetaDescription('home'),
-            'metaRobots' => $seoService ->getMetaRobots('home'),
+            'meta_title' => $seoService->getMetaTitle('home'),
+            'meta_description' => $seoService->getMetaDescription('home'),
+            'metaRobots' => $seoService->getMetaRobots('home'),
         ]);
     }
 }

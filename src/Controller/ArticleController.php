@@ -28,7 +28,6 @@ use App\Service\SeoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,7 +45,6 @@ class ArticleController extends AbstractController
 
     #[Route('/blog', name: 'blog_index')]
     public function index(
-        EntityManagerInterface $em, 
         ArticleRepository $articleRepo, 
         SeoService $seoService, 
         CategoryRepository $categoryRepo, 
@@ -87,7 +85,6 @@ class ArticleController extends AbstractController
             6                                      
         );
 
-
         return $this->render('blog/article/index.html.twig', [
             'pagination' => $pagination,
             'categories' => $categories,
@@ -95,6 +92,7 @@ class ArticleController extends AbstractController
             'topArticles' => $topArticles,
             'searchForm' => $form->createView(),
             'selectedCategory' => $category,
+            'meta_title' => $seoService->getMetaTitle('blog'),
             'meta_description' => $seoService->getMetaDescription('blog'),
             'meta_robots' => $seoService->getMetaRobots('blog'),
         ]);
@@ -214,11 +212,6 @@ class ArticleController extends AbstractController
             $em->persist($article);
             $em->flush(); 
 
-            // try {
-            //     $em->flush();
-            // } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
-            //     $form->get('title')->addError(new FormError('This title is already used.'));
-            // }
 
             // EDITOR JS
             $editorContent = $form->get('content')->getData();
