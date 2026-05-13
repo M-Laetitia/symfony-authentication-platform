@@ -5,7 +5,6 @@ export default class extends Controller {
     static targets = ['viewport', 'dots']
 
     connect() {
-        console.log('Carousel controller connected!', this.element)
         
         this.embla = EmblaCarousel(this.viewportTarget, {
             loop: true,
@@ -19,7 +18,6 @@ export default class extends Controller {
         this.buildDots()
         this.bindEvents()
         
-        console.log('Dots container:', this.dotsTarget)
     }
 
     disconnect() {
@@ -38,7 +36,6 @@ export default class extends Controller {
 
     buildDots() {
         const count = this.embla.scrollSnapList().length
-        console.log('Building', count, 'dots')
 
         this.dotsTarget.innerHTML = Array.from({ length: count })
             .map((_, i) => `<button type="button" class="embla__dot" data-index="${i}" role="tab" aria-selected="false" aria-label="Go to slide ${i + 1}"></button>`)
