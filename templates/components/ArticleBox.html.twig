@@ -40,11 +40,11 @@
 
     <!-- Content -->
     <div class="article-card__content">
-        <h4 class="article-card__title">
+        <h3 class="article-card__title">
             <a href="{{ path('article_show', {'slug': slug}) }}" class="article-card__link">
                 {{ title }}
             </a>
-        </h4>
+        </h3>
 
         <!-- Tags -->
         {% if tags is defined and tags is iterable and tags|length > 0 %}
