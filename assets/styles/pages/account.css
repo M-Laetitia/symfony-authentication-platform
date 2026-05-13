@@ -3,12 +3,12 @@
 
 .account {
     width: 100%;
-    min-height: 100vh!important;
+    /* min-height: 100vh!important; */
     /* height: 100vh; */
     /* min-height: 100vh; */
     padding-top: var(--height-navbar );
     /* height: calc(100vh - var(--height-navbar )); */
-    margin-top: 100px;
+    margin-top: 160px;
     margin-bottom: 60px;
 
     .account__container {
