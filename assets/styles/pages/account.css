@@ -3,16 +3,18 @@
 
 .account {
     width: 100%;
+    min-height: 100vh!important;
     /* height: 100vh; */
     /* min-height: 100vh; */
     padding-top: var(--height-navbar );
     /* height: calc(100vh - var(--height-navbar )); */
     margin-top: 100px;
+    margin-bottom: 60px;
 
     .account__container {
         background-color: var(--color-grey-800);
         width: 800px;
-        padding: 40px 80px 80px 80px;
+        padding: 60px 80px 40px 80px;
     }
     .auth__header {
         display: flex;
