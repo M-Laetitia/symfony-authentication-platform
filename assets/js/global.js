@@ -1,7 +1,6 @@
-// Scroll to top button
+//& ---------- Scroll to top button -----------
 const scrollBtn = document.getElementById('scrollTopBtn');
 
-// Check initial state
 if (window.scrollY > 300) { 
     scrollBtn.classList.add('visible');
 } else {
@@ -16,7 +15,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-
 scrollBtn.addEventListener('click', () => {
     window.scrollTo({
         top: 0,
@@ -24,38 +22,93 @@ scrollBtn.addEventListener('click', () => {
     });
 });
 
-// FLash messages
+
 document.addEventListener('DOMContentLoaded', () => {
+    //& ------------- Flash messages --------------
     const flashes = document.querySelectorAll('.flash-message');
-    if (!flashes.length) return;
+    if (flashes.length) {
+        flashes.forEach(flash => {
+            setTimeout(() => flash.classList.add('show'), 50);
 
-    flashes.forEach(flash => {
-        setTimeout(() => flash.classList.add('show'), 50);
+            if (!flash.querySelector('.flash-close')) {
+                setTimeout(() => {
+                    flash.classList.remove('show'); 
+                    setTimeout(() => flash.remove(), 500); 
+                }, 4000);
+            }
+        });
 
-        if (!flash.querySelector('.flash-close')) {
-            setTimeout(() => {
-                flash.classList.remove('show'); 
-                setTimeout(() => flash.remove(), 500); 
-            }, 4000);
-        }
-    });
+        document.querySelectorAll('.flash-close').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const flash = e.target.closest('.flash-message');
+                flash.style.transition = 'opacity 0.5s ease';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 500);
+            });
+        });
+    }
 
-    // Close btn
-    document.querySelectorAll('.flash-close').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const flash = e.target.closest('.flash-message');
-            flash.style.transition = 'opacity 0.5s ease';
-            flash.style.opacity = '0';
-            setTimeout(() => flash.remove(), 500);
+    //& -------------- Menu burger ----------------
+    const burger = document.querySelector('.navbar__burger');
+    const menu = document.querySelector('.navbar__menu');
+
+    if (burger && menu) {
+        burger.addEventListener('click', function() {
+            const isOpen = menu.classList.toggle('is-open');
+            this.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
+        });
+    }
+
+    //& ------------- Toggle Password -------------
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            input.type = input.type === 'password' ? 'text' : 'password';
         });
     });
+
+    //& ---------- Password requirements ----------
+    const passwordInput = document.querySelector('#registration_form_plainPassword_first');
+    const requirements = document.querySelector('.password-requirements');
+
+    if (passwordInput && requirements) {
+        requirements.classList.remove('show');
+
+        passwordInput.addEventListener('input', function() {
+            requirements.classList.toggle('show', this.value.length > 0);
+        });
+
+        passwordInput.addEventListener('blur', function() {
+            if (this.value.length === 0) {
+                requirements.classList.remove('show');
+            }
+        });
+
+        const lengthReq = document.getElementById('length');
+        const uppercaseReq = document.getElementById('uppercase');
+        const numberReq = document.getElementById('number');
+        const specialReq = document.getElementById('special');
+
+        passwordInput.addEventListener('input', () => {
+            const value = passwordInput.value;
+            lengthReq?.classList.toggle('valid', value.length >= 12);
+            lengthReq?.classList.toggle('invalid', value.length < 12);
+            uppercaseReq?.classList.toggle('valid', /[A-Z]/.test(value));
+            uppercaseReq?.classList.toggle('invalid', !/[A-Z]/.test(value));
+            numberReq?.classList.toggle('valid', /\d/.test(value));
+            numberReq?.classList.toggle('invalid', !/\d/.test(value));
+            specialReq?.classList.toggle('valid', /[^A-Za-z0-9]/.test(value));
+            specialReq?.classList.toggle('invalid', !/[^A-Za-z0-9]/.test(value));
+        });
+    }
 });
 
-
+//& ------------- Hover icon-box --------------
 const accentColor = "#5FEEAB";
 const grey900 = "#242424";
 
-// hover effect icon-box
 document.querySelectorAll('.icon-box__container').forEach(detail => {
     if (!detail) return;
 
@@ -90,7 +143,7 @@ document.querySelectorAll('.icon-box__container').forEach(detail => {
     });
 });
 
-// display / hide aside menu
+//& -------- Display/hide aside menu ----------
 const toggle = document.querySelector('.side-panel__toggle');
 const panel = document.querySelector('.side-panel');
 const overlay = document.querySelector('.side-panel__overlay');
@@ -98,7 +151,10 @@ const overlay = document.querySelector('.side-panel__overlay');
 function togglePanel() {
     const isOpen = panel.classList.toggle('side-panel--open');
 
+    panel.style.transform = '';
+
     overlay.classList.toggle('side-panel__overlay--visible', isOpen);
+    toggle.classList.toggle('active', isOpen);
 
     toggle.setAttribute('aria-expanded', isOpen);
     panel.setAttribute('aria-hidden', !isOpen);
@@ -107,12 +163,7 @@ function togglePanel() {
 }
 
 toggle.addEventListener('click', () => {
-    toggle.classList.toggle('active');
     togglePanel();
-    const panel = document.getElementById(toggle.getAttribute('aria-controls'));
-    const isExpanded = toggle.classList.contains('active');
-    toggle.setAttribute('aria-expanded', isExpanded);
-    panel.style.transform = isExpanded ? 'translateX(0)' : 'translateX(-100%)';
 });
 overlay.addEventListener('click', togglePanel);
 
@@ -123,383 +174,24 @@ document.addEventListener('keydown', e => {
 });
 
 
-// menu burger
+//& ------ Hero parallax --------  
+const parallaxImage = document.querySelector('[data-parallax]');
 
-document.addEventListener('DOMContentLoaded', function() {
-    const burger = document.querySelector('.navbar__burger');
-    const menu = document.querySelector('.navbar__menu');
-
-    if (burger && menu) {
-        burger.addEventListener('click', function() {
-            const isOpen = menu.classList.toggle('is-open');
-
-            this.setAttribute('aria-expanded', isOpen);
-            menu.setAttribute('aria-hidden', !isOpen);
-        });
-    }
-});
-
-
-// toggle password register form
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleButtons = document.querySelectorAll('.toggle-password');
-
-    toggleButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            if (input.type === 'password') {
-                input.type = 'text';
-            } else {
-                input.type = 'password';
-            }
-        });
-    });
-});
-
-// show requierements 
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.querySelector('#registration_form_plainPassword_first');
-    const requirements = document.querySelector('.password-requirements');
-
-    if (!passwordInput || !requirements) return;
-
-    requirements.classList.remove('show');
-
-    passwordInput.addEventListener('input', function() {
-        if (this.value.length > 0) {
-            requirements.classList.add('show'); 
-        } else {
-            requirements.classList.remove('show'); 
-        }
-    });
-
-    passwordInput.addEventListener('blur', function() {
-        if (this.value.length === 0) {
-            requirements.classList.remove('show');
-        }
-    });
-});
-
-// requierement for password
-document.addEventListener('DOMContentLoaded', function () {
-
-    const passwordInput = document.querySelector('#registration_form_plainPassword_first');
-
-    const lengthReq = document.getElementById('length');
-    const uppercaseReq = document.getElementById('uppercase');
-    const numberReq = document.getElementById('number');
-    const specialReq = document.getElementById('special');
-
-    if (!passwordInput) {
-        return
-    };
-  
-    passwordInput.addEventListener('input', () => {
-      const value = passwordInput.value;
-  
-      // Lenght ≥ 8
-      lengthReq.classList.toggle('valid', value.length >= 12);
-      lengthReq.classList.toggle('invalid', value.length < 12);
-  
-      // Maj
-      uppercaseReq.classList.toggle('valid', /[A-Z]/.test(value));
-      uppercaseReq.classList.toggle('invalid', !/[A-Z]/.test(value));
-  
-      // Number
-      numberReq.classList.toggle('valid', /\d/.test(value));
-      numberReq.classList.toggle('invalid', !/\d/.test(value));
-  
-      // special 
-      specialReq.classList.toggle('valid', /[^A-Za-z0-9]/.test(value));
-      specialReq.classList.toggle('invalid', !/[^A-Za-z0-9]/.test(value));
-    });
-  });
-
-  // Modal pour reporter une conversation
-  const reportConversationBtn = document.getElementById('report-conversation-btn');
-  const reportModal = document.getElementById('report-modal');
-  const modalClose = document.getElementById('modal-close');
-  const reportForm = document.getElementById('report-conversation-form');
-  
-  if (reportConversationBtn) {
-    reportConversationBtn.addEventListener('click', () => {
-        if (!reportConversationBtn.disabled) {
-            reportModal.classList.add('active');
-        }
-    });
-  }
-  
-  if (modalClose) {
-    modalClose.addEventListener('click', () => {
-        reportModal.classList.remove('active');
-    });
-  }
-  
-  // Fermer le modal en cliquant en dehors
-  if (reportModal) {
-    reportModal.addEventListener('click', (e) => {
-        if (e.target === reportModal) {
-            reportModal.classList.remove('active');
-        }
-    });
-  }
-  
-  // Gérer l'envoi du formulaire
-  if (reportForm) {
-    reportForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const reason = document.getElementById('report-reason').value;
-        const messageReference = document.getElementById('report-message').value;
-        const conversationId = document.querySelector('[data-conversation-id]').dataset.conversationId;
-        
-        try {
-            const response = await fetch(`/chat/conversation/${conversationId}/report`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: JSON.stringify({
-                    reason: reason,
-                    message_reference: messageReference
-                })
-            });
-            
-            if (response.ok) {
-                reportForm.reset();
-                reportModal.classList.remove('active');
-                location.reload();
-            } else {
-                alert('Error reporting conversation. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error reporting conversation.');
-        }
-    });
-  }
-
-
-
-// Modale de confirmation d'acceptation de proposition
-console.log('JavaScript chargé !');
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM chargé, recherche des formulaires...');
+if (parallaxImage) {
+    let scrollY = 0;
+    let ticking = false;
     
-    // Intercepter les formulaires d'acceptation
-    const acceptForms = document.querySelectorAll('.proposal-accept-form');
-    console.log('Formulaires acceptation trouvés:', acceptForms.length);
+    function updateParallax() {
+        parallaxImage.style.transform = `translateY(${scrollY * 0.3}px)`;
+        ticking = false;
+    }
     
-    acceptForms.forEach(function(form) {
-        console.log('Formulaire trouvé:', form);
-        console.log('Action du formulaire:', form.getAttribute('action')); // Utilise getAttribute au lieu de .action
+    window.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
         
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Submit intercepté !');
-            
-            // Forcer la récupération avec getAttribute
-            const actionUrl = this.getAttribute('action');
-            console.log('URL récupérée:', actionUrl);
-            
-            if (!actionUrl || actionUrl.includes('[object')) {
-                console.error('URL invalide:', actionUrl);
-                return;
-            }
-            
-            fetch(actionUrl, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                console.log('Status:', response.status);
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        alert(data.error);
-                        throw new Error(data.error);
-                    });
-                }
-                return response.text();
-            })
-            .then(html => {
-                console.log('Modale reçue, taille:', html.length);
-                
-                // Supprimer toute modale existante
-                const existingModal = document.querySelector('#confirmationModal, #refuseModal');
-                if (existingModal) {
-                    existingModal.remove();
-                }
-                
-                // Injecter la modale
-                document.body.insertAdjacentHTML('beforeend', html);
-                
-                // Ajouter la classe active pour afficher la modale
-                const newModal = document.querySelector('#confirmationModal, #refuseModal');
-                if (newModal) {
-                    newModal.classList.add('active');
-                }
-            })
-            .catch(err => {
-                console.error('Erreur fetch:', err);
-            });
-        });
-    });
-    
-    // Même chose pour les formulaires de refus
-    const refuseForms = document.querySelectorAll('.proposal-refuse-form');
-    console.log('Formulaires refus trouvés:', refuseForms.length);
-    
-    refuseForms.forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Submit refus intercepté !');
-            
-            const actionUrl = this.getAttribute('action');
-            console.log('URL refus récupérée:', actionUrl);
-            
-            fetch(actionUrl, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        alert(data.error);
-                        throw new Error(data.error);
-                    });
-                }
-                return response.text();
-            })
-            .then(html => {
-                console.log('Modale refus reçue');
-                
-                const existingModal = document.querySelector('#confirmationModal, #refuseModal');
-                if (existingModal) {
-                    existingModal.remove();
-                }
-                
-                document.body.insertAdjacentHTML('beforeend', html);
-                
-                // Ajouter la classe active pour afficher la modale
-                const newModal = document.querySelector('#confirmationModal, #refuseModal');
-                if (newModal) {
-                    newModal.classList.add('active');
-                }
-            })
-            .catch(err => {
-                console.error('Erreur fetch refus:', err);
-            });
-        });
-    });
-});
-
-// Fermer les modales
-document.addEventListener('click', function(e) {
-    // Vérifier si c'est un bouton cancel-modal-btn
-    if (e.target.classList.contains('cancel-modal-btn')) {
-        console.log('Fermeture modale (cancel-modal-btn clicked)');
-        const modal = e.target.closest('.modal');
-        if (modal) {
-            modal.style.display = 'none';
-            // Ou supprimer la modal complètement
-            // modal.remove();
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
         }
-    }
-});
-
-
-// EDIT BOX - dashboard media edit
-    const toggleEditBtn = document.getElementById('toggleEditBtn');
-    const editFormContainer = document.getElementById('editFormContainer');
-    const cancelEditBtn = document.getElementById('cancelEditBtn');
-
-    if (toggleEditBtn && editFormContainer) {
-        toggleEditBtn.addEventListener('click', function() {
-            if (editFormContainer.style.display === 'none') {
-                editFormContainer.style.display = 'block';
-                this.textContent = 'Hide Edit';
-                editFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                editFormContainer.style.display = 'none';
-                this.textContent = 'Edit Info';
-            }
-        });
-    }
-
-    if (cancelEditBtn && editFormContainer) {
-        cancelEditBtn.addEventListener('click', function() {
-            editFormContainer.style.display = 'none';
-            if (toggleEditBtn) {
-                toggleEditBtn.textContent = 'Edit Info';
-            }
-        });
-    }
-
-
-    // hero parallax
-
-        const parallaxImage = document.querySelector('[data-parallax]');
-    
-    if (parallaxImage) {
-        let scrollY = 0;
-        let ticking = false;
-        
-        function updateParallax() {
-            parallaxImage.style.transform = `translateY(${scrollY * 0.3}px)`;
-            ticking = false;
-        }
-        
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
-            
-            if (!ticking) {
-                window.requestAnimationFrame(updateParallax);
-                ticking = true;
-            }
-        }, { passive: true });
-    }
-
-// Confirmation modale delete account 
-if (document.body.classList.contains('page--profile')) {
-    const deleteBtn = document.getElementById('delete-account-btn');
-    const modal = document.getElementById('delete-account-modal');
-    const closeBtn = document.getElementById('modal-close');
-    const cancelBtn = document.getElementById('modal-cancel');
-    const overlay = document.getElementById('modal-overlay');
-
-    if (deleteBtn && modal) {
-        // Open modal
-        deleteBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            modal.classList.add('active');
-            modal.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-        });
-
-        // Close modal
-        function closeModal() {
-            modal.classList.remove('active');
-            modal.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-        }
-
-        if (closeBtn) closeBtn.addEventListener('click', closeModal);
-        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-        if (overlay) overlay.addEventListener('click', closeModal);
-
-        // Close on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
-            }
-        });
-    }
+    }, { passive: true });
 }

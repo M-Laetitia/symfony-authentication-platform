@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pricing Plans - Dashboard{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Pricing Plans"
+    subtitle="Manage your service pricing plans"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Pricing Plans', type: 'current' }
+    ]"
+    id="pricing-plans-title"
+    variant="dark"
+/>
+
+<section class="pricing-plans-page main-section-page u-display-center" aria-labelledby="pricing-plans-title">
+    <div class="pricing-plans__container">
+        
+        <div class="pricing-plans__header">
+            <h2 class="pricing-plans__title">Pricing Plans</h2>
+            <p class="pricing-plans__subtitle">Manage your service offerings and pricing</p>
+        </div>
+
+        <div class="pricing-plans__grid">
+            {% for planType in ['basic', 'standard', 'premium'] %}
+                {% set plan = plans|filter(p => p.planType.value == planType)|first %}
+                
+                <div class="pricing-plan-card {% if not plan %}pricing-plan-card --empty{% endif %}">
+                    
+                    {% if plan %}
+                        <div class="pricing-plan-card__header">
+                            <h3 class="pricing-plan-card__type">{{ plan.planType.value }}</h3>
+                            <div class="pricing-plan-card__price">€{{ plan.price }}</div>
+                            {% if plan.duration %}
+                                <div class="pricing-plan-card__duration">{{ plan.duration }}</div>
+                            {% endif %}
+                        </div>
+
+                        <p class="pricing-plan-card__description">{{ plan.description }}</p>
+
+                        {% if plan.whatIncluded %}
+                            <div class="pricing-plan-card__included">
+                                <div class="pricing-plan-card__included-title">What's Included</div>
+                                <ul class="pricing-plan-card__included-list">
+                                    {% for item in plan.whatIncluded %}
+                                        <li class="pricing-plan-card__included-item">{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if plan.additionnalInfos %}
+                            <div class="pricing-plan-card__infos">
+                                <div class="pricing-plan-card__infos-title">Additionnal Informations</div>
+                                <ul class="pricing-plan-card__infos-list">
+                                    {% for item in plan.additionnalInfos %}
+                                        <li class="pricing-plan-card__infos-item">{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <div class="pricing-plan-card__actions">
+                            <a href="{{ path('photographer_dashboard_pricing_plan_edit', { slug: photographer.slug, planType: plan.planType.value }) }}" class="pricing-plan-card__button pricing-plan-card__button--edit button button--small button--accent">Edit</a>
+                            <form method="POST" action="{{ path('photographer_dashboard_pricing_plan_delete', { slug: photographer.slug, id: plan.id }) }}" style="flex: 1;" onsubmit="return confirm('Are you sure you want to delete this plan?')">
+                                <input type="hidden" name="_method" value="POST">
+                                <button type="submit" class="pricing-plan-card__button pricing-plan-card__button--delete button button--small button--danger" style="width: 100%;">Delete</button>
+                            </form>
+                        </div>
+
+                    {% else %}
+                        <div class="pricing-plan-card__empty-message">
+                            <p>No {{ planType }} plan yet</p>
+                            <a href="{{ path('photographer_dashboard_pricing_plan_edit', { slug: photographer.slug, planType: planType }) }}" class="pricing-plan-card__create-button button button--small button--black">Create {{ planType }} Plan</a>
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

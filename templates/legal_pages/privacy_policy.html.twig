@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Privacy Policy & Cookies - Mosaic{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="Privacy Policy & Cookies"
+    subtitle="How we collect, use and protect your personal data."
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Privacy Policy & Cookies', type: 'current' }
+    ]"
+/>
+
+<section class="legal-page">
+    <div class="container">
+        <p>Content coming soon.</p>
+    </div>
+</section>
+
+{% endblock %}

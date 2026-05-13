@@ -6,7 +6,7 @@ use App\Entity\GallerySeries;
 use App\Entity\Media;
 use App\Entity\Photographer;
 use App\Enum\MediaType;
-use App\Form\MediaGalleryAddFormType;
+use App\Form\MediaGalleryFormType;
 use App\Repository\GallerySeriesRepository;
 use App\Repository\PhotographerRepository;
 use App\Service\MediaUploader;
@@ -161,43 +161,44 @@ class PhotographerGalleryController extends AbstractController
         $photographer = $this->getPhotographerBySlugOrThrow($slug, $photographerRepo);
         $gallery = $this->getGalleryByIdOrThrow($galleryId, $photographer, $galleryRepo);
 
-        $form = $this->createForm(MediaGalleryAddFormType::class);
+        $form = $this->createForm(MediaGalleryFormType::class, null, ['is_edit' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $uploadedFile = $request->files->get('media_gallery_add_form')['media'];
+            $uploadedFile = $data['media'];
             $altText = $data['altText'] ?? '';
             $caption = $data['caption'] ?? '';
             $isFeatured = $data['featured'] ?? false;
+            $speciality = $data['speciality'] ?? null;
 
-            if ($uploadedFile) {
-                $subfolder = "photographer/{$photographer->getId()}/galleries/{$galleryId}";
-                $constraints = ['allowed_types' => ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']];
-                $mediaType = $isFeatured ? MediaType::PORTFOLIO_FEATURED : MediaType::GALLERY_SERIES;
+            $subfolder = "photographer/{$photographer->getId()}/galleries/{$galleryId}";
+            $constraints = ['allowed_types' => ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']];
+            $mediaType = $isFeatured ? MediaType::PORTFOLIO_FEATURED : MediaType::GALLERY_SERIES;
 
-                $media = $mediaUploader->upload(
-                    $uploadedFile,
-                    $caption,
-                    $altText,
-                    $mediaType,
-                    $subfolder,
-                    $constraints
-                );
+            $media = $mediaUploader->upload(
+                $uploadedFile,
+                $caption,
+                $altText,
+                $mediaType,
+                $subfolder,
+                $constraints
+            );
 
-                $gallery->addMedia($media);
-                $photographer->addMedium($media);
-                $em->flush();
+            $media->setSpeciality($speciality);
+            $gallery->addMedia($media);
+            $photographer->addMedium($media);
+            $em->flush();
 
-                $this->addFlash('success', 'Photo added to gallery!');
-                return $this->redirectToRoute('photographer_gallery_edit', ['slug' => $slug, 'galleryId' => $galleryId]);
-            }
+            $this->addFlash('success', 'Photo added to gallery!');
+            return $this->redirectToRoute('photographer_gallery_edit', ['slug' => $slug, 'galleryId' => $galleryId]);
         }
 
-        return $this->render('photographer/dashboard/galleries/media-add.html.twig', [
+        return $this->render('photographer/dashboard/galleries/media-form.html.twig', [
             'photographer' => $photographer,
             'gallery' => $gallery,
             'form' => $form->createView(),
+            'is_edit' => false,
         ]);
     }
 
@@ -218,15 +219,23 @@ class PhotographerGalleryController extends AbstractController
         $gallery = $this->getGalleryByIdOrThrow($galleryId, $photographer, $galleryRepo);
         $media = $this->getMediaByIdOrThrow($mediaId, $gallery);
 
-        if ($request->isMethod('POST')) {
-            $altText = $request->request->get('altText', '');
-            $caption = $request->request->get('caption', '');
-            $isFeatured = $request->request->has('isFeatured');
+        $form = $this->createForm(MediaGalleryFormType::class, [
+            'altText'    => $media->getAltText(),
+            'caption'    => $media->getCaption(),
+            'speciality' => $media->getSpeciality(),
+            'featured'   => $media->getType() === MediaType::PORTFOLIO_FEATURED,
+        ], ['is_edit' => true]);
 
-            $media->setAltText($altText);
-            $media->setCaption($caption);
+        $form->handleRequest($request);
 
-            // Toggle featured status
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $media->setAltText($data['altText'] ?? '');
+            $media->setCaption($data['caption'] ?? '');
+            $media->setSpeciality($data['speciality'] ?? null);
+
+            $isFeatured = $data['featured'] ?? false;
             $currentType = $media->getType();
             if ($isFeatured && $currentType !== MediaType::PORTFOLIO_FEATURED) {
                 $media->setType(MediaType::PORTFOLIO_FEATURED);
@@ -239,10 +248,12 @@ class PhotographerGalleryController extends AbstractController
             return $this->redirectToRoute('photographer_gallery_edit', ['slug' => $slug, 'galleryId' => $galleryId]);
         }
 
-        return $this->render('photographer/dashboard/galleries/media-edit.html.twig', [
+        return $this->render('photographer/dashboard/galleries/media-form.html.twig', [
             'photographer' => $photographer,
-            'gallery' => $gallery,
-            'media' => $media,
+            'gallery'      => $gallery,
+            'form'         => $form->createView(),
+            'media'        => $media,
+            'is_edit'      => true,
         ]);
     }
 

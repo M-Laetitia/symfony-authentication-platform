@@ -58,8 +58,7 @@ class ContactFormType extends HoneyPotType
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'I agree with <a href="/terms">terms</a> and <a href="/privacy">privacy policy</a>.',
-                'label_html' => true,
+                'label' => false,
                 'constraints' => [
                     new IsTrue(message: 'You should agree to our terms.'),
                 ],
@@ -73,9 +72,9 @@ class ContactFormType extends HoneyPotType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'csrf_protection' => true, 
-            'csrf_field_name' => '_token',
-            'csrf_token_id' => 'contact_form',
+            // 'csrf_protection' => true, 
+            // 'csrf_field_name' => '_token',
+            // 'csrf_token_id' => 'contact_form',
             'honeypot_field_1' => 'phone_number', 
             'honeypot_field_2' => 'company',
             'form_type' => 'contact',

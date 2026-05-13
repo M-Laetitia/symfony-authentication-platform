@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }} - Dashboard{% endblock %}
+
+{% block body %}
+
+<twig:Banner
+    title="{{ pageTitle }}"
+    subtitle="Configure your {{ plan.planType.value|capitalize }} plan details"
+    :breadcrumbs="[
+        { label: 'Home', url: path('home'), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Dashboard', url: path('photographer_dashboard_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Pricing Plans', url: path('photographer_dashboard_pricing_plans_index', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: plan.planType.value|capitalize, type: 'current' }
+    ]"
+    id="pricing-plan-edit-title"
+    variant="dark"
+/>
+
+<section class="pricing-plan-edit-page main-section-page u-display-center" aria-labelledby="pricing-plan-edit-title">
+    <div class="pricing-plan-edit__container">
+
+        {{ form_start(form, { attr: { class: 'form-container' } }) }}
+
+        {% if form.vars.errors|length > 0 %}
+            <div class="form-errors">
+                <ul>
+                    {% for error in form.vars.errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            {{ form_label(form.planType) }}
+            {{ form_widget(form.planType) }}
+            {% if form.planType.vars.help %}
+                <span class="help-text">{{ form.planType.vars.help }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.price) }}
+            {{ form_widget(form.price) }}
+            {% if form.price.vars.help %}
+                <span class="help-text">{{ form.price.vars.help }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            {% if form.description.vars.help %}
+                <span class="help-text">{{ form.description.vars.help }}</span>
+            {% endif %}
+        </div>
+
+        {# <div class="form-group">
+            {{ form_label(form.duration) }}
+            {{ form_widget(form.duration) }}
+            {% if form.duration.vars.help %}
+                <span class="help-text">{{ form.duration.vars.help }}</span>
+            {% endif %}
+        </div> #}
+
+        <div class="form-group">
+            {{ form_label(form.whatIncluded) }}
+            {{ form_widget(form.whatIncluded) }}
+            {% if form.whatIncluded.vars.help %}
+                <span class="help-text">{{ form.whatIncluded.vars.help }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.additionnalInfos) }}
+            {{ form_widget(form.additionnalInfos) }}
+            {% if form.additionnalInfos.vars.help %}
+                <span class="help-text">{{ form.additionnalInfos.vars.help }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="button button--large button--accent">
+                {% if isNew %}Create{% else %}Update{% endif %} Plan
+            </button>
+            <a href="{{ path('photographer_dashboard_pricing_plans_index', { slug: photographer.slug }) }}" class="button button--large button--black-variant">
+                Cancel
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+
+    </div>
+</section>
+
+{% endblock %}

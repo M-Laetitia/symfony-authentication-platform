@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MediaRepository;
 use App\Repository\PhotographerRepository;
+use App\Repository\PricingPlanRepository;
 use App\Service\SeoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +16,11 @@ class PhotographerController extends AbstractController
     public function index(PhotographerRepository $photographerRepo, SeoService $seoService): Response
     {
 
-        // $photographers = $photographerRepository->findAll();
         $photographers = $photographerRepo->findPhotographersWithCover();
-    // dd($photographers);
 
         return $this->render('photographer/index.html.twig', [
             'photographers' => $photographers,
+            'meta_title' => $seoService->getMetaTitle('team'),
             'meta_description' => $seoService->getMetaDescription('team'),
             'meta_robots' => $seoService->getMetaRobots('team'),
 
@@ -28,7 +28,7 @@ class PhotographerController extends AbstractController
     }
 
     #[Route('/team/{slug}', name: 'team_show')]
-    public function show(PhotographerRepository $photographerRepository, MediaRepository $mediaRepository,  string $slug): Response
+    public function show(PhotographerRepository $photographerRepository, MediaRepository $mediaRepository, PricingPlanRepository $pricingPlanRepository, string $slug): Response
     {
         $photographer = $photographerRepository->findOneBy(['slug' => $slug]);
 
@@ -38,13 +38,34 @@ class PhotographerController extends AbstractController
 
         $bannerImage = $mediaRepository->findPortfolioCoverByPhotographer($photographer);
         $featuredMedias = $mediaRepository->findFeaturedByPhotographer($photographer);
-       
+        $pricingPlans = $pricingPlanRepository->findBy(['photographer' => $photographer]);
 
         return $this->render('photographer/show.html.twig', [
             'photographer' => $photographer,
             'bannerImage' => $bannerImage,
             'featuredMedias' => $featuredMedias,
+            'pricingPlans' => $pricingPlans,
         ]);
         
+    }
+
+    #[Route('/photographer/{slug}/portfolio', name: 'photographer_portfolio')]
+    public function portfolio(PhotographerRepository $photographerRepository, SeoService $seoService, string $slug): Response
+    {
+        $photographer = $photographerRepository->findOneBy(['slug' => $slug]);
+
+        if (!$photographer) {
+            throw $this->createNotFoundException('Photographer not found');
+        }
+
+        $gallerySeries = $photographer->getGallerySeries();
+
+        return $this->render('photographer/portfolio.html.twig', [
+            'photographer' => $photographer,
+            'gallerySeries' => $gallerySeries,
+            'meta_title' => $photographer->getFirstName() . ' ' . $photographer->getLastName() . ' - Portfolio | MOSAIC',
+            'meta_description' => $seoService->getMetaDescription('portfolio'),
+            'meta_robots' => $seoService->getMetaRobots('portfolio') ?? 'index, follow',
+        ]);
     }
 }
