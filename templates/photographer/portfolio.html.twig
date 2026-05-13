@@ -13,7 +13,9 @@
         { label: 'separator', type: 'separator' },
         { label: 'Team', url: path('team_index'), type: 'link' },
         { label: 'separator', type: 'separator' },
-        { label: photographer.firstName ~ ' ' ~ photographer.lastName, type: 'current' }
+        { label: photographer.firstName ~ ' ' ~ photographer.lastName, url: path('team_show', { slug: photographer.slug }), type: 'link' },
+        { label: 'separator', type: 'separator' },
+        { label: 'Portfolio', type: 'current' }
     ]"
     id="photographer-portfolio-title"
     variant="dark"
