@@ -41,9 +41,9 @@
 
             <!-- Services Section -->
             <div class="dashboard__card">
-                <h3 class="dashboard__card-title">Services & Rates</h3>
-                <p class="dashboard__card-description">Update your services and pricing information</p>
-                <a href="#" class="button button--accent button--small">Edit Services</a>
+                <h3 class="dashboard__card-title">Pricing Plans</h3>
+                <p class="dashboard__card-description">Create and manage your service pricing plans (Basic, Standard, Premium)</p>
+                <a href="{{ path('photographer_dashboard_pricing_plans_index', { slug: photographer.slug }) }}" class="button button--accent button--small">Manage Pricing Plans</a>
             </div>
 
             <!-- Orders Section -->
