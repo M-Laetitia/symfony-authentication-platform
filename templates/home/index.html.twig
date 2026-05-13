@@ -58,7 +58,7 @@
                     title="ABOUT US"
                     subtitle="photography agency focused on authentic images and natural storytelling."
                     buttonText="Discover more"
-                    linkBtn="/team"
+                    linkBtn="/gallery"
                     titleId="about-title"
                 />
 
@@ -301,7 +301,7 @@
                     {% for portfolio in latestPhotographies %}
                     {% set isLandscape = loop.first or loop.last %}
                     <figure class="gallery__item {% if isLandscape %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.altText }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
+                        <a href="#"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.altText }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
                         <div class="gallery__detail">
                             <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
