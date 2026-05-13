@@ -268,8 +268,8 @@
         &:hover p {
             color: var(--color-grey-200);
         }
-        &:hover h4 {
-            color: var(--color-grey-200)
+        &:hover h3 {
+            color: var(--color-accent)
         }
 
         .section-photographs__service {
@@ -339,15 +339,19 @@
 }
 
 
+
 .article-card__content {
     .article-card__title {
         text-transform: capitalize;
         font-weight: 500;
         margin: 15px 0;
         text-wrap: auto;
+        font-size: clamp(1.4rem, 3vw, 1.6rem);
     }
 
     .article-card__link {
+        /* font-size: 1.6rem; */
+        
         text-wrap: auto!important;
         transition: var(--transition-base);
         &:hover {
