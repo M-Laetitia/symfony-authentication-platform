@@ -16,10 +16,11 @@
 @import './pages/home.css';
 @import './pages/account.css';
 @import './pages/conversation.css';
-@import './pages/infos.css';
+@import './pages/extra.css';
 @import './pages/team.css';    
 @import './pages/blog.css';
 @import './pages/photographer.css';
 @import './pages/proposal-payment.css';
+@import './pages/gallery.css';
 
 /* COMPONENTS */
