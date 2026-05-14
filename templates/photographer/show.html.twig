@@ -249,6 +249,11 @@
                               loading="lazy"
                           >
                       </picture>
+                      <div class="gallery__overlay">
+                        {% if media.gallerySeries %}
+                          <span class="gallery__overlay-serie">{{ media.gallerySeries.name }}</span>
+                        {% endif %}
+                      </div>
                   </a>
               </div>
           {% endfor %}
