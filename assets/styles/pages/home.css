@@ -22,6 +22,10 @@
     padding: 0 20px;
 }
 
+
+
+
+
 /* &-------------- HERO ------------- */
 /* &--------------------------------- */
 
@@ -189,7 +193,12 @@
     }
 }
 
-
+.section-about__feature-title.icon-box__link {
+    font-size:20px ;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    font-weight: 500;
+}
 /* &------------ SERVICES ----------- */
 /* &--------------------------------- */
 
@@ -214,12 +223,7 @@
 
 
 
-.section-about__feature-title.icon-box__link {
-    font-size:20px ;
-    font-family: var(--font-heading);
-    text-transform: uppercase;
-    font-weight: 500;
-}
+
 /* &------------ PHOTOGRAPH ---------- */
 /* &---------------------------------- */
 
@@ -254,8 +258,6 @@
     .section-works__gallery {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        /* grid-auto-rows: 1fr;
-        grid-auto-flow: dense; */
         
     }
     .gallery__item {
@@ -457,7 +459,74 @@
 }
 
 
+/* &------------ ANIMATION ---------- */
+/* &--------------------------------- */
 
+#home-page {
+    .section-about__text {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    
+    .section-about__image-wrapper {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    
+    .section-about__feature {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    
+    .section-services__item {
+        opacity: 0;
+    }
+    
+    .embla__slide {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    
+    .carousel-nav {
+        opacity: 0;
+    }
+    
+    .section-works .gallery__image {
+        filter: saturate(0); 
+        transition: filter 0.8s ease; 
+    }
+    
+    .testimonial-card {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    
+    .contact__form-wrapper {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    
+    .contact__info {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    
+    .contact__detail.icon-box__container {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    
+    .article-card {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    
+    .section-intro {
+        opacity: 0;
+        transform: translateY(50px); 
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+}
 
 /* ?-------- MEDIA QUERIES  --------- */
 /* ?--------------------------------- */
@@ -661,6 +730,8 @@
     }
 
 }
+
+
 
 /* ?------------ VERY SMALL --------- */
 @media (max-width: 480px) {
