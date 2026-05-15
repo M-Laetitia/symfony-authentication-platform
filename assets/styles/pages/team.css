@@ -182,8 +182,22 @@
         &:hover .artist-card__overlay {
             opacity: 1;
         }
+            transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1);
         &:hover .artist-card__media {
             opacity: 1;
+            .gallery__overlay-serie {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.5s 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.5s 0.25s cubic-bezier(0.4,0,0.2,1);
+                color: var(--color-white);
+                font-size: 1.5rem;
+                font-family: var(--font-heading);
+                font-weight: 600;
+                letter-spacing: 1.2px;
+                text-align: center;
+                width: 100%;
+                display: block;
+            }
         }
     }
 
@@ -427,6 +441,9 @@
     }
     .gallery__link {
         position: relative;
+        overflow: hidden;
+        display: block;
+        
         &:before {
             content: '';
             position: absolute;
@@ -436,14 +453,44 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             translate: -101% 0;
-            z-index: 1000;
-            transition: var(--transition-base);
+            /* z-index: 100; */
+            transition: translate 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         &:hover:before {
             translate: 0 0;
         }
+    }
 
+    .gallery__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        pointer-events: none;
+    }
 
+    .gallery__overlay-serie {
+        color: var(--color-white);
+        font-size: 1.5rem;
+        font-family: var(--font-heading);
+        font-weight: 600;
+        letter-spacing: 1.2px;
+        text-align: center;
+        text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.30s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.30s;
+    }
+
+    .gallery__link:hover .gallery__overlay-serie {
+        opacity: 1;
+        transform: translateY(0);
     }
     
     .photographer-gallery__actions {
@@ -544,6 +591,10 @@
 
         &:hover .gallery__overlay {
             opacity: 1;
+        }
+        &:hover .gallery__overlay .gallery__overlay-serie {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
     .gallery__overlay {
