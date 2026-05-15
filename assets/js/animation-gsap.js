@@ -82,10 +82,10 @@ if (document.querySelector('#home-page')) {
     gsap.to('.section-about__text', {
         opacity: 1,
         y: 0,
-        duration: 1.2,
+        duration: 1.5,
         scrollTrigger: {
             trigger: '.section-about',
-            start: 'top 30%'
+            start: 'top 40%'
         }
     });
 
@@ -221,7 +221,7 @@ if (document.querySelector('#home-page')) {
         stagger: 0.5, 
         scrollTrigger: {
             trigger: '.section-articles',
-            start: 'top 50%'
+            start: 'top 60%'
         }
     });
 }
