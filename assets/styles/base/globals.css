@@ -9,7 +9,7 @@ html, body {
     }
 }
 
-.bg-text--scroll.bg-text--services {
+/* .bg-text--scroll.bg-text--services {
 	display:none;
 }
 .bg-text__track {
@@ -20,7 +20,7 @@ html, body {
     label {
         color: white;
     }
-}
+} */
 
 body {
     background-color: var(--color-white);
@@ -80,6 +80,8 @@ h1 {
 }
 .page-hero__title {
     font-size: clamp(2rem, 7vw, 3.8rem);
+    /* opacity: 0;
+    transform: translateX(-50px); */
 }
 h2 {
     font-size: 80px;
@@ -806,8 +808,8 @@ button.disabled {
 
 .scroll-top-btn {
   position: fixed;
-  bottom: 110px;  
-  right: 40px;   
+  bottom: 30px;  
+  right: 20px;   
   font-size: 1.5rem;
   border : 1px solid var(--color-accent);
   background-color: #333;
@@ -868,10 +870,7 @@ button.disabled {
 
 
 @media (max-width: 1100px) {
-    .scroll-top-btn {
-        bottom: 130px;  
-        right: 30px;
-    }
+
 }
 
 @media (max-width: 1024px) {
@@ -914,7 +913,7 @@ button.disabled {
     }
 
     .scroll-top-btn {
-        bottom: 145px;  
+        /* bottom: 145px;   */
     }
 }
 

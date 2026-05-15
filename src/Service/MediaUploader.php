@@ -225,7 +225,82 @@ class MediaUploader implements MediaUploaderInterface
         // mise en cache immédiate :
         $this->copyToCache($absoluteWebpPath, $filterName);
 
+        // Pré-génération des filtres spécifiques selon le type de média
+        $this->generateFiltersForMediaType($absoluteWebpPath, $type);
+
         return $absoluteWebpPath;
+    }
+
+    /**
+     * Generates all relevant image filters for a given media type
+     * This prevents the "resolve" URL segment issue in production
+     */
+    private function generateFiltersForMediaType(string $absoluteWebpPath, MediaType $type): void
+    {
+        $filtersToGenerate = $this->getFiltersForMediaType($type);
+        
+        if (empty($filtersToGenerate)) {
+            return;
+        }
+
+        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+
+        foreach ($filtersToGenerate as $filterName) {
+            try {
+                // Use CacheManager to generate and store the filtered image
+                $this->cacheManager->store(
+                    $this->filterManager->applyFilter(
+                        $this->dataManager->find($filterName, $relativePath),
+                        $filterName
+                    ),
+                    $relativePath,
+                    $filterName
+                );
+                
+                $this->logger->info("Filter '$filterName' generated for '$relativePath'");
+            } catch (\Throwable $e) {
+                // Log error but don't stop the upload process
+                $this->logger->error("Failed to generate filter '$filterName' for '$relativePath': " . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Maps MediaType to relevant LiipImagine filters
+     */
+    private function getFiltersForMediaType(MediaType $type): array
+    {
+        return match($type) {
+            MediaType::ARTICLE_COVER => [
+                'article_cover',
+                'blog_thumb',
+                'blog_thumb_mobile',
+                'article_cover_thumb'
+            ],
+            MediaType::ARTICLE_IMAGE => [
+                'thumbnail_small',
+                'thumbnail_medium',
+                'thumbnail_large'
+            ],
+            MediaType::PORTFOLIO_COVER => [
+                'gallery_thumb_desktop',
+                'gallery_thumb_mobile',
+                'gallery_thumb_index',
+                'gallery_thumb_edit'
+            ],
+            MediaType::PORTFOLIO_FEATURED => [
+                'works_thumb_landscape',
+                'works_thumb_portrait'
+            ],
+            MediaType::GALLERY_SERIES => [
+                'gallery_thumb_desktop',
+                'gallery_thumb_mobile'
+            ],
+            MediaType::AVATAR => [
+                'thumbnail_small'
+            ],
+            default => []
+        };
     }
 
     private function copyToCache(string $absoluteWebpPath, string $filterName): void

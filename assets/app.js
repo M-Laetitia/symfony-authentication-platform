@@ -9,6 +9,7 @@ import './styles/app.css';
 
 import './js/global.js';
 import './js/modal.js';
+import './js/animation-gsap.js';
 
 if (document.querySelector('.gallery-glightbox-isotope')) {
     import('./js/glightbox-isotope.js');

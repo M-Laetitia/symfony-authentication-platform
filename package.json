@@ -10,6 +10,7 @@
     "core-js": "^3.45.1",
     "embla-carousel": "^8.6.0",
     "glightbox": "^3.3.1",
+    "gsap": "^3.15.0",
     "isotope-layout": "^3.0.6"
   },
   "devDependencies": {
@@ -23,11 +24,10 @@
     "watch": "encore dev --watch",
     "build": "encore production"
   },
-    "browserslist": [
+  "browserslist": [
     "> 0.5%",
     "last 2 versions",
     "not dead",
     "not IE 11"
   ]
-
 }

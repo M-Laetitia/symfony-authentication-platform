@@ -2,7 +2,7 @@ footer {
     background-color: var(--color-grey-900);
     width: 100%;
     color: var(--color-white);
-    padding: 110px 30px 30px 30px;
+    padding: 110px 80px 30px 80px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,7 +24,7 @@ footer {
 
     .footer__top {
         border-bottom: 1px solid #474746;
-        padding-bottom: 50px;
+        padding-bottom: 68px;
         margin-bottom: 44px ;
         
         .footer__branding {
@@ -183,6 +183,7 @@ footer {
 
 @media (max-width: 1100px) {
     footer {
+        padding: 110px 30px 30px 30px;
         .footer__bottom {
             display : flex;
             flex-direction: column;
@@ -219,11 +220,11 @@ footer {
             }
         }
     }
-
-
 }
+
 @media (max-width: 768px ) {
     footer {
+    padding: 80px 80px 30px 80px;
         .footer__bottom {
             p {
                 text-align: center;
