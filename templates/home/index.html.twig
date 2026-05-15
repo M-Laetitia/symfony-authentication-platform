@@ -7,11 +7,13 @@
 {% endblock %} #}
 
 {% block body %}
+<div id="home-page">
+
     <section class="hero" aria-labelledby="hero-title">
         <div class="hero__container">
             <!-- Left decorative sidebar -->
             <div class="hero__sidebar hero__sidebar--left"></div>
-
+    
             <!-- Main hero content -->
             <div class="hero__main">
                 <figure class="hero__figure">
@@ -35,12 +37,12 @@
                     </a>
                 </div>
             </div>
-
+    
             <!-- Right decorative sidebar -->
             <div class="hero__sidebar hero__sidebar--right"></div>
         </div>
     </section>
-
+    
     <section class="section section-about" aria-labelledby="about-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--about" aria-hidden="true">
@@ -53,7 +55,7 @@
             </div>
     
             <div class="section-about__content scroll-text-section__content section-centered">
-
+    
                 <twig:SectionIntro
                     title="ABOUT US"
                     subtitle="photography agency focused on authentic images and natural storytelling."
@@ -61,7 +63,7 @@
                     linkBtn="/gallery"
                     titleId="about-title"
                 />
-
+    
                 <div class="section-about__text-image">
                     <!-- Text -->
                     <div class="section-about__text">
@@ -133,11 +135,11 @@
             </div>
     
         </div>
-
+    
     </section>
-
+    
     <div class="u-divider-medium"></div>
-
+    
     <section class="section section-services" aria-labelledby="services-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--services" aria-hidden="true">
@@ -148,9 +150,9 @@
                     <span>SERVICES</span>
                 </div>
             </div>
-
+    
             <div class="section-services__content scroll-text-section__content">
-
+    
                 <twig:SectionIntro
                 title="Our services"
                 subtitle="Professional photography for creative, and memorable moments."
@@ -191,11 +193,11 @@
             </div>
         </div>
     </section>
-
+    
     <div class="u-divider-medium"></div>
-
+    
     <section class="section section-dark section-photographs" aria-labelledby="photographs-title">
-
+    
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--light bg-text--photographs" aria-hidden="true" role="presentation">
                 <div class="bg-text__track" aria-hidden="true">
@@ -205,7 +207,7 @@
                     <span aria-hidden="true">PHOTOGRAPHERS</span>
                 </div>
             </div>
-
+    
             <twig:SectionIntro
             title="Our photographers"
             subtitle=" A team of photographers with unique perspectives capturing your most precious moments."
@@ -219,10 +221,10 @@
                    <div class="embla" data-controller="carousel">
                         <div class="embla__viewport" data-carousel-target="viewport">
                             <div class="embla__container">
-
+    
                                 {% for photographer in photographers %}
                                     {% set cover = photographer.media|first %}
-
+    
                                     <div class="embla__slide">
                                         <twig:PhotographBox 
                                             :service="photographer.specialityNames|join(', ')"
@@ -233,7 +235,7 @@
                                         />
                                     </div>
                                 {% endfor %}
-
+    
                             </div>
                         </div>
                          <div class="carousel-nav section-photographs__carousel-nav">
@@ -245,9 +247,9 @@
                             aria-label="Previous slide"
                         >
                         {% include 'components/icons/leftArrow.html.twig' %}
-
+    
                         </button>
-
+    
                         <button
                             class="carousel-nav__arrow embla__next"
                             type="button"
@@ -257,7 +259,7 @@
                             {% include 'components/icons/rightArrow.html.twig' %}
                         </button>
                     </div>
-
+    
                     <div
                         class="carousel-nav__dots embla__dots"
                         data-carousel-target="dots"
@@ -265,18 +267,16 @@
                         aria-label="Photographer carousel navigation"
                     ></div>
                 </div>
-            </div>
-                    </div> 
-                </div>
+                
             </div>
         </div>
-
+    
     </section>
-
+    
     <div class="u-divider-medium"></div>
-
+    
     <section class="section section-works" aria-labelledby="works-title">
-
+    
         <div class="scroll-text-section">
             <div class="bg-text--scroll  bg-text--works" aria-hidden="true">
                 <div class="bg-text__track">
@@ -286,7 +286,7 @@
                     <span>LATEST WORKS</span>
                 </div>
             </div>
-
+    
             <twig:SectionIntro
             title="Our lastest works"
             subtitle="Recent photographs showcasing our photographers' unique styles."
@@ -294,14 +294,14 @@
             linkBtn="/gallery"
             titleId="works-title"
             />
-
+    
             <div class="section-works__content scroll-text-section__content">
-
+    
                 <div class="section-works__gallery">
                     {% for portfolio in latestPhotographies %}
                     {% set isLandscape = loop.first or loop.last %}
                     <figure class="gallery__item {% if isLandscape %}gallery__item--landscape{% else %}gallery__item--portrait{% endif %}">
-                        <a href="#"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.altText }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
+                        <a href="{{ path('team_show', { 'slug': portfolio.photographer.slug }) }}"><img class="gallery__image u-img-cover" src="{{ portfolio.path | imagine_filter(isLandscape ? 'works_thumb_landscape' : 'works_thumb_portrait') }}" alt="{{ portfolio.altText }}" width="{{ isLandscape ? 880 : 370 }}" height="{{ isLandscape ? 600 : 500 }}" loading="lazy">
                         <div class="gallery__detail">
                             <div  class="gallery__detail-link">
                                 <div class="gallery__detail-content">
@@ -314,14 +314,14 @@
                     </figure>
                     {% endfor %}
                 </div>
-
+    
             </div>
         </div>
-
+    
     </section>
-
+    
     <div class="u-divider-medium"></div>
-
+    
     <section class="section section-testimonials " aria-labelledby="testimonials-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--testimonials" aria-hidden="true">
@@ -334,7 +334,7 @@
             </div>
     
             <div class="section-testimonials__content scroll-text-section__content section-centered">
-
+    
                 <twig:SectionIntro
                 title="Testimonials"
                 subtitle="Words from those who trusted us with their stories."
@@ -343,14 +343,14 @@
                 :showButton="false"
                 titleId="testimonials-title"
                 />
-
+    
                 <div class="section-testimonials__container">
                     <twig:TestimonialBox
                     content="Working with this agency was a smooth and inspiring experience from start to finish. The photographer made us feel comfortable immediately and captured natural moments with great sensitivity. Every image felt elegant, authentic, and full of emotion. The final gallery exceeded our expectations and gave us memories we will keep for years. Their professionalism, creativity, and attention to detail were remarkable throughout the entire session."
                     subtitle="Great memories captured for our wedding"
                     username="Emma Laurent"
                     />
-
+    
                     <twig:TestimonialBox
                     content="I booked a portrait session for my personal brand and was impressed by the quality of the experience. The direction was clear, relaxed, and confidence-building, which made the shoot feel effortless. The photographs were refined, modern, and exactly aligned with what I needed. Communication was excellent, delivery was fast, and the final result was outstanding in every way."
                     subtitle="Strong personal branding portraits"
@@ -360,15 +360,13 @@
             </div>
         </div>
     </section>
-
+    
     <div class="u-divider-medium"></div>
-
-
+    
     {% include 'layout/contact.html.twig' %} 
-
-
+    
     <div class="u-divider-medium"></div>
-
+    
     <section class="section section-articles " aria-labelledby="articles-title">
         <div class="scroll-text-section">
             <div class="bg-text--scroll bg-text--articles" aria-hidden="true">
@@ -381,7 +379,7 @@
             </div>
     
             <div class="section-articles__content scroll-text-section__content section-centered">
-
+    
                 <twig:SectionIntro
                 title="Articles & blog"
                 subtitle="Insights, stories, and inspiration from our photographic work and creative projects."
@@ -389,9 +387,9 @@
                 linkBtn="/blog"
                 titleId="articles-title"
                 />
-
+    
                 <div class="section-articles__container">
-
+    
                     {% if latestArticles is not empty %}
                     <section class="related-articles section-centered">
                        
@@ -407,19 +405,20 @@
                                     />
                             {% endfor %}
                         </div>
-
+    
                     </section>
                     {% endif %}
-
+    
                 </div>
             </div>
         </div>
     </section>
-
+    
     <div class="u-divider-large"></div>
-
-
+    
+    
     {% include 'layout/subscribe.html.twig' %}
+</div>
 
 
 {% endblock %}

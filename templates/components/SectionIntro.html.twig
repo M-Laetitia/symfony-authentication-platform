@@ -2,6 +2,7 @@
     <div class="section-intro__text">
         <h2 class="section-intro__title" {% if titleId is defined %}id="{{ titleId }}"{% endif %}>{{ title }}</h2>
         <p class="section-intro__subtitle">{{ subtitle }}</p>
+        <div class="section-intro__underline"></div>
     </div>
     {% if showButton %}
         <div class="section-intro__action">
