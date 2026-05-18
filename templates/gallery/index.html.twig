@@ -37,10 +37,10 @@
                 {% set specialityClass = photo.speciality ? photo.speciality.name|lower|replace({' ': '-', '_': '-'})|trim : '' %}
                 <div class="gallery__item js-gallery-item {{ specialityClass }} {{ loop.index > 12 ? 'is-hidden' }}">
                     <a
-                        href="/uploads/{{ photo.path }}"
+                        href="{{ photo.path | imagine_filter('gallery_thumb_desktop') }}"
                         class="gallery__link js-gallery-lightbox"
                         data-gallery="gallery-main"
-                        data-description="<a class='gslide-photographer-link' href='{{ path('team_show', { slug: photo.photographer.slug }) }}' target='_blank' aria-label='View {{ photo.photographer.firstName }} {{ photo.photographer.lastName }} profile, opens in new tab'><span class='gslide-photographer-name'>{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</span>{% if photo.speciality %}<span class='gslide-separator'>  </span><span class='gslide-speciality'>{{ photo.speciality.name }}</span>{% endif %}</a>"
+                        data-description="<a class='gslide-photographer-link' href='{{ path('team_show', { slug: photo.photographer.slug }) }}' target='_blank' aria-label='View {{ photo.photographer.firstName }} {{ photo.photographer.lastName }} profile, opens in new tab'><span class='gslide-photographer-name'>{{ photo.photographer.firstName }} {{ photo.photographer.lastName }}</span>{% if photo.speciality %}<span class='gslide-separator'>  </span><span class='gslide-speciality'>{{ photo.speciality.name }}</span>{% endif %}</a>"|raw
                         aria-label="View photo by {{ photo.photographer.firstName }} {{ photo.photographer.lastName }}"
                     >
                         <figure class="gallery__figure">

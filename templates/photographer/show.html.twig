@@ -230,9 +230,11 @@
            {% for media in featuredMedias %}
               {% set seriesClass = media.gallerySeries ? media.gallerySeries.name|lower|replace({' ': '-', '_': '-'})|trim : '' %}
               <div class="gallery__item js-gallery-item {{ seriesClass }} {{ loop.index > 9 ? 'is-hidden' }}">
-                  <a href="{{ asset('uploads/' ~ media.path) }}"
+                  <a href="{{ media.path | imagine_filter('gallery_thumb_desktop') }}"
                     class="gallery__link js-gallery-lightbox"
-                    data-gallery="portfolio">
+                    data-gallery="portfolio"
+                    data-description="<a class='gslide-photographer-link' href='{{ path('team_show', { slug: photographer.slug }) }}' target='_blank' aria-label='View {{ photographer.firstName }} {{ photographer.lastName }} profile, opens in new tab'><span class='gslide-photographer-name'>{{ photographer.firstName }} {{ photographer.lastName }}</span>{% if media.gallerySeries %}<span class='gslide-separator'>  </span><span class='gslide-speciality'>{{ media.gallerySeries.name }}</span>{% endif %}</a>"|raw
+                    aria-label="View photo by {{ photographer.firstName }} {{ photographer.lastName }}">
                       <picture>
                           <source 
                               media="(min-width: 1024px)" 
