@@ -225,9 +225,8 @@ class MediaUploader implements MediaUploaderInterface
         // mise en cache immédiate :
         $this->copyToCache($absoluteWebpPath, $filterName);
 
-        // TODO: Pré-génération des filtres spécifiques selon le type de média
-        // Temporarily disabled - needs debugging in production
-        // $this->generateFiltersForMediaType($absoluteWebpPath, $type);
+        // Pré-génération des filtres spécifiques selon le type de média
+        $this->generateFiltersForMediaType($absoluteWebpPath, $type);
 
         return $absoluteWebpPath;
     }
@@ -244,24 +243,22 @@ class MediaUploader implements MediaUploaderInterface
             return;
         }
 
-        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+        // Path relative to data_root (public/uploads) - used by dataManager->find()
+        $dataRelativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+        $dataRelativePath = ltrim($dataRelativePath, '/');
+
+        // Path with uploads/ prefix - used by cacheManager->store()
+        $cacheRelativePath = 'uploads/' . $dataRelativePath;
 
         foreach ($filtersToGenerate as $filterName) {
             try {
-                // Use CacheManager to generate and store the filtered image
-                $this->cacheManager->store(
-                    $this->filterManager->applyFilter(
-                        $this->dataManager->find($filterName, $relativePath),
-                        $filterName
-                    ),
-                    $relativePath,
-                    $filterName
-                );
+                $binary = $this->dataManager->find($filterName, $dataRelativePath);
+                $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
+                $this->cacheManager->store($filteredBinary, $cacheRelativePath, $filterName);
                 
-                $this->logger->info("Filter '$filterName' generated for '$relativePath'");
+                $this->logger->info("Filter '$filterName' generated for '$dataRelativePath'");
             } catch (\Throwable $e) {
-                // Log error but don't stop the upload process
-                $this->logger->error("Failed to generate filter '$filterName' for '$relativePath': " . $e->getMessage());
+                $this->logger->error("Failed to generate filter '$filterName' for '$dataRelativePath': " . $e->getMessage());
             }
         }
     }
@@ -290,6 +287,8 @@ class MediaUploader implements MediaUploaderInterface
                 'gallery_thumb_edit'
             ],
             MediaType::PORTFOLIO_FEATURED => [
+                'gallery_thumb_desktop',
+                'gallery_thumb_mobile',
                 'works_thumb_landscape',
                 'works_thumb_portrait'
             ],
