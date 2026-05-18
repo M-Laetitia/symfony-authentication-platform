@@ -11,7 +11,7 @@
     }
     .js-filter-button {
         font-family: var(--font-heading);
-        font-size: clamp(18px, 3vw, 22px);
+        font-size: clamp(18px, 3vw, 20px);
         text-transform: uppercase;
         font-weight: 400;
         position: relative;

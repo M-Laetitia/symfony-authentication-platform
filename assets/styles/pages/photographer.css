@@ -462,6 +462,11 @@
         border: 2px dashed var(--color-grey-200);
         border-radius: 8px;
         background-color: var(--color-white);
+
+        .button {
+            display: inline-flex;
+            margin-top: 20px;   
+        }
     }
 
     .gallery-edit__photos {
