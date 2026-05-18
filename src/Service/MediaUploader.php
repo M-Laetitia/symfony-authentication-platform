@@ -225,8 +225,9 @@ class MediaUploader implements MediaUploaderInterface
         // mise en cache immédiate :
         $this->copyToCache($absoluteWebpPath, $filterName);
 
-        // Pré-génération des filtres spécifiques selon le type de média
-        $this->generateFiltersForMediaType($absoluteWebpPath, $type);
+        // TODO: Pré-génération des filtres spécifiques selon le type de média
+        // Temporarily disabled - needs debugging in production
+        // $this->generateFiltersForMediaType($absoluteWebpPath, $type);
 
         return $absoluteWebpPath;
     }
