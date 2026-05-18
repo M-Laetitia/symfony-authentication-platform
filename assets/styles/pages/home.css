@@ -22,16 +22,12 @@
     padding: 0 20px;
 }
 
-
-
-
-
 /* &-------------- HERO ------------- */
 /* &--------------------------------- */
 
 .hero {
     height: calc(100vh - var(--height-navbar));
-    background: black;
+    background:#181818;
     overflow: hidden;
 
     h1, p {
@@ -46,6 +42,8 @@
         color: var(--color-grey-200);
         position: relative;
         margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(-30px);
         &:before {
             content: "";
             position: absolute;
@@ -62,11 +60,14 @@
         margin-bottom: 40px;
         text-align: left;
         line-height: 1.4rem;
+        opacity: 0;
+        transform: translateX(100%);
     }
     .hero__cta {
         color:var(--color-accent);
         font-size: 18px;
-        transition: var(--transition-base); 
+        opacity: 0;
+        transform: translateY(100%);
         &:hover {
             color: var(--color-white);
         }
@@ -86,9 +87,11 @@
     }
     .hero__sidebar--left {
         border-right: 1px solid var(--color-accent);
+        transform: translateY(-100%);
     }
     .hero__sidebar--right {
         border-left: 1px solid var(--color-accent);
+        transform: translateY(-100%);
     }
     .hero__container {
         display:flex;
@@ -98,6 +101,7 @@
         width: 100%;
         overflow: hidden;
         position: relative;
+        background-color: #181818;
     }
 
     figure, .hero__container {
@@ -110,6 +114,8 @@
 
     .hero__image {
         will-change: transform;
+        opacity: 0;
+        transform: translateY(100%);
     }
     .hero__content {
         position: absolute;
@@ -168,6 +174,11 @@
                 background-color: var(--color-accent);
                 transform: translate(20px, 20px);
                 z-index: -1;
+            }
+
+            picture {
+                width: 100%;
+                height: 100%;
             }
         }
     }
@@ -249,6 +260,7 @@
         width: var(--width-content);
         margin-left: auto;
         margin-right: auto;
+        padding: 0 20px;
     }
 
     .scroll-text-section {
@@ -278,7 +290,7 @@
         }
         
         .gallery__image  {
-            transition: ease-in-out 0.5s;
+            transition: ease-in-out 0.5s!important;
             position: absolute;
         }
 
@@ -431,7 +443,7 @@
     }
     .testimonial-card__text {
         color: var(--color-grey-700);
-        font-size: 18px;
+        font-size: clamp(15px, 2.2vw, 18px);
         font-weight: 400;
     }
     .testimonial-card__author-subtitle {
@@ -682,6 +694,8 @@
         {
             flex-direction: column;
             gap: 80px;
+            max-width: 500px;
+            margin: auto;
 
         }
         .testimonial-card {
