@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 /* &--------------------------------- */
 
 if (document.querySelector('#home-page')) {
-    console.log('Animations for #home-page initialized');
 
     // Animate each .section-intro
     gsap.utils.toArray('.section-intro').forEach((intro, index) => {

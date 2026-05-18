@@ -243,22 +243,24 @@ class MediaUploader implements MediaUploaderInterface
             return;
         }
 
-        // Path relative to data_root (public/uploads) - used by dataManager->find()
-        $dataRelativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
-        $dataRelativePath = ltrim($dataRelativePath, '/');
-
-        // Path with uploads/ prefix - used by cacheManager->store()
-        $cacheRelativePath = 'uploads/' . $dataRelativePath;
+        // Path as stored in database - without 'uploads/' prefix
+        $relativePath = str_replace($this->uploadsDir . '/', '', $absoluteWebpPath);
+        $relativePath = ltrim($relativePath, '/');
 
         foreach ($filtersToGenerate as $filterName) {
             try {
-                $binary = $this->dataManager->find($filterName, $dataRelativePath);
-                $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
-                $this->cacheManager->store($filteredBinary, $cacheRelativePath, $filterName);
-                
-                $this->logger->info("Filter '$filterName' generated for '$dataRelativePath'");
+                // Use exact same logic as RegenerateImageCacheCommand
+                $this->cacheManager->store(
+                    $this->filterManager->applyFilter(
+                        $this->dataManager->find($filterName, $relativePath),
+                        $filterName
+                    ),
+                    $relativePath,
+                    $filterName
+                );
             } catch (\Throwable $e) {
-                $this->logger->error("Failed to generate filter '$filterName' for '$dataRelativePath': " . $e->getMessage());
+                // Fail silently - image will be generated on first view via /resolve/
+                continue;
             }
         }
     }
@@ -284,11 +286,15 @@ class MediaUploader implements MediaUploaderInterface
                 'gallery_thumb_desktop',
                 'gallery_thumb_mobile',
                 'gallery_thumb_index',
-                'gallery_thumb_edit'
+                'gallery_thumb_edit',
+                'team_thumb_desktop',
+                'team_thumb_mobile'
             ],
             MediaType::PORTFOLIO_FEATURED => [
                 'gallery_thumb_desktop',
                 'gallery_thumb_mobile',
+                'gallery_thumb_index',
+                'gallery_thumb_edit',
                 'works_thumb_landscape',
                 'works_thumb_portrait'
             ],
