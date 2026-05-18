@@ -240,6 +240,7 @@ class MediaUploader implements MediaUploaderInterface
         $filtersToGenerate = $this->getFiltersForMediaType($type);
         
         if (empty($filtersToGenerate)) {
+            $this->logger->warning("No filters to generate for type: " . $type->value);
             return;
         }
 
@@ -250,15 +251,23 @@ class MediaUploader implements MediaUploaderInterface
         // Path with uploads/ prefix - used by cacheManager->store()
         $cacheRelativePath = 'uploads/' . $dataRelativePath;
 
+        $this->logger->info("Generating filters for: $dataRelativePath, Filters: " . implode(", ", $filtersToGenerate));
+
         foreach ($filtersToGenerate as $filterName) {
             try {
-                $binary = $this->dataManager->find($filterName, $dataRelativePath);
-                $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
-                $this->cacheManager->store($filteredBinary, $cacheRelativePath, $filterName);
+                $this->logger->info("Starting filter generation: $filterName");
                 
-                $this->logger->info("Filter '$filterName' generated for '$dataRelativePath'");
+                $binary = $this->dataManager->find($filterName, $dataRelativePath);
+                $this->logger->info("Binary found for filter: $filterName");
+                
+                $filteredBinary = $this->filterManager->applyFilter($binary, $filterName);
+                $this->logger->info("Filter applied: $filterName");
+                
+                $this->cacheManager->store($filteredBinary, $cacheRelativePath, $filterName);
+                $this->logger->info("Filter cached successfully: $filterName");
+                
             } catch (\Throwable $e) {
-                $this->logger->error("Failed to generate filter '$filterName' for '$dataRelativePath': " . $e->getMessage());
+                $this->logger->error("Failed to generate filter '$filterName' for '$dataRelativePath': " . $e->getMessage() . " " . $e->getTraceAsString());
             }
         }
     }
