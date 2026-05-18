@@ -144,6 +144,10 @@ class RegenerateImageCacheCommand extends Command
                 'gallery_thumb_edit'
             ],
             MediaType::PORTFOLIO_FEATURED => [
+                'gallery_thumb_desktop',
+                'gallery_thumb_mobile',
+                'gallery_thumb_index',
+                'gallery_thumb_edit',
                 'works_thumb_landscape',
                 'works_thumb_portrait'
             ],
