@@ -79,18 +79,21 @@
                     <!-- Image -->
                     <div class="section-about__image-wrapper">
                         <figure class="section-about__figure">
-                            <img 
-                                src="{{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_desktop') }}"
-                                srcset="
-                                    {{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_mobile') }} 800w,
-                                    {{ 'media/mosaic-polaroids.webp' | imagine_filter('about_image_desktop') }} 365w
-                                "
-                                sizes="(max-width: 1024px) 800px, 365px"
-                                alt="MOSAIC - polaroids photograhies"
-                                class="section-about__image u-img-cover"
-                                width="365" height="480"
-                                loading="lazy"
-                            >
+                            <picture>
+                                <source 
+                                    srcset="{{ asset('/uploads/media/mosaic_about_us_mobile.webp') }}" 
+                                    media="(max-width: 1024px)" 
+                                    width="860" 
+                                    height="480">
+                                        
+                                <img 
+                                    src="{{ asset('/uploads/media/mosaic_about_us_desktop.webp') }}" 
+                                    alt="MOSAIC - polaroids photograhies" 
+                                    class="section-about__image u-img-cover" 
+                                    width="365" 
+                                    height="480" 
+                                    loading="lazy">
+                            </picture>
                         </figure>
                     </div>
                 </div>

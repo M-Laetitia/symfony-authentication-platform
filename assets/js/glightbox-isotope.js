@@ -89,6 +89,7 @@ if (document.querySelector('.gallery-page')) {
     let showAll = false;
     let currentFilter = '*';
     const INITIAL_LIMIT = 12;
+    let displayedLimit = INITIAL_LIMIT;
 
     const buttons = document.querySelectorAll('.js-filter-button');
     const moreBtn = document.querySelector('.js-gallery-more');
@@ -101,7 +102,7 @@ if (document.querySelector('.gallery-page')) {
             const matchesFilter = currentFilter === '*' || item.matches(currentFilter);
             if (matchesFilter) {
                 visibleCount++;
-                if (visibleCount > INITIAL_LIMIT) {
+                if (visibleCount > displayedLimit) {
                     item.classList.add('is-hidden');
                 } else {
                     item.classList.remove('is-hidden');
@@ -124,10 +125,11 @@ if (document.querySelector('.gallery-page')) {
         button.addEventListener('click', () => {
             currentFilter = button.getAttribute('data-filter');
             showAll = false;
+            displayedLimit = INITIAL_LIMIT;  
             buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
-            // Handle description display
+
             if (descriptionBox) {
                 const description = button.getAttribute('data-description');
                 if (description && description.trim() !== '') {
@@ -159,10 +161,9 @@ if (document.querySelector('.gallery-page')) {
 
     if (moreBtn) {
         moreBtn.addEventListener('click', () => {
-            showAll = true;
-            allItems.forEach(item => item.classList.remove('is-hidden'));
+            displayedLimit += INITIAL_LIMIT;  
+            resetHiddenState();
             applyFilter();
-            moreBtn.style.display = 'none';
         });
     }
 }
@@ -193,6 +194,7 @@ if (document.querySelector('.photographer-portfolio-page')) {
     let showAll = false;
     let currentFilter = '*';
     const INITIAL_LIMIT = 16;
+    let displayedLimit = INITIAL_LIMIT;
 
     const buttons = document.querySelectorAll('.js-filter-button');
     const moreBtn = document.querySelector('.js-gallery-more');
@@ -205,7 +207,7 @@ if (document.querySelector('.photographer-portfolio-page')) {
             const matchesFilter = currentFilter === '*' || item.matches(currentFilter);
             if (matchesFilter) {
                 visibleCount++;
-                if (visibleCount > INITIAL_LIMIT) {
+                if (visibleCount > displayedLimit) {
                     item.classList.add('is-hidden');
                 } else {
                     item.classList.remove('is-hidden');
@@ -228,6 +230,7 @@ if (document.querySelector('.photographer-portfolio-page')) {
         button.addEventListener('click', () => {
             currentFilter = button.getAttribute('data-filter');
             showAll = false;
+            displayedLimit = INITIAL_LIMIT;  // Reset limit au changement de filtre
             buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
@@ -263,10 +266,9 @@ if (document.querySelector('.photographer-portfolio-page')) {
 
     if (moreBtn) {
         moreBtn.addEventListener('click', () => {
-            showAll = true;
-            allItems.forEach(item => item.classList.remove('is-hidden'));
+            displayedLimit += INITIAL_LIMIT;  // Ajoute 16 de plus
+            resetHiddenState();
             applyFilter();
-            moreBtn.style.display = 'none';
         });
     }
 }

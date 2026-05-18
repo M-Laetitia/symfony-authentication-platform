@@ -78,7 +78,7 @@
         {% if gallery.medias is empty %}
             <div class="gallery-edit__empty">
                 <p>No photos in this gallery yet.</p>
-                <a href="{{ path('photographer_gallery_media_add', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--accent">
+                <a href="{{ path('photographer_gallery_media_add', { slug: photographer.slug, galleryId: gallery.id }) }}" class="button button--accent button--medium">
                     Add Your First Photo
                 </a>
             </div>
