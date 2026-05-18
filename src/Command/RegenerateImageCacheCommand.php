@@ -141,7 +141,9 @@ class RegenerateImageCacheCommand extends Command
                 'gallery_thumb_desktop',
                 'gallery_thumb_mobile',
                 'gallery_thumb_index',
-                'gallery_thumb_edit'
+                'gallery_thumb_edit',
+                'team_thumb_desktop',
+                'team_thumb_mobile'
             ],
             MediaType::PORTFOLIO_FEATURED => [
                 'gallery_thumb_desktop',
