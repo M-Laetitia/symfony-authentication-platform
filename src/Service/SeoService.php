@@ -4,9 +4,12 @@ namespace App\Service;
 
 class SeoService
 {
-    private array $metaTitles;
-    private array $metaDescriptions;
-    private array $metaRobots;
+    /** @var array<string, string> */
+    private array $metaTitles = [];
+    /** @var array<string, string> */
+    private array $metaDescriptions = [];
+    /** @var array<string, string> */
+    private array $metaRobots = [];
 
     public function __construct()
     {
@@ -41,18 +44,24 @@ class SeoService
         ];
     }
 
+    /**
+    * @return string
+    */
     public function getMetaTitle(string $page): string
     {
         return $this->metaTitles[$page] ?? 'MOSAIC';
     }
 
     /**
-     * Return metadescription for pages
+     * @return string
      */
     public function getMetaDescription(string $page): string
     {
         return $this->metaDescriptions[$page] ?? 'Default meta description for the site';
     }
+    /**
+    * @return string
+    */
     public function getMetaRobots(string $page): string
     {
         return $this->metaRobots[$page] ?? 'index, follow';

@@ -27,6 +27,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    margin-top: -100px;
 }
 .error-page__top {
     background-color: var(--color-grey-900);
