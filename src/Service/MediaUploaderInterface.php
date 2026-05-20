@@ -49,6 +49,6 @@ interface MediaUploaderInterface
         UploadedFile $file, 
         string $caption = '', 
         string $altText = '', 
-        MediaType $type = MediaType::DEFAULT->value
+        MediaType $type = MediaType::DEFAULT
     ): Media;
 }

@@ -8,6 +8,57 @@ gsap.registerPlugin(ScrollTrigger);
 /* &--------------------------------- */
 
 if (document.querySelector('#home-page')) {
+    /* &------------- HERO -------------- */
+
+    // left sidebar
+    gsap.to('.hero__sidebar--left', {
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+    });
+
+    //  right sidebar
+    gsap.to('.hero__sidebar--right', {
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+    });
+
+    // image
+    gsap.to('.hero__image', {
+        y: 0,
+        opacity: 1,
+        duration: 2,
+        delay: 0.5,
+        ease: 'power2.out',
+    });
+
+    // title 
+    gsap.to('.hero__title', {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        delay: 1,
+        ease: 'power2.out',
+    });
+
+    // subtitle
+    gsap.to('.hero__subtitle', {
+        x: 0,
+        opacity: 1,
+        duration: 2,
+        delay: 1.5,
+        ease: 'power2.out',
+    });
+
+    // button
+    gsap.to('.hero__cta', {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        delay: 2,
+        ease: 'power2.out',
+    });
 
     // Animate each .section-intro
     gsap.utils.toArray('.section-intro').forEach((intro, index) => {

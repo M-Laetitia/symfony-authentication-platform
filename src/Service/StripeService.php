@@ -8,8 +8,8 @@ use Stripe\Stripe;
 class StripeService
 {
     public function __construct(
-        private string $secretKey,
-        private string $webhookSecret,
+        private string $secretKey = '',
+        private string $webhookSecret = '',
     ) {
         Stripe::setApiKey($this->secretKey);
     }

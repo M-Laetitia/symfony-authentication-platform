@@ -44,14 +44,14 @@ class AppExtension extends AbstractExtension
      */
     public function getUnreadMessagesCount(): int
     {
-        /** @var \App\Entity\User $user */
+        /** @var \App\Entity\User|null $user */
         $user = $this->security->getUser(); 
-        if (!$user || !is_object($user)) {
+        if (!$user) {
             return 0;
         }
-    
+
         $userId = $user->getId();
-    
+
         return $this->messageRepository->countUnreadForUser($userId);
     }
 }
