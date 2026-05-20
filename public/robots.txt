@@ -2,7 +2,6 @@
 # Allow all robots to crawl the site
 
 User-agent: *
-Allow: /
 
 # Disallow admin and sensitive paths
 Disallow: /admin/
