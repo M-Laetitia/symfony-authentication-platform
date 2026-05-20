@@ -1,0 +1,15 @@
+# Prevents PHP scripts from running
+<FilesMatch "\.(php|php5|php7|phtml)$">
+    Deny from all
+</FilesMatch>
+
+# Prevents access to .htaccess files
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Prevents access to JavaScript files
+<FilesMatch "\.(js)$">
+    Deny from all
+</FilesMatch>
