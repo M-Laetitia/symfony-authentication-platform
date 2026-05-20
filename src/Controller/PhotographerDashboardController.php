@@ -71,10 +71,10 @@ class PhotographerDashboardController extends AbstractController
         $form = $this->createForm(PricingPlanFormType::class, $plan);
         
         // Pre-fill unmapped textarea fields with existing array data
-        if ($plan->getWhatIncluded() && !empty($plan->getWhatIncluded())) {
+        if ($plan->getWhatIncluded()) {
             $form->get('whatIncluded')->setData(implode("\n", $plan->getWhatIncluded()));
         }
-        if ($plan->getAdditionnalInfos() && !empty($plan->getAdditionnalInfos())) {
+        if ($plan->getAdditionnalInfos()) {
             $form->get('additionnalInfos')->setData(implode("\n", $plan->getAdditionnalInfos()));
         }
         
